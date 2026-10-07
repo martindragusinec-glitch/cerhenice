@@ -7,6 +7,7 @@ http.createServer((req, res) => {
   let f = path.join(root, p);
   if (!f.startsWith(root)) { res.writeHead(403); return res.end(); }
   if (p.endsWith('/')) f = path.join(f, 'index.html');
+  else if (!path.extname(f) && fs.existsSync(f + '.html')) f += '.html';
   fs.readFile(f, (err, data) => {
     if (err) { res.writeHead(404); return res.end('404'); }
     res.writeHead(200, { 'Content-Type': types[path.extname(f).toLowerCase()] || 'application/octet-stream', 'Cache-Control': 'no-store' });

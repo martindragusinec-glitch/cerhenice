@@ -579,3 +579,105 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
 .band { margin-bottom: clamp(80px, 10vw, 150px); }
 .flyover small { white-space: nowrap; }
 @media (max-width: 860px) { .hero-caption { display: none; } }
+
+/* ---------- slunce ve 3D ---------- */
+.hud-views .sun-btn[aria-pressed="true"] { background: var(--accent); color: var(--ink); }
+.hud-views .fav-btn { color: #b23a2a; }
+.hud-views .fav-btn span { font-family: var(--mono); font-size: 13px; color: var(--ink); }
+.hud-views .fav-btn[aria-pressed="true"] { background: var(--ink); }
+.hud-views .fav-btn[aria-pressed="true"] span { color: var(--paper); }
+.hud-sun { left: 20px; bottom: 76px; width: 340px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.hud-sun[hidden] { display: none; }
+.seg-sun { grid-template-columns: repeat(3, 1fr); }
+.sun-row { display: grid; grid-template-columns: 40px 1fr auto; align-items: center; gap: 10px; }
+.sun-row output { font-family: var(--mono); font-size: 15px; font-weight: 600; min-width: 46px; text-align: right; }
+.sun-note { font-size: 12.5px; color: var(--ink-3); }
+.icon-btn.fav[aria-pressed="true"] { color: #b23a2a; border-color: #e3b8b0; background: #fbecea; }
+#d-detail { --h: 42px; }
+@media (max-width: 900px) {
+  .hud-sun { left: 8px; right: 8px; bottom: 62px; width: auto; }
+  .drawer-actions #d-detail { display: none; }
+}
+
+/* ---------- porovnání ---------- */
+.compare { position: absolute; inset: 0; z-index: 8; background: var(--paper); display: none; flex-direction: column; padding: 24px; }
+.compare.is-open { display: flex; }
+.compare-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+.compare-head h3 { font-size: clamp(24px, 2.4vw, 34px); letter-spacing: -0.03em; }
+.compare-scroll { flex: 1; overflow: auto; }
+.compare-table { border-collapse: collapse; min-width: 100%; font-size: 15px; }
+.compare-table th, .compare-table td { text-align: left; padding: 14px 16px; border-bottom: 1px solid var(--line); vertical-align: middle; white-space: nowrap; }
+.compare-table tbody th { font-family: var(--mono); font-size: 11.5px; font-weight: 500; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); }
+.compare-table thead th { border-bottom: 1px solid var(--ink); }
+.c-num { font-size: 56px; letter-spacing: -0.05em; font-weight: 400; line-height: 1; vertical-align: middle; }
+.c-rm { margin-left: 8px; width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--line); background: transparent; display: inline-grid; place-items: center; cursor: pointer; vertical-align: middle; }
+.c-rm .icon { width: 14px; height: 14px; }
+.c-link, .c-show { font: inherit; font-size: 14px; color: var(--ink); text-decoration: underline; background: none; border: 0; padding: 0; cursor: pointer; }
+.compare-foot { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding-top: 16px; border-top: 1px solid var(--line); }
+.compare-foot p { color: var(--ink-2); font-size: 15px; }
+@media (max-width: 900px) { .compare { padding: 70px 10px 70px; } .c-num { font-size: 40px; } }
+
+/* ---------- stránka pozemku ---------- */
+.page-plot .site-header { position: sticky; }
+.plot-page { padding-top: 8px; }
+.plot-top { padding-bottom: clamp(48px, 7vw, 96px); }
+.crumbs { display: flex; align-items: center; gap: 14px; font-size: 14px; color: var(--ink-3); margin: 18px 0 28px; }
+.crumbs a { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); text-decoration: none; font-weight: 500; }
+.crumbs a:hover { text-decoration: underline; }
+.crumbs span::before { content: "/"; margin-right: 14px; color: var(--line-strong); }
+.plot-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 5vw, 72px); align-items: start; }
+.plot-info { display: flex; flex-direction: column; gap: 22px; position: sticky; top: 96px; }
+.plot-num { font-size: clamp(120px, 15vw, 220px); font-weight: 400; letter-spacing: -0.06em; line-height: 0.8; margin-top: 4px; }
+.plot-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+.spec-lg dd { font-size: 28px; }
+.spec-lg dd.price-text { font-size: 17px; }
+.plot-actions { display: flex; gap: 10px; align-items: center; }
+.plot-actions .btn { flex: 1; }
+.icon-btn.big { width: 54px; height: 54px; border-color: var(--line-strong); }
+.plot-note { font-size: 15px; color: var(--ink-2); max-width: 54ch; }
+.plot-pager { display: flex; justify-content: space-between; gap: 12px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 14px; }
+.plot-pager a { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 500; }
+.plot-pager a:hover { text-decoration: underline; }
+.plan-card { margin: 0; background: var(--white); border: 1px solid var(--line); border-radius: var(--r-l); padding: clamp(14px, 2vw, 24px); display: flex; flex-direction: column; gap: 16px; }
+.plan-svg { border-radius: var(--r-m); overflow: hidden; background: #e7ebdf; aspect-ratio: 5 / 4.2; max-height: calc(100svh - 300px); min-height: 320px; width: 100%; }
+.plan-svg svg { width: 100%; height: 100%; display: block; }
+.plan-svg a path { transition: fill .2s; }
+.plan-svg a:hover path { fill: #c5d6b0; }
+.sun-ctl { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: center; }
+.sun-ctl .seg { grid-template-columns: repeat(3, auto); }
+.sun-ctl .seg button { padding: 0 12px; }
+.sun-facts { font-size: 14px; color: var(--ink-2); line-height: 1.5; }
+.sun-facts b { color: var(--ink); font-weight: 600; }
+.where-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 5vw, 72px); align-items: center; }
+.where-grid .lead { margin-top: 20px; }
+.mini-card { background: var(--paper-2); border-radius: var(--r-l); padding: clamp(14px, 2vw, 28px); }
+.mini-svg svg { width: 100%; height: auto; display: block; }
+.mini-plot { transition: fill .2s; }
+.mini-svg a:hover .mini-plot:not(.is-me) { fill: #d8e6c6; }
+.dist { display: grid; gap: 0; margin-top: 32px; border-top: 1px solid var(--ink); }
+.dist-item { display: grid; grid-template-columns: 72px 1fr; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.dist-item .num { font-size: 42px; }
+.dist-item b { display: block; font-weight: 500; font-size: 16px; }
+.dist-item small { font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
+.dist .btn { margin-top: 18px; justify-self: start; }
+.plot-similar { padding-top: 0; }
+.sim-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 36px; }
+.sim-card { display: grid; grid-template-columns: 76px 1fr; grid-template-rows: auto auto auto; gap: 4px 18px; padding: 20px; border-radius: var(--r-m); background: var(--white); border: 1px solid var(--line); text-decoration: none; transition: border-color .2s, transform .3s var(--ease); }
+.sim-card:hover { border-color: var(--ink); transform: translateY(-2px); }
+.sim-card > svg { grid-row: 1 / 4; width: 76px; height: 110px; }
+.sim-go .icon { width: 16px; height: 16px; }
+.sim-num { font-size: 54px; letter-spacing: -0.05em; line-height: .9; }
+.sim-meta b { display: block; font-weight: 500; font-size: 18px; }
+.sim-meta small { font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
+.sim-go { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; margin-top: 6px; }
+.page-toast { position: fixed; top: 84px; z-index: 70; }
+@media (max-width: 960px) {
+  .plot-grid, .where-grid { grid-template-columns: minmax(0, 1fr); }
+  .plot-info, .plan-card, .sun-ctl { min-width: 0; }
+  .sun-ctl .seg { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .sun-ctl .seg button { padding: 0 6px; font-size: 13px; }
+  .plot-info { position: static; }
+  .sim-grid { grid-template-columns: 1fr; }
+  .sun-ctl { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) { .page-plot .header-cta .btn { display: none; } .plot-num { font-size: 120px; } .plot-pager { font-size: 13px; } .spec-lg dd { font-size: 22px; } }

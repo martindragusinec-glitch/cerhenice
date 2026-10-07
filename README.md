@@ -26,6 +26,12 @@ Deploy: složku nahrát na Vercel / Cloudflare Pages jako statický web, nic se 
 | `brand.html` | brand manuál a ukázky použití |
 | `tools/og/og.html` | zdroj náhledu pro sdílení `assets/img/og.jpg` |
 
+## Stránky pozemků, slunce, oblíbené
+
+- **`/pozemky/1` až `/pozemky/45`**: stránka každého pozemku (plánek s rozměry a severkou, stín ukázkového domu podle ročního období a času, poloha v lokalitě, podobné pozemky, vzdálenosti, poptávka s předvyplněným pozemkem). Generuje je `python3 tools/build_plots.py` ze šablony `tools/plot-template.html`; skript zároveň obnoví `sitemap.xml` a `robots.txt`. Po změně šablony nebo dat ho spusťte znovu.
+- **Slunce ve 3D**: tlačítko „Slunce“ v liště modelu (léto / jaro / zima, posuvník času, přehrání dne). Výpočet polohy slunce je v `assets/js/sun.js` pro Cerhenice (CEST/CET).
+- **Oblíbené a porovnání**: srdíčko v detailu pozemku (ve 3D i na stránce pozemku), uloženo v prohlížeči návštěvníka, max 4. V liště 3D se objeví počet a porovnání vedle sebe s tlačítkem „Poslat výběr“, které předvyplní formulář.
+
 ## Prodej: ceny a stavy (`assets/js/config.js`)
 
 ```js
@@ -58,7 +64,7 @@ Až budou skutečné záběry z dronu: přepsat tyto dva soubory (H.264, bez zvu
 - [ ] Zdravotní středisko v obci existuje (cerhenice.cz), ale v OSM chybí jeho poloha; do mapy ho doplnit, až bude adresa
 - [ ] Časy vlakem (S1: Kolín 13 min, Praha Masarykovo ~55 min) podle jízdního řádu PID 2023 – ověřit aktuální
 - [ ] IČO investora do patičky
-- [ ] Měření (GTM / Meta) – události už jdou do `dataLayer`: `plot_select`, `plot_cta`, `plot_share`, `filter_change`, `list_view_open`, `houses_toggle`, `map_destination`, `flyover_open`, `lead_submit`
+- [ ] Měření (GTM / Meta) – události už jdou do `dataLayer`: `plot_select`, `plot_cta`, `plot_share`, `plot_favorite`, `compare_open`, `compare_send`, `plot_page`, `plot_sun`, `sun_open`, `filter_change`, `list_view_open`, `houses_toggle`, `map_destination`, `flyover_open`, `lead_submit`
 
 ## Zdroje
 

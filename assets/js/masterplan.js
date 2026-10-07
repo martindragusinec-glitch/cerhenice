@@ -3,6 +3,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
 import { SITE, PUBLIC, PARCELS } from "../data/parcels.js";
+import { sunAt } from "./sun.js";
 
 const COL = {
   free: new THREE.Color(0xb3d095),
@@ -134,7 +135,8 @@ export function createMasterplan(host, { onSelect, onHover, startView = "persp" 
   controls.screenSpacePanning = false;
   controls.rotateSpeed = 0.6;
 
-  scene.add(new THREE.HemisphereLight(0xffffff, 0xc9d1bd, 1.6));
+  const hemi = new THREE.HemisphereLight(0xffffff, 0xc9d1bd, 1.6);
+  scene.add(hemi);
   const sun = new THREE.DirectionalLight(0xfff6e4, 2.0);
   sun.position.set(-170, 260, 210);
   sun.castShadow = true;
@@ -480,6 +482,18 @@ export function createMasterplan(host, { onSelect, onHover, startView = "persp" 
     setStatus(map) { state.status = { ...map }; refreshLabels(); },
     setView,
     setHouses(on) { houseGroup.visible = on; },
+    // slunce podle ročního období a místního času; bez parametrů výchozí světlo
+    setSun(season, hours) {
+      if (!season) { sun.position.set(-170, 260, 210); sun.intensity = 2.0; sun.color.set(0xfff6e4); hemi.intensity = 1.6; return null; }
+      const p = sunAt(season, hours);
+      const el = Math.max(p.el, 0.02);
+      sun.position.set(Math.sin(p.az) * Math.cos(el), Math.sin(el), -Math.cos(p.az) * Math.cos(el)).multiplyScalar(420);
+      const k = Math.min(1, el / 0.45);
+      sun.intensity = p.el > 0 ? 0.7 + 1.5 * k : 0;
+      sun.color.set(0xffb074).lerp(new THREE.Color(0xfff6e4), k);
+      hemi.intensity = 1.05 + 0.55 * k;
+      return p;
+    },
     hover(id) { state.listHover = id; },
     start, stop,
   };

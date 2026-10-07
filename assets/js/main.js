@@ -1,5 +1,7 @@
 import { PARCELS, SITE } from "../data/parcels.js";
 import { PRICE_PER_M2, PRICE_OVERRIDE, STATUS } from "./config.js";
+import { favs, isFav, toggleFav, onFavs, FAV_MAX } from "./favs.js";
+import { SEASONS, daylight, fmtTime } from "./sun.js";
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -186,6 +188,8 @@ function openDrawer(p, { source = "3d" } = {}) {
   $("#d-note").textContent = `Vjezd z nové ulice ${side}. Vodovod, kanalizace a elektřina budou dovedeny k hranici pozemku. Čárkovaně je naznačen možný dům.`;
   const cta = $("#d-cta");
   cta.innerHTML = (st === "prodano" ? "Chci podobný pozemek" : price ? `Mám zájem o pozemek ${num(p.id)}` : `Zjistit cenu pozemku ${num(p.id)}`) + ' <svg class="icon icon-arrow"><use href="#i-arrow-right"/></svg>';
+  $("#d-detail").href = `pozemky/${num(p.id)}`;
+  syncFavBtn();
   const wasOpen = drawer.classList.contains("is-open");
   setDrawer(true);
   if (!wasOpen) drawerTrigger = document.activeElement !== document.body ? document.activeElement : null;
@@ -427,4 +431,122 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
     if (!matchMedia("(prefers-reduced-motion: reduce)").matches) mv.play().catch(() => {});
   }));
   $$("[data-close-modal], .modal").forEach((el) => el.addEventListener("click", (e) => { if (e.target === el || el.matches("[data-close-modal]")) mv.pause(); }));
+}
+
+/* ---------- oblíbené a porovnání ---------- */
+const favBtn = $("#d-fav");
+function syncFavBtn() {
+  if (!current) return;
+  const on = isFav(current.id);
+  favBtn.setAttribute("aria-pressed", String(on));
+  favBtn.setAttribute("aria-label", on ? "Odebrat z oblíbených" : "Uložit do oblíbených");
+  favBtn.innerHTML = `<svg class="icon"><use href="#i-${on ? "heart-fill" : "heart"}"/></svg>`;
+}
+favBtn.addEventListener("click", () => {
+  if (!current) return;
+  const added = toggleFav(current.id);
+  showToast(added ? `Uloženo do oblíbených (${favs().length}/${FAV_MAX})` : "Odebráno z oblíbených");
+});
+const cmpBtn = $("#toggle-compare");
+const cmp = $("#compare");
+function renderCompare() {
+  const ids = favs();
+  const rows = [
+    ["Výměra", (p) => `${fmt(p.area)} m²`],
+    ["Rozměry cca", (p) => `${p.w} × ${p.d} m`],
+    ["Zastavět lze až", (p) => `${fmt(Math.floor(p.area * 0.2))} m²`],
+    ["Etapa", (p) => p.etapa],
+    ["Zahrada", (p) => ({ N: "na jih", S: "na sever", E: "na západ" }[p.front])],
+    ["Stav", (p) => STATUS_TXT[statusOf(p.id)]],
+    ["Cena", (p) => (priceOf(p) ? `${fmt(priceOf(p))} Kč` : "na vyžádání")],
+  ];
+  const plots = ids.map((id) => PARCELS.find((p) => p.id === id)).filter(Boolean);
+  $("#compare-table").innerHTML = plots.length ? `<thead><tr><th></th>${plots.map((p) => `<th scope="col"><span class="c-num">${num(p.id)}</span><button type="button" class="c-rm" data-rm="${p.id}" aria-label="Odebrat pozemek ${num(p.id)}"><svg class="icon"><use href="#i-x"/></svg></button></th>`).join("")}</tr></thead>
+    <tbody>${rows.map(([label, f]) => `<tr><th scope="row">${label}</th>${plots.map((p) => `<td>${f(p)}</td>`).join("")}</tr>`).join("")}
+    <tr><th scope="row"></th>${plots.map((p) => `<td><a class="c-link" href="pozemky/${num(p.id)}">Detail</a> · <button type="button" class="c-show" data-show="${p.id}">Ve 3D</button></td>`).join("")}</tr></tbody>` : "";
+  $("#compare-hint").textContent = plots.length ? `${plots.length} z ${FAV_MAX} pozemků. Ceny pošleme ke všem najednou.` : "Uložte si pozemky srdíčkem v detailu.";
+  $("#compare-send").hidden = !plots.length;
+}
+function syncFavCount() {
+  const n = favs().length;
+  cmpBtn.hidden = n === 0;
+  $("#fav-count").textContent = n;
+  if (!n) setCompare(false);
+  renderCompare();
+  syncFavBtn();
+}
+function setCompare(on) {
+  cmp.classList.toggle("is-open", on);
+  cmpBtn.setAttribute("aria-pressed", String(on));
+  if (on) { setList(false); renderCompare(); track("compare_open", { count: favs().length }); }
+}
+cmpBtn.addEventListener("click", () => setCompare(!cmp.classList.contains("is-open")));
+$("#compare-close").addEventListener("click", () => setCompare(false));
+cmp.addEventListener("click", (e) => {
+  const rm = e.target.closest("[data-rm]");
+  if (rm) { toggleFav(rm.dataset.rm); return; }
+  const sh = e.target.closest("[data-show]");
+  if (sh) { setCompare(false); selectPlot(sh.dataset.show, "compare"); }
+});
+$("#compare-send").addEventListener("click", () => {
+  const ids = favs();
+  if (!ids.length) return;
+  plotSelect.value = ids[0];
+  $("#f-when").value = "Zatím jen ceník";
+  const msg = $("#f-msg");
+  msg.value = `Zajímají mě pozemky ${ids.map(num).join(", ")}. Pošlete mi prosím ceny.`;
+  track("compare_send", { plots: ids.join(",") });
+});
+onFavs(syncFavCount);
+syncFavCount();
+
+/* ---------- slunce ve 3D ---------- */
+{
+  const panel = $("#hud-sun"), btn = $("#toggle-sun"), range = $("#sun-time"), out = $("#sun-out"), playBtn = $("#sun-play");
+  let season = "leto", playing = 0;
+  const apply = () => {
+    const t = Number(range.value);
+    out.textContent = fmtTime(t);
+    if (mp) mp.setSun(season, t);
+  };
+  const setRange = () => {
+    const d = daylight(season);
+    range.min = (Math.ceil(d.rise * 4) / 4).toFixed(2);
+    range.max = (Math.floor(d.set * 4) / 4).toFixed(2);
+    if (Number(range.value) < Number(range.min) || Number(range.value) > Number(range.max)) range.value = Math.min(Math.max(16, range.min), range.max);
+    $("#sun-note").textContent = `${SEASONS[season].note}: východ ${fmtTime(d.rise)}, západ ${fmtTime(d.set)}`;
+  };
+  const stop = () => { cancelAnimationFrame(playing); playing = 0; playBtn.innerHTML = '<svg class="icon"><use href="#i-play"/></svg>'; playBtn.setAttribute("aria-label", "Přehrát průběh dne"); };
+  btn.addEventListener("click", () => {
+    const on = panel.hidden;
+    panel.hidden = !on;
+    btn.setAttribute("aria-pressed", String(on));
+    if (on) {
+      const h = $("#toggle-houses");
+      if (!h.checked) { h.checked = true; mp && mp.setHouses(true); }
+      setRange(); apply();
+      track("sun_open");
+    } else { stop(); mp && mp.setSun(); }
+  });
+  $$("[data-season]").forEach((b) => b.addEventListener("click", () => {
+    season = b.dataset.season;
+    $$("[data-season]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    setRange(); apply();
+  }));
+  range.addEventListener("input", () => { stop(); apply(); });
+  playBtn.addEventListener("click", () => {
+    if (playing) return stop();
+    playBtn.innerHTML = '<svg class="icon"><use href="#i-pause"/></svg>';
+    playBtn.setAttribute("aria-label", "Zastavit");
+    if (Number(range.value) >= Number(range.max) - 0.1) range.value = range.min;
+    let last = performance.now();
+    const tick = (now) => {
+      const v = Number(range.value) + ((now - last) / 1000) * 1.6; // 1,6 hodiny za sekundu
+      last = now;
+      range.value = v >= Number(range.max) ? range.min : v;
+      apply();
+      playing = requestAnimationFrame(tick);
+    };
+    playing = requestAnimationFrame(tick);
+  });
 }

@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Pozemek {{NUM}} · {{AREA}} m² · Za Kapličkou Cerhenice</title>
+  <meta name="description" content="Stavební pozemek č. {{NUM}} v Cerhenicích u Kolína: {{AREA}} m², rozměry cca {{W}} × {{D}} m, etapa {{ETAPA}}. Plánek, slunce během dne a poloha v lokalitě.">
+  <meta name="theme-color" content="#17281e">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Pozemek {{NUM}} · {{AREA}} m² · Za Kapličkou">
+  <meta property="og:description" content="Stavební pozemek {{AREA}} m² v Cerhenicích, 13 minut vlakem od Kolína.">
+  <meta property="og:image" content="https://cerhenice.vercel.app/assets/img/og.jpg">
+  <meta property="og:url" content="https://cerhenice.vercel.app/pozemky/{{NUM}}">
+  <link rel="canonical" href="https://cerhenice.vercel.app/pozemky/{{NUM}}">
+  <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700;1,75..100,400..700&family=Geist+Mono:wght@400..600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body class="page-plot" data-plot="{{ID}}">
+{{SPRITES}}
+<header class="site-header is-solid" id="top-header">
+  <div class="container">
+    <a class="brand" href="../" aria-label="Za Kapličkou, úvod"><svg class="logo" aria-hidden="true"><use href="#logo"/></svg></a>
+    <nav class="nav" aria-label="Hlavní navigace">
+      <a href="../#pozemky">Pozemky</a>
+      <a href="../#lokalita">Lokalita</a>
+      <a href="../#projekt">Stav projektu</a>
+      <a href="../#pravidla">Pravidla zástavby</a>
+      <a href="../#koupe">Jak koupit</a>
+    </nav>
+    <div class="header-cta">
+      <a class="header-phone" href="tel:+420123456789"><svg class="icon"><use href="#i-phone"/></svg><span>+420 123 456 789</span></a>
+      <a class="btn btn-accent btn-sm" href="#poptavka">Zjistit cenu</a>
+    </div>
+  </div>
+</header>
+
+<main class="plot-page">
+  <section class="container plot-top">
+    <nav class="crumbs" aria-label="Drobečková navigace"><a href="../#pozemky"><svg class="icon"><use href="#i-arrow-left"/></svg>Všechny pozemky</a><span>Pozemek {{NUM}}</span></nav>
+    <div class="plot-grid">
+      <div class="plot-info">
+        <p class="eyebrow-sm">Etapa {{ETAPA}} · Cerhenice u Kolína</p>
+        <h1 class="plot-num"><span class="sr-only">Pozemek </span>{{NUM}}</h1>
+        <div class="plot-badges"><span class="status-pill" id="p-status">Volný</span><span class="badge">{{GARDEN}}</span></div>
+        <dl class="spec spec-lg">
+          <div><dt>Výměra</dt><dd>{{AREA_FMT}} <small>m²</small></dd></div>
+          <div><dt>Rozměry cca</dt><dd>{{W}} × {{D}} <small>m</small></dd></div>
+          <div><dt>Zastavět lze až</dt><dd>{{BUILT}} <small>m²</small></dd></div>
+          <div><dt>Cena</dt><dd id="p-price" class="price-text">Ceník pošleme obratem</dd></div>
+        </dl>
+        <div class="plot-actions">
+          <a class="btn btn-accent" href="#poptavka" id="p-cta">Zjistit cenu pozemku {{NUM}} <svg class="icon icon-arrow"><use href="#i-arrow-right"/></svg></a>
+          <button class="icon-btn fav big" type="button" id="p-fav" aria-pressed="false" aria-label="Uložit do oblíbených"><svg class="icon"><use href="#i-heart"/></svg></button>
+          <button class="icon-btn big" type="button" id="p-share" aria-label="Zkopírovat odkaz"><svg class="icon"><use href="#i-share-network"/></svg></button>
+        </div>
+        <p class="plot-note">Vjezd z nové ulice {{SIDE}}. Vodovod, splašková kanalizace a elektřina budou dovedeny k hranici pozemku. Na pozemek patří jeden samostatný rodinný dům, nejvýše 2 podlaží a sedlová nebo valbová střecha 40 až 50°.</p>
+        <div class="plot-pager"><a href="{{PREV}}" rel="prev"><svg class="icon"><use href="#i-arrow-left"/></svg>Pozemek {{PREV}}</a><a href="../#pozemek-{{NUM}}">Ukázat ve 3D</a><a href="{{NEXT}}" rel="next">Pozemek {{NEXT}}<svg class="icon"><use href="#i-arrow-right"/></svg></a></div>
+      </div>
+      <figure class="plan-card">
+        <div class="plan-svg" id="plan" role="img" aria-label="Plánek pozemku {{NUM}} se stínem ukázkového domu podle zvoleného času"></div>
+        <div class="sun-ctl">
+          <div class="seg seg-sun" role="group" aria-label="Roční období">
+            <button type="button" data-season="leto" aria-pressed="true">Léto</button>
+            <button type="button" data-season="jaro" aria-pressed="false">Jaro a podzim</button>
+            <button type="button" data-season="zima" aria-pressed="false">Zima</button>
+          </div>
+          <div class="sun-row">
+            <button type="button" class="icon-btn" id="sun-play" aria-label="Přehrát průběh dne"><svg class="icon"><use href="#i-play"/></svg></button>
+            <input type="range" id="sun-time" min="5" max="21" step="0.05" value="15" aria-label="Čas">
+            <output id="sun-out">15:00</output>
+          </div>
+        </div>
+        <figcaption class="sun-facts" id="sun-facts"></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section plot-where" aria-labelledby="where-title">
+    <div class="container where-grid">
+      <div>
+        <h2 id="where-title">Kde pozemek leží</h2>
+        <p class="lead">Pozemek {{NUM}} je v etapě {{ETAPA}}, {{ROWTEXT}}. Klikněte na jiný pozemek v plánku a přejdete na jeho detail.</p>
+        <div class="dist" id="dist"></div>
+      </div>
+      <div class="mini-card"><div class="mini-svg" id="mini" role="img" aria-label="Plán lokality s vyznačeným pozemkem {{NUM}}"></div></div>
+    </div>
+  </section>
+
+  <section class="section plot-similar" aria-labelledby="sim-title">
+    <div class="container">
+      <h2 id="sim-title">Podobné volné pozemky</h2>
+      <div class="sim-grid" id="similar"></div>
+    </div>
+  </section>
+
+  <section class="section contact" id="poptavka" aria-labelledby="contact-title">
+    <div class="container contact-grid">
+      <div class="contact-copy">
+        <h2 id="contact-title">Pozemek {{NUM}} vám ukážeme na místě</h2>
+        <p class="lead">Pošleme ceník, domluvíme prohlídku a odpovíme na všechno kolem koupě.</p>
+        <div class="contact-links">
+          <a href="tel:+420123456789"><svg class="icon"><use href="#i-phone"/></svg>+420 123 456 789</a>
+          <a href="mailto:prodej@zakaplickou.cz"><svg class="icon"><use href="#i-envelope-simple"/></svg>prodej@zakaplickou.cz</a>
+        </div>
+      </div>
+      <form class="form" id="lead-form" novalidate>
+        <div class="form-body">
+          <h3>Poptávka pozemku {{NUM}}</h3>
+          <input type="hidden" name="plot" value="{{ID}}">
+          <div class="field-row">
+            <div class="field"><label for="f-name">Jméno a příjmení</label><input id="f-name" name="name" autocomplete="name" required><span class="err">Vyplňte prosím jméno.</span></div>
+            <div class="field"><label for="f-phone">Telefon</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required><span class="err">Zadejte telefon, ať vám můžeme zavolat.</span></div>
+          </div>
+          <div class="field"><label for="f-email">E-mail <span class="opt">nepovinné, pošleme na něj ceník</span></label><input id="f-email" name="email" type="email" autocomplete="email"><span class="err">Zkontrolujte prosím e-mail.</span></div>
+          <div class="field"><label for="f-when">Prohlídka</label><select id="f-when" name="when"><option>Kdykoli</option><option>Tento týden</option><option>Příští týden</option><option selected>Zatím jen ceník</option></select></div>
+          <label class="consent"><input type="checkbox" required id="f-consent"><span>Souhlasím se <a href="#" target="_blank" rel="noopener">zpracováním osobních údajů</a> za účelem odpovědi na poptávku.</span></label>
+          <button class="btn btn-accent" type="submit">Odeslat poptávku <svg class="icon icon-arrow"><use href="#i-arrow-right"/></svg></button>
+        </div>
+        <div class="form-success" role="status">
+          <svg class="mark-ok" aria-hidden="true"><use href="#mark"/></svg>
+          <h3>Děkujeme, máme to</h3>
+          <p>Ozveme se vám do druhého pracovního dne s cenou pozemku {{NUM}}.</p>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <svg class="footer-logo" aria-label="Za Kapličkou" role="img"><use href="#logo"/></svg>
+    <div class="footer-bottom">
+      <span>© 2026 Comfort Development s.r.o. Projektant APRIS s.r.o.</span>
+      <span>Výměry dle koordinační situace, upřesní je geometrický plán. Ukázkový dům a stíny jsou orientační.</span>
+    </div>
+  </div>
+</footer>
+
+<div class="mbar is-on" id="mbar">
+  <a class="btn btn-call" href="tel:+420123456789" aria-label="Zavolat"><svg class="icon"><use href="#i-phone"/></svg></a>
+  <a class="btn btn-accent" href="#poptavka">Zjistit cenu pozemku {{NUM}}</a>
+</div>
+<div class="toast page-toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module" src="../assets/js/plot.js"></script>
+</body>
+</html>
