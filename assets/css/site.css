@@ -681,3 +681,16 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
   .sun-ctl { grid-template-columns: 1fr; }
 }
 @media (max-width: 560px) { .page-plot .header-cta .btn { display: none; } .plot-num { font-size: 120px; } .plot-pager { font-size: 13px; } .spec-lg dd { font-size: 22px; } }
+
+/* ---------- okolí a procházka ---------- */
+.ctx-label { font-family: var(--mono); font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: var(--ink); background: rgba(251, 252, 248, .82); border: 1px solid rgba(19, 32, 25, .12); padding: 3px 8px; border-radius: 7px; white-space: nowrap; pointer-events: none; }
+.hud-walk { left: 50%; bottom: 20px; transform: translateX(-50%); width: min(560px, calc(100% - 40px)); display: grid; grid-template-columns: 40px 1fr auto; align-items: center; gap: 14px; padding: 10px 12px; }
+.hud-walk[hidden] { display: none; }
+.walk-track { display: flex; flex-direction: column; gap: 2px; }
+.walk-track span { font-family: var(--mono); font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); }
+.stage.is-walking .hud-filters, .stage.is-walking .hud-views, .stage.is-walking .hud-hint, .stage.is-walking .hud-compass, .stage.is-walking .hud-sun { display: none; }
+.stage.is-walking .stage-canvas { cursor: default; }
+@media (max-width: 900px) { .hud-walk { bottom: 8px; width: calc(100% - 16px); } }
+@media (max-width: 900px) { .hud-views [data-view="street"], .hud-views .sep { display: none; } .hud-views { overflow-x: auto; scrollbar-width: none; } .hud-views button { padding: 0 9px; } }
+.is-far .plot-label { opacity: 0; }
+.hud-views [hidden], .hud [hidden] { display: none !important; }

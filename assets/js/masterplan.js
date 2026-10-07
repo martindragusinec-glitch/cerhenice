@@ -4,6 +4,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
 import { SITE, PUBLIC, PARCELS } from "../data/parcels.js";
 import { sunAt } from "./sun.js";
+import { buildContext, CONTEXT_FOCUS } from "./context3d.js";
 
 const COL = {
   free: new THREE.Color(0xb3d095),
@@ -105,7 +106,7 @@ function fieldTexture() {
   return t;
 }
 
-export function createMasterplan(host, { onSelect, onHover, startView = "persp" } = {}) {
+export function createMasterplan(host, { onSelect, onHover, onWalk, startView = "persp" } = {}) {
   const W0 = host.clientWidth, H0 = host.clientHeight;
   const mobile = innerWidth < 900;
   const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
@@ -125,12 +126,12 @@ export function createMasterplan(host, { onSelect, onHover, startView = "persp" 
   scene.background = new THREE.Color(COL.bg);
   scene.fog = new THREE.Fog(COL.bg, mobile ? 900 : 650, mobile ? 2200 : 1500);
 
-  const camera = new THREE.PerspectiveCamera(30, W0 / H0, 5, 4000);
+  const camera = new THREE.PerspectiveCamera(30, W0 / H0, 5, 14000);
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.07;
   controls.minDistance = 60;
-  controls.maxDistance = 1400;
+  controls.maxDistance = mobile ? 7000 : 4200;
   controls.maxPolarAngle = THREE.MathUtils.degToRad(78);
   controls.screenSpacePanning = false;
   controls.rotateSpeed = 0.6;
@@ -147,8 +148,11 @@ export function createMasterplan(host, { onSelect, onHover, startView = "persp" 
   sun.shadow.normalBias = 0.6;
   scene.add(sun);
 
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(2400, 2400), new THREE.MeshLambertMaterial({ map: fieldTexture() }));
-  ground.rotation.x = -Math.PI / 2; ground.position.y = -0.05; ground.receiveShadow = true;
+  const tex = fieldTexture();
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(4, 4);
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(9000, 9000), new THREE.MeshLambertMaterial({ map: tex }));
+  ground.rotation.x = -Math.PI / 2; ground.position.set(0, -0.4, -1200); ground.receiveShadow = true;
   scene.add(ground);
 
   // silnice podél východní hrany
@@ -159,12 +163,7 @@ export function createMasterplan(host, { onSelect, onHover, startView = "persp" 
   const dir = SE.clone().sub(NE).normalize(), nrm = new THREE.Vector2(dir.y, -dir.x);
   if (nrm.x < 0) nrm.negate();
   const mid = NE.clone().add(SE).multiplyScalar(0.5).add(nrm.clone().multiplyScalar(6.5));
-  const road = new THREE.Mesh(new THREE.PlaneGeometry(7, 1200), new THREE.MeshLambertMaterial({ color: COL.asphalt }));
-  road.rotation.x = -Math.PI / 2;
-  road.rotation.z = -Math.atan2(dir.x, dir.y);
-  road.position.set(mid.x, 0.02, mid.y);
-  road.receiveShadow = true;
-  scene.add(road);
+  // silnici III/3297 a okolí kreslí context3d.js (OpenStreetMap)
 
   const base = new THREE.Mesh(flat(new THREE.ExtrudeGeometry(shapeFrom(out), { depth: 0.25, bevelEnabled: false })), new THREE.MeshLambertMaterial({ color: COL.road }));
   base.receiveShadow = true;
@@ -194,8 +193,7 @@ export function createMasterplan(host, { onSelect, onHover, startView = "persp" 
     o.position.set(x, 1, z);
     scene.add(o);
   };
-  addTag("↑ Centrum Cerhenic 1 km", -10, minZ - 40);
-  addTag("Silnice", mid.x + 14, mid.y + 150);
+  void addTag; void minZ; void mid;
 
   // parcely
   const plots = [];
@@ -327,19 +325,20 @@ export function createMasterplan(host, { onSelect, onHover, startView = "persp" 
     persp: { polar: 50, az: 14 },
     top: { polar: 0.5, az: 0 },
     street: { polar: 74, az: -10, r: 230, target: [10, 0, 40] },
+    okoli: { polar: 46, az: 10, pts: [...out, ...CONTEXT_FOCUS] },
   };
   const center = new THREE.Vector3(0, 0, 4);
   const tmpCam = camera.clone();
-  function fitRadius(v, target) {
+  function fitRadius(v, target, pts = bboxPts) {
     const m = mobile ? { x: 0.94, yTop: 0.66, yBot: -0.74 } : { x: 0.9, yTop: 0.84, yBot: -0.8 };
-    let lo = 80, hi = 3000;
+    let lo = 80, hi = 6000;
     for (let i = 0; i < 22; i++) {
       const r = (lo + hi) / 2;
       tmpCam.aspect = camera.aspect; tmpCam.fov = camera.fov; tmpCam.updateProjectionMatrix();
       tmpCam.position.setFromSpherical(new THREE.Spherical(r, THREE.MathUtils.degToRad(v.polar), THREE.MathUtils.degToRad(v.az))).add(target);
       tmpCam.lookAt(target); tmpCam.updateMatrixWorld();
       let ok = true;
-      for (const p of bboxPts) {
+      for (const p of pts) {
         const q = p.clone().project(tmpCam);
         if (Math.abs(q.x) > m.x || q.y > m.yTop || q.y < m.yBot) { ok = false; break; }
       }
@@ -349,8 +348,14 @@ export function createMasterplan(host, { onSelect, onHover, startView = "persp" 
   }
   function viewPos(name) {
     const v = views[name];
-    const target = v.target ? new THREE.Vector3(...v.target) : center.clone();
-    const r = v.r ? v.r * (mobile ? 1.4 : 1) : fitRadius(v, target);
+    let target = v.target ? new THREE.Vector3(...v.target) : center.clone();
+    let pts = bboxPts;
+    if (v.pts) {
+      const xs = v.pts.map((q) => q[0]), zs = v.pts.map((q) => q[1]);
+      target = new THREE.Vector3((Math.min(...xs) + Math.max(...xs)) / 2, 0, (Math.min(...zs) + Math.max(...zs)) / 2);
+      pts = v.pts.map(([x, z]) => new THREE.Vector3(x, 0, z));
+    }
+    const r = v.r ? v.r * (mobile ? 1.4 : 1) : fitRadius(v, target, pts) * (v.pts ? (mobile ? 1.5 : 1.08) : 1);
     return { pos: new THREE.Vector3().setFromSpherical(new THREE.Spherical(r, THREE.MathUtils.degToRad(v.polar), THREE.MathUtils.degToRad(v.az))).add(target), target, r };
   }
   let fly = null;
@@ -438,9 +443,12 @@ export function createMasterplan(host, { onSelect, onHover, startView = "persp" 
   const compass = document.getElementById("compass");
   let running = false, raf = 0;
   const ease = (t) => 1 - Math.pow(1 - t, 3);
-  const bound = 300;
+  const bound = 2400;
+  let last = performance.now();
   function frame(now) {
     raf = requestAnimationFrame(frame);
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    if (walk) { stepWalk(dt); renderPlots(); renderer.render(scene, camera); labels.render(scene, camera); return; }
     if (fly) {
       const k = fly.dur ? Math.min(1, (now - fly.start) / fly.dur) : 1;
       camera.position.lerpVectors(fly.p0, fly.p1, ease(k));
@@ -451,6 +459,16 @@ export function createMasterplan(host, { onSelect, onHover, startView = "persp" 
     controls.target.z = THREE.MathUtils.clamp(controls.target.z, -bound, bound);
     controls.target.y = 0;
     controls.update();
+    // mlha podle vzdálenosti kamery: u lokality jemná, v pohledu Okolí daleko
+    const dist = camera.position.distanceTo(controls.target);
+    scene.fog.near = dist * 0.9; scene.fog.far = dist * 2.6 + 500;
+    labels.domElement.classList.toggle("is-far", dist > 1100);
+    renderPlots();
+    if (compass) compass.style.transform = `rotate(${controls.getAzimuthalAngle()}rad)`;
+    renderer.render(scene, camera);
+    labels.render(scene, camera);
+  }
+  function renderPlots() {
     for (const o of plots) {
       const t = targetOf(o);
       o.mat.color.lerp(t.color, 0.2);
@@ -459,13 +477,70 @@ export function createMasterplan(host, { onSelect, onHover, startView = "persp" 
       o.label.position.y = 2.4 + o.lift;
       o.house.position.y = o.lift;
     }
-    if (compass) compass.style.transform = `rotate(${controls.getAzimuthalAngle()}rad)`;
-    renderer.render(scene, camera);
-    labels.render(scene, camera);
   }
-  function start() { if (!running) { running = true; raf = requestAnimationFrame(frame); } }
+
+  // ------- procházka ulicemi (kamera ve výšce očí jede po trase) -------
+  const U2 = new THREE.Vector2(Math.cos(A), Math.sin(A));
+  const P2 = (n) => byId[String(n).padStart(2, "0")];
+  const sp = (n) => { const f = P2(n).frame; return f.c.clone().add(f.L.clone().multiplyScalar(f.tmin - 6)); };
+  const westOf = (n) => { const o = P2(n); let m = Infinity; for (const [x, z] of o.p.poly) m = Math.min(m, (x - o.p.c[0]) * U2.x + (z - o.p.c[1]) * U2.y); return new THREE.Vector2(...o.p.c).add(U2.clone().multiplyScalar(m - 6)); };
+  const onLine = (a, b) => a.clone().add(U2.clone().multiplyScalar(b.clone().sub(a).dot(U2)));
+  function walkCurve() {
+    const seq = [
+      onLine(sp(15), sp(31)),
+      ...[15, 14, 13, 12, 11, 10, 9].map(sp),
+      onLine(sp(9), westOf(16)),
+      onLine(sp(23), westOf(23)),
+      ...[23, 24, 25, 26, 27, 28, 29, 30].map(sp),
+      onLine(sp(30), sp(34)),
+      ...[34, 35, 44, 45].map(sp),
+      onLine(sp(43), sp(45)),
+      ...[43, 42, 41, 40, 39, 38, 37, 36].map(sp),
+      onLine(sp(36), westOf(36)),
+    ];
+    return new THREE.CatmullRomCurve3(seq.map((v) => new THREE.Vector3(v.x, 1.7, v.y)), false, "centripetal", 0.4);
+  }
+  let walk = null, walkCurveCache = null;
+  const WALK_SPEED = 9; // m/s
+  const look = new THREE.Vector3();
+  function stepWalk(dt) {
+    if (walk.playing) {
+      walk.t = Math.min(1, walk.t + (dt * WALK_SPEED) / walk.len);
+      if (walk.t >= 1) walk.playing = false;
+    }
+    const c = walk.curve;
+    const p = c.getPointAt(walk.t);
+    const a = c.getPointAt(Math.min(1, walk.t + 14 / walk.len));
+    camera.position.lerp(p, walk.snap ? 1 : 0.35);
+    look.lerp(new THREE.Vector3(a.x, 1.45, a.z), walk.snap ? 1 : 0.08);
+    walk.snap = false;
+    camera.lookAt(look);
+    if (onWalk) onWalk(walk.t, walk.playing);
+  }
+  function startWalk() {
+    walkCurveCache = walkCurveCache || walkCurve();
+    fly = null;
+    controls.enabled = false;
+    camera.near = 0.3; camera.updateProjectionMatrix();
+    scene.fog.near = 90; scene.fog.far = 900;
+    houseGroup.visible = true;
+    walk = { curve: walkCurveCache, len: walkCurveCache.getLength(), t: 0, playing: !reduceMotion, snap: true };
+    look.copy(walkCurveCache.getPointAt(0.01));
+    if (onWalk) onWalk(0, walk.playing);
+  }
+  function stopWalk() {
+    if (!walk) return;
+    walk = null;
+    controls.enabled = true;
+    camera.near = 5; camera.updateProjectionMatrix();
+    setView(currentView === "street" ? "street" : "persp");
+  }
+
+  function start() { if (!running) { running = true; last = performance.now(); raf = requestAnimationFrame(frame); } }
   function stop() { running = false; cancelAnimationFrame(raf); }
   start();
+  // okolí se dostaví až po prvním snímku, aby se model objevil hned
+  setTimeout(() => buildContext(scene, { mobile }), 60);
 
   new ResizeObserver(() => {
     const w = host.clientWidth, h = host.clientHeight;
@@ -482,6 +557,9 @@ export function createMasterplan(host, { onSelect, onHover, startView = "persp" 
     setStatus(map) { state.status = { ...map }; refreshLabels(); },
     setView,
     setHouses(on) { houseGroup.visible = on; },
+    startWalk, stopWalk,
+    walkPlay(on) { if (walk) { if (on && walk.t >= 1) walk.t = 0; walk.playing = on; } },
+    walkSeek(t) { if (walk) { walk.t = THREE.MathUtils.clamp(t, 0, 1); walk.snap = true; } },
     // slunce podle ročního období a místního času; bez parametrů výchozí světlo
     setSun(season, hours) {
       if (!season) { sun.position.set(-170, 260, 210); sun.intensity = 2.0; sun.color.set(0xfff6e4); hemi.intensity = 1.6; return null; }
