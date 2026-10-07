@@ -3,22 +3,29 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Pozemek 11 · 983 m² · Za Kapličkou Cerhenice</title>
-  <meta name="description" content="Stavební pozemek č. 11 v Cerhenicích u Kolína: 983 m², rozměry cca 24 × 43 m, etapa 1. Plánek, slunce během dne a poloha v lokalitě.">
+  <title>Váš dům na pozemku · Za Kapličkou Cerhenice</title>
+  <meta name="description" content="Vyberte pozemek a typ domu a podívejte se ve 3D, jak se na parcelu vejde, kolik zabere a kam bude padat stín. Stavební pozemky Za Kapličkou, Cerhenice u Kolína.">
   <meta name="theme-color" content="#17281e">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Pozemek 11 · 983 m² · Za Kapličkou">
-  <meta property="og:description" content="Stavební pozemek 983 m² v Cerhenicích, 13 minut vlakem od Kolína.">
+  <meta property="og:title" content="Váš dům na pozemku · Za Kapličkou">
+  <meta property="og:description" content="Vyzkoušejte si ve 3D, jaký dům se vejde na pozemek v Cerhenicích.">
   <meta property="og:image" content="https://cerhenice.vercel.app/assets/img/og.jpg">
-  <meta property="og:url" content="https://cerhenice.vercel.app/pozemky/11">
-  <link rel="canonical" href="https://cerhenice.vercel.app/pozemky/11">
-  <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
+  <meta property="og:url" content="https://cerhenice.vercel.app/dum">
+  <link rel="canonical" href="https://cerhenice.vercel.app/dum">
+  <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700;1,75..100,400..700&family=Geist+Mono:wght@400..600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/site.css">
+  <link rel="stylesheet" href="assets/css/site.css">
+  <script type="importmap">
+    { "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    } }
+  </script>
 </head>
-<body class="page-plot" data-plot="11">
+<body class="page-plot page-house">
+<!--ICONS-->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
 <symbol id="i-arrow-down" viewBox="0 0 256 256"><path d="M205.66,149.66l-72,72a8,8,0,0,1-11.32,0l-72-72a8,8,0,0,1,11.32-11.32L120,196.69V40a8,8,0,0,1,16,0V196.69l58.34-58.35a8,8,0,0,1,11.32,11.32Z"/></symbol>
 <symbol id="i-arrow-left" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"/></symbol>
@@ -58,118 +65,106 @@
 <symbol id="i-tree" viewBox="0 0 256 256"><path d="M198.1,62.59a76,76,0,0,0-140.2,0A71.71,71.71,0,0,0,16,127.8C15.9,166,48,199,86.14,200A72.09,72.09,0,0,0,120,192.47V232a8,8,0,0,0,16,0V192.47A72.17,72.17,0,0,0,168,200l1.82,0C208,199,240.11,166,240,127.8A71.71,71.71,0,0,0,198.1,62.59ZM169.45,184a56.08,56.08,0,0,1-33.45-10v-41l43.58-21.78a8,8,0,1,0-7.16-14.32L136,115.06V88a8,8,0,0,0-16,0v51.06L83.58,120.84a8,8,0,1,0-7.16,14.32L120,156.94v17a56,56,0,0,1-33.45,10C56.9,183.23,31.92,157.52,32,127.84A55.77,55.77,0,0,1,67.11,76a8,8,0,0,0,4.53-4.67,60,60,0,0,1,112.72,0A8,8,0,0,0,188.89,76,55.79,55.79,0,0,1,224,127.84C224.08,157.52,199.1,183.23,169.45,184Z"/></symbol>
 <symbol id="i-x" viewBox="0 0 256 256"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></symbol>
 </svg>
+<!--/ICONS-->
+<!--LOGO-->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
 <symbol id="logo" viewBox="0 -8 697 104"><g transform="translate(0 -6) scale(.86)"><path d="M4.5 32V4.5H32M68 4.5h27.5V32M95.5 68v27.5H68M32 95.5H4.5V68" fill="none" stroke="currentColor" stroke-width="9"/><rect x="26" y="26" width="48" height="48" fill="var(--logo-sq, #e4cb3c)"/></g><path fill="currentColor" d="M4.7 0.0V-9.0L45.300000000000004 -66.9L48.800000000000004 -61.7H5.9V-72.0H58.300000000000004V-63.0L18.1 -5.6000000000000005L14.700000000000001 -10.3H58.900000000000006V0.0Z M96.80000000000001 0.0Q96.30000000000001 -2.0 96.05000000000001 -4.4Q95.80000000000001 -6.800000000000001 95.80000000000001 -10.200000000000001H95.4V-34.4Q95.4 -38.400000000000006 93.15 -40.45Q90.9 -42.5 86.30000000000001 -42.5Q81.80000000000001 -42.5 79.15 -40.85Q76.5 -39.2 75.9 -36.1H63.800000000000004Q64.60000000000001 -43.2 70.60000000000001 -47.6Q76.60000000000001 -52.0 86.7 -52.0Q97.20000000000002 -52.0 102.60000000000001 -47.25Q108.0 -42.5 108.0 -33.300000000000004V-10.200000000000001Q108.0 -7.800000000000001 108.35000000000001 -5.300000000000001Q108.70000000000002 -2.8000000000000003 109.4 0.0ZM79.10000000000001 1.0Q71.4 1.0 66.85000000000001 -2.85Q62.300000000000004 -6.7 62.300000000000004 -13.200000000000001Q62.300000000000004 -20.200000000000003 67.4 -24.300000000000004Q72.5 -28.400000000000002 81.80000000000001 -29.8L97.70000000000002 -32.2V-24.200000000000003L83.9 -22.1Q79.4 -21.400000000000002 77.15 -19.6Q74.9 -17.8 74.9 -14.600000000000001Q74.9 -11.700000000000001 77.0 -10.15Q79.10000000000001 -8.6 82.80000000000001 -8.6Q88.2 -8.6 91.80000000000001 -11.3Q95.4 -14.0 95.4 -17.900000000000002L96.80000000000001 -10.200000000000001Q94.80000000000001 -4.7 90.25 -1.85Q85.7 1.0 79.10000000000001 1.0Z  M134.6 0.0V-72.0H147.60000000000002V0.0ZM144.0 -37.4 178.10000000000002 -72.0H195.60000000000002L160.10000000000002 -37.4ZM179.70000000000002 0.0 143.8 -37.4H160.10000000000002L197.60000000000002 0.0Z M232.20000000000002 0.0Q231.70000000000002 -2.0 231.45000000000002 -4.4Q231.20000000000002 -6.800000000000001 231.20000000000002 -10.200000000000001H230.8V-34.4Q230.8 -38.400000000000006 228.55 -40.45Q226.3 -42.5 221.70000000000002 -42.5Q217.20000000000002 -42.5 214.55 -40.85Q211.9 -39.2 211.3 -36.1H199.20000000000002Q200.00000000000003 -43.2 206.00000000000003 -47.6Q212.00000000000003 -52.0 222.10000000000002 -52.0Q232.60000000000002 -52.0 238.00000000000003 -47.25Q243.40000000000003 -42.5 243.40000000000003 -33.300000000000004V-10.200000000000001Q243.40000000000003 -7.800000000000001 243.75000000000003 -5.300000000000001Q244.10000000000002 -2.8000000000000003 244.8 0.0ZM214.50000000000003 1.0Q206.8 1.0 202.25 -2.85Q197.70000000000002 -6.7 197.70000000000002 -13.200000000000001Q197.70000000000002 -20.200000000000003 202.8 -24.300000000000004Q207.9 -28.400000000000002 217.20000000000002 -29.8L233.10000000000002 -32.2V-24.200000000000003L219.3 -22.1Q214.8 -21.400000000000002 212.55 -19.6Q210.3 -17.8 210.3 -14.600000000000001Q210.3 -11.700000000000001 212.40000000000003 -10.15Q214.50000000000003 -8.6 218.20000000000002 -8.6Q223.60000000000002 -8.6 227.20000000000002 -11.3Q230.8 -14.0 230.8 -17.900000000000002L232.20000000000002 -10.200000000000001Q230.20000000000002 -4.7 225.65000000000003 -1.85Q221.10000000000002 1.0 214.50000000000003 1.0Z M282.8 1.0Q275.5 1.0 270.95 -2.45Q266.4 -5.9 265.3 -12.0L266.3 -12.100000000000001V20.5H253.7V-51.0H266.0V-39.5L265.0 -39.7Q266.4 -45.400000000000006 271.4 -48.7Q276.4 -52.0 283.6 -52.0Q290.4 -52.0 295.45 -48.75Q300.5 -45.5 303.3 -39.6Q306.1 -33.7 306.1 -25.700000000000003Q306.1 -17.6 303.20000000000005 -11.600000000000001Q300.3 -5.6000000000000005 295.1 -2.3000000000000003Q289.9 1.0 282.8 1.0ZM279.6 -9.4Q285.7 -9.4 289.29999999999995 -13.650000000000002Q292.9 -17.900000000000002 292.9 -25.6Q292.9 -33.300000000000004 289.25 -37.5Q285.6 -41.7 279.5 -41.7Q273.5 -41.7 269.8 -37.45Q266.1 -33.2 266.1 -25.5Q266.1 -17.8 269.8 -13.600000000000001Q273.5 -9.4 279.6 -9.4Z M313.3 0.0V-72.0H325.90000000000003V0.0Z M336.8 0.0V-51.0H349.40000000000003V0.0ZM336.20000000000005 -59.400000000000006V-73.3H349.90000000000003V-59.400000000000006Z M382.20000000000005 1.0Q374.50000000000006 1.0 368.65000000000003 -2.4000000000000004Q362.8 -5.800000000000001 359.45000000000005 -11.850000000000001Q356.1 -17.900000000000002 356.1 -25.6Q356.1 -33.300000000000004 359.45000000000005 -39.25Q362.8 -45.2 368.65000000000003 -48.6Q374.50000000000006 -52.0 382.20000000000005 -52.0Q388.50000000000006 -52.0 393.6 -49.650000000000006Q398.70000000000005 -47.300000000000004 402.00000000000006 -43.050000000000004Q405.30000000000007 -38.800000000000004 406.20000000000005 -33.2H394.1Q393.00000000000006 -37.300000000000004 389.90000000000003 -39.60000000000001Q386.8 -41.900000000000006 382.40000000000003 -41.900000000000006Q378.3 -41.900000000000006 375.35 -39.900000000000006Q372.40000000000003 -37.9 370.80000000000007 -34.2Q369.20000000000005 -30.5 369.20000000000005 -25.6Q369.20000000000005 -20.6 370.80000000000007 -16.900000000000002Q372.40000000000003 -13.200000000000001 375.40000000000003 -11.15Q378.40000000000003 -9.1 382.40000000000003 -9.1Q386.8 -9.1 389.90000000000003 -11.4Q393.00000000000006 -13.700000000000001 394.1 -17.8H406.20000000000005Q405.30000000000007 -12.200000000000001 401.95000000000005 -7.950000000000001Q398.6 -3.7 393.55000000000007 -1.35Q388.50000000000006 1.0 382.20000000000005 1.0ZM375.80000000000007 -58.300000000000004 362.70000000000005 -74.0H373.50000000000006L387.90000000000003 -61.0H377.00000000000006L391.40000000000003 -74.0H402.20000000000005L389.1 -58.300000000000004Z M412.8 0.0V-72.7H425.40000000000003V0.0ZM445.70000000000005 0.0 422.5 -26.5 445.0 -51.0H460.20000000000005L434.20000000000005 -24.200000000000003L434.90000000000003 -28.900000000000002L461.20000000000005 0.0Z M485.8 1.0Q477.70000000000005 1.0 471.55000000000007 -2.4000000000000004Q465.40000000000003 -5.800000000000001 462.0 -11.850000000000001Q458.6 -17.900000000000002 458.6 -25.700000000000003Q458.6 -33.5 462.0 -39.400000000000006Q465.40000000000003 -45.300000000000004 471.55000000000007 -48.650000000000006Q477.70000000000005 -52.0 485.8 -52.0Q494.00000000000006 -52.0 500.1 -48.650000000000006Q506.20000000000005 -45.300000000000004 509.6 -39.400000000000006Q513.0 -33.5 513.0 -25.700000000000003Q513.0 -17.900000000000002 509.55 -11.850000000000001Q506.1 -5.800000000000001 500.0 -2.4000000000000004Q493.90000000000003 1.0 485.8 1.0ZM485.8 -9.1Q489.8 -9.1 493.0 -11.15Q496.20000000000005 -13.200000000000001 498.00000000000006 -16.950000000000003Q499.80000000000007 -20.700000000000003 499.80000000000007 -25.8Q499.80000000000007 -33.300000000000004 495.85 -37.60000000000001Q491.90000000000003 -41.900000000000006 485.8 -41.900000000000006Q479.70000000000005 -41.900000000000006 475.70000000000005 -37.60000000000001Q471.70000000000005 -33.300000000000004 471.70000000000005 -25.8Q471.70000000000005 -20.700000000000003 473.55000000000007 -16.950000000000003Q475.40000000000003 -13.200000000000001 478.55000000000007 -11.15Q481.70000000000005 -9.1 485.8 -9.1Z M536.3000000000001 1.0Q531.0 1.0 527.1500000000001 -1.25Q523.3000000000001 -3.5 521.25 -7.4Q519.2 -11.3 519.2 -16.2V-51.0H531.8000000000001V-18.8Q531.8000000000001 -14.100000000000001 534.1500000000001 -11.700000000000001Q536.5 -9.3 540.8000000000001 -9.3Q544.7 -9.3 547.6500000000001 -11.100000000000001Q550.6 -12.9 552.35 -16.150000000000002Q554.1 -19.400000000000002 554.1 -23.5L555.4 -11.3Q552.9 -5.7 547.95 -2.35Q543.0 1.0 536.3000000000001 1.0ZM554.5 0.0V-12.0H554.1V-51.0H566.8000000000001V0.0Z" transform="translate(122 74)"/></symbol>
 <symbol id="mark" viewBox="0 0 100 100"><path d="M4.5 32V4.5H32M68 4.5h27.5V32M95.5 68v27.5H68M32 95.5H4.5V68" fill="none" stroke="currentColor" stroke-width="9"/><rect x="26" y="26" width="48" height="48" fill="var(--logo-sq, #e4cb3c)"/></symbol>
 </svg>
+<!--/LOGO-->
 <header class="site-header is-solid" id="top-header">
   <div class="container">
-    <a class="brand" href="../" aria-label="Za Kapličkou, úvod"><svg class="logo" aria-hidden="true"><use href="#logo"/></svg></a>
+    <a class="brand" href="./" aria-label="Za Kapličkou, úvod"><svg class="logo" aria-hidden="true"><use href="#logo"/></svg></a>
     <nav class="nav" aria-label="Hlavní navigace">
-      <a href="../#pozemky">Pozemky</a>
-      <a href="../#lokalita">Lokalita</a>
-      <a href="../#projekt">Stav projektu</a>
-      <a href="../#pravidla">Pravidla zástavby</a>
-      <a href="../#koupe">Jak koupit</a>
-      <a href="../dum">Váš dům</a>
+      <a href="./#pozemky">Pozemky</a>
+      <a href="./#lokalita">Lokalita</a>
+      <a href="./#projekt">Stav projektu</a>
+      <a href="./#pravidla">Pravidla zástavby</a>
+      <a href="./#koupe">Jak koupit</a>
+      <a href="dum" aria-current="page">Váš dům</a>
     </nav>
     <div class="header-cta">
       <a class="header-phone" href="tel:+420123456789"><svg class="icon"><use href="#i-phone"/></svg><span>+420 123 456 789</span></a>
-      <a class="btn btn-accent btn-sm" href="#poptavka">Zjistit cenu</a>
+      <a class="btn btn-accent btn-sm" href="./#pozemky">Vybrat pozemek</a>
     </div>
   </div>
 </header>
 
-<main class="plot-page">
-  <section class="container plot-top">
-    <nav class="crumbs" aria-label="Drobečková navigace"><a href="../#pozemky"><svg class="icon"><use href="#i-arrow-left"/></svg>Všechny pozemky</a><span>Pozemek 11</span></nav>
-    <div class="plot-grid">
-      <div class="plot-info">
-        <p class="eyebrow-sm">Etapa 1 · Cerhenice u Kolína</p>
-        <h1 class="plot-num"><span class="sr-only">Pozemek </span>11</h1>
-        <div class="plot-badges"><span class="status-pill" id="p-status">Volný</span><span class="badge">Zahrada na jih</span></div>
-        <dl class="spec spec-lg">
-          <div><dt>Výměra</dt><dd>983 <small>m²</small></dd></div>
-          <div><dt>Rozměry cca</dt><dd>24 × 43 <small>m</small></dd></div>
-          <div><dt>Zastavět lze až</dt><dd>196 <small>m²</small></dd></div>
-          <div><dt>Cena</dt><dd id="p-price" class="price-text">Ceník pošleme obratem</dd></div>
+<main class="house-page">
+  <section class="container house-head">
+    <nav class="crumbs" aria-label="Drobečková navigace"><a href="./#pozemky"><svg class="icon"><use href="#i-arrow-left"/></svg>Všechny pozemky</a><span>Váš dům na pozemku</span></nav>
+    <h1>Jaký dům se vám sem vejde</h1>
+    <p class="lead">Vyberte pozemek a typ domu. Ve 3D uvidíte, jak se dům na parcelu postaví podle pravidel zástavby, kolik zabere zahrady a kam bude během dne padat stín.</p>
+  </section>
+
+  <section class="house-app" aria-label="Konfigurátor domu na pozemku">
+    <div class="house-stage" id="house-stage">
+      <div class="house-canvas" id="house-canvas" role="img" aria-label="3D model vybraného domu na vybraném pozemku"></div>
+      <div class="panel hud house-views" role="toolbar" aria-label="Pohled">
+        <button type="button" data-hview="ulice" aria-pressed="true"><svg class="icon"><use href="#i-road-horizon"/></svg><span class="lbl">Z ulice</span></button>
+        <button type="button" data-hview="zahrada" aria-pressed="false"><svg class="icon"><use href="#i-tree"/></svg><span class="lbl">Ze zahrady</span></button>
+        <button type="button" data-hview="shora" aria-pressed="false"><svg class="icon"><use href="#i-map-trifold"/></svg><span class="lbl">Shora</span></button>
+      </div>
+      <div class="panel hud house-sun">
+        <div class="seg seg-sun" role="group" aria-label="Roční období">
+          <button type="button" data-season="leto" aria-pressed="true">Léto</button>
+          <button type="button" data-season="jaro" aria-pressed="false">Jaro</button>
+          <button type="button" data-season="zima" aria-pressed="false">Zima</button>
+        </div>
+        <div class="sun-row">
+          <button type="button" class="icon-btn" id="sun-play" aria-label="Přehrát průběh dne"><svg class="icon"><use href="#i-play"/></svg></button>
+          <input type="range" id="sun-time" min="5" max="21" step="0.05" value="16" aria-label="Čas">
+          <output id="sun-out">16:00</output>
+        </div>
+      </div>
+    </div>
+
+    <aside class="house-panel">
+      <div class="hp-block">
+        <label class="hp-label" for="h-plot">Pozemek</label>
+        <div class="hp-plot">
+          <select id="h-plot"></select>
+          <a class="hp-link" id="h-plot-link" href="pozemky/12">Detail</a>
+        </div>
+        <p class="hp-meta" id="h-plot-meta">983 m² · 24 × 43 m · etapa 1</p>
+      </div>
+
+      <div class="hp-block">
+        <span class="hp-label">Typ domu</span>
+        <div class="types" id="h-types" role="radiogroup" aria-label="Typ domu"></div>
+      </div>
+
+      <div class="hp-block hp-opts">
+        <div class="seg" role="group" aria-label="Natočení domu" id="h-ridge">
+          <button type="button" data-ridge="1" aria-pressed="true">Okapem k ulici</button>
+          <button type="button" data-ridge="0" aria-pressed="false">Štítem k ulici</button>
+        </div>
+        <div class="filter-row">
+          <label class="label" for="h-setback">Odstup od ulice <output id="h-setback-out">6 m</output></label>
+          <input type="range" id="h-setback" min="4" max="14" step="0.5" value="6">
+        </div>
+        <label class="toggle" id="h-garage-row"><span>Garáž vpravo</span><input type="checkbox" id="h-garage" checked></label>
+      </div>
+
+      <div class="hp-block hp-result" aria-live="polite">
+        <dl class="spec">
+          <div><dt>Zastavěná plocha</dt><dd id="r-built">108 <small>m²</small></dd></div>
+          <div><dt>Limit 20 %</dt><dd id="r-limit">196 <small>m²</small></dd></div>
+          <div><dt>Užitná plocha cca</dt><dd id="r-usable">150 <small>m²</small></dd></div>
+          <div><dt>Zahrada cca</dt><dd id="r-garden">800 <small>m²</small></dd></div>
         </dl>
-        <div class="plot-actions">
-          <a class="btn btn-accent" href="#poptavka" id="p-cta">Zjistit cenu pozemku 11 <svg class="icon icon-arrow"><use href="#i-arrow-right"/></svg></a>
-          <button class="icon-btn fav big" type="button" id="p-fav" aria-pressed="false" aria-label="Uložit do oblíbených"><svg class="icon"><use href="#i-heart"/></svg></button>
-          <button class="icon-btn big" type="button" id="p-share" aria-label="Zkopírovat odkaz"><svg class="icon"><use href="#i-share-network"/></svg></button>
-        </div>
-        <a class="btn btn-ink btn-house" href="../dum?pozemek=11"><svg class="icon"><use href="#i-house-line"/></svg>Vyzkoušet dům na tomto pozemku ve 3D</a>
-        <p class="plot-note">Vjezd z nové ulice ze severu. Vodovod, splašková kanalizace a elektřina budou dovedeny k hranici pozemku. Na pozemek patří jeden samostatný rodinný dům, nejvýše 2 podlaží a sedlová nebo valbová střecha 40 až 50°.</p>
-        <div class="plot-pager"><a href="10" rel="prev"><svg class="icon"><use href="#i-arrow-left"/></svg>Pozemek 10</a><a href="../#pozemek-11">Ukázat ve 3D</a><a href="12" rel="next">Pozemek 12<svg class="icon"><use href="#i-arrow-right"/></svg></a></div>
+        <ul class="checks" id="r-checks"></ul>
       </div>
-      <figure class="plan-card">
-        <div class="plan-svg" id="plan" role="img" aria-label="Plánek pozemku 11 se stínem ukázkového domu podle zvoleného času"></div>
-        <div class="sun-ctl">
-          <div class="seg seg-sun" role="group" aria-label="Roční období">
-            <button type="button" data-season="leto" aria-pressed="true">Léto</button>
-            <button type="button" data-season="jaro" aria-pressed="false">Jaro a podzim</button>
-            <button type="button" data-season="zima" aria-pressed="false">Zima</button>
-          </div>
-          <div class="sun-row">
-            <button type="button" class="icon-btn" id="sun-play" aria-label="Přehrát průběh dne"><svg class="icon"><use href="#i-play"/></svg></button>
-            <input type="range" id="sun-time" min="5" max="21" step="0.05" value="15" aria-label="Čas">
-            <output id="sun-out">15:00</output>
-          </div>
-        </div>
-        <figcaption class="sun-facts" id="sun-facts"></figcaption>
-      </figure>
-    </div>
+
+      <div class="hp-block hp-cta">
+        <a class="btn btn-accent" id="h-cta" href="pozemky/12#poptavka">Chci pozemek 12 <svg class="icon icon-arrow"><use href="#i-arrow-right"/></svg></a>
+        <button class="btn btn-ghost btn-sm" type="button" id="h-share"><svg class="icon"><use href="#i-share-network"/></svg>Sdílet tuto sestavu</button>
+      </div>
+    </aside>
   </section>
 
-  <section class="section plot-where" aria-labelledby="where-title">
-    <div class="container where-grid">
-      <div>
-        <h2 id="where-title">Kde pozemek leží</h2>
-        <p class="lead">Pozemek 11 je v etapě 1, ve druhé řadě s vjezdem z první ulice. Klikněte na jiný pozemek v plánku a přejdete na jeho detail.</p>
-        <div class="dist" id="dist"></div>
-      </div>
-      <div class="mini-card"><div class="mini-svg" id="mini" role="img" aria-label="Plán lokality s vyznačeným pozemkem 11"></div></div>
-    </div>
-  </section>
-
-  <section class="section plot-similar" aria-labelledby="sim-title">
-    <div class="container">
-      <h2 id="sim-title">Podobné volné pozemky</h2>
-      <div class="sim-grid" id="similar"></div>
-    </div>
-  </section>
-
-  <section class="section contact" id="poptavka" aria-labelledby="contact-title">
-    <div class="container contact-grid">
-      <div class="contact-copy">
-        <h2 id="contact-title">Pozemek 11 vám ukážeme na místě</h2>
-        <p class="lead">Pošleme ceník, domluvíme prohlídku a odpovíme na všechno kolem koupě.</p>
-        <div class="contact-links">
-          <a href="tel:+420123456789"><svg class="icon"><use href="#i-phone"/></svg>+420 123 456 789</a>
-          <a href="mailto:prodej@zakaplickou.cz"><svg class="icon"><use href="#i-envelope-simple"/></svg>prodej@zakaplickou.cz</a>
-        </div>
-      </div>
-      <form class="form" id="lead-form" novalidate>
-        <div class="form-body">
-          <h3>Poptávka pozemku 11</h3>
-          <input type="hidden" name="plot" value="11">
-          <div class="field-row">
-            <div class="field"><label for="f-name">Jméno a příjmení</label><input id="f-name" name="name" autocomplete="name" required><span class="err">Vyplňte prosím jméno.</span></div>
-            <div class="field"><label for="f-phone">Telefon</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required><span class="err">Zadejte telefon, ať vám můžeme zavolat.</span></div>
-          </div>
-          <div class="field"><label for="f-email">E-mail <span class="opt">nepovinné, pošleme na něj ceník</span></label><input id="f-email" name="email" type="email" autocomplete="email"><span class="err">Zkontrolujte prosím e-mail.</span></div>
-          <div class="field"><label for="f-when">Prohlídka</label><select id="f-when" name="when"><option>Kdykoli</option><option>Tento týden</option><option>Příští týden</option><option selected>Zatím jen ceník</option></select></div>
-          <label class="consent"><input type="checkbox" required id="f-consent"><span>Souhlasím se <a href="#" target="_blank" rel="noopener">zpracováním osobních údajů</a> za účelem odpovědi na poptávku.</span></label>
-          <button class="btn btn-accent" type="submit">Odeslat poptávku <svg class="icon icon-arrow"><use href="#i-arrow-right"/></svg></button>
-        </div>
-        <div class="form-success" role="status">
-          <svg class="mark-ok" aria-hidden="true"><use href="#mark"/></svg>
-          <h3>Děkujeme, máme to</h3>
-          <p>Ozveme se vám do druhého pracovního dne s cenou pozemku 11.</p>
-        </div>
-      </form>
-    </div>
+  <section class="container house-note">
+    <p>Typy domů jsou ilustrační, aby bylo vidět měřítko pozemku. Dům si postavíte podle vlastního projektu, jen musí splnit pravidla zástavby: nejvýše 20 % zastavěné plochy, 2 nadzemní podlaží včetně podkroví a sedlovou nebo valbovou střechu se sklonem 40 až 50°. Odstupy od hranic posoudí váš projektant.</p>
   </section>
 </main>
 
@@ -178,17 +173,11 @@
     <svg class="footer-logo" aria-label="Za Kapličkou" role="img"><use href="#logo"/></svg>
     <div class="footer-bottom">
       <span>© 2026 Comfort Development s.r.o. Projektant APRIS s.r.o.</span>
-      <span>Výměry dle koordinační situace, upřesní je geometrický plán. Ukázkový dům a stíny jsou orientační.</span>
+      <span>Výměry dle koordinační situace. Domy, stíny a plochy jsou orientační.</span>
     </div>
   </div>
 </footer>
-
-<div class="mbar is-on" id="mbar">
-  <a class="btn btn-call" href="tel:+420123456789" aria-label="Zavolat"><svg class="icon"><use href="#i-phone"/></svg></a>
-  <a class="btn btn-accent" href="#poptavka">Zjistit cenu pozemku 11</a>
-</div>
 <div class="toast page-toast" id="toast" role="status" aria-live="polite"></div>
-
-<script type="module" src="../assets/js/plot.js"></script>
+<script type="module" src="assets/js/dum.js"></script>
 </body>
 </html>

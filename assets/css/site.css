@@ -687,3 +687,56 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
 @media (max-width: 900px) { .hud-views [data-view="street"], .hud-views .sep { display: none; } .hud-views { overflow-x: auto; scrollbar-width: none; } .hud-views button { padding: 0 9px; } }
 .is-far .plot-label { opacity: 0; }
 .hud-views [hidden], .hud [hidden] { display: none !important; }
+
+/* ---------- stránka Váš dům na pozemku ---------- */
+.house-head { padding-bottom: 32px; }
+.house-head h1 { font-size: clamp(40px, 5.4vw, 84px); max-width: 16ch; margin-top: 4px; }
+.house-head .lead { margin-top: 20px; }
+.house-app { margin-inline: 16px; display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 14px; align-items: stretch; }
+.house-stage { position: relative; isolation: isolate; border-radius: var(--r-l); overflow: hidden; background: #dfe5d3; border: 1px solid var(--line); min-height: 620px; height: calc(100svh - 120px); max-height: 900px; }
+.house-canvas { position: absolute; inset: 0; z-index: 0; cursor: grab; }
+.house-canvas canvas { width: 100% !important; height: 100% !important; touch-action: none; }
+.house-views { left: 20px; top: 20px; display: flex; gap: 4px; padding: 5px; }
+.house-views button { height: 40px; padding: 0 14px; border: 0; background: transparent; border-radius: 13px; font-size: 14px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; color: var(--ink-2); }
+.house-views button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.house-sun { left: 20px; bottom: 20px; width: 340px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.house-panel { background: var(--white); border: 1px solid var(--line); border-radius: var(--r-l); padding: 22px; display: flex; flex-direction: column; gap: 22px; overflow: auto; max-height: min(calc(100svh - 120px), 900px); }
+.hp-block { display: flex; flex-direction: column; gap: 10px; }
+.hp-label { font-family: var(--mono); font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); }
+.hp-plot { display: flex; gap: 8px; }
+.hp-plot select { flex: 1; height: 48px; border-radius: var(--r-s); border: 1px solid var(--line-strong); background: var(--paper); padding: 0 12px; font-size: 16px; font-weight: 500; }
+.hp-link { display: inline-flex; align-items: center; padding: 0 14px; border-radius: var(--r-s); border: 1px solid var(--line-strong); text-decoration: none; font-size: 14px; font-weight: 500; }
+.hp-link:hover { border-color: var(--ink); }
+.hp-meta { font-family: var(--mono); font-size: 12.5px; color: var(--ink-3); }
+.types { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.type-card { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 12px; border-radius: var(--r-s); border: 1px solid var(--line); background: var(--paper); cursor: pointer; text-align: left; transition: border-color .2s, background-color .2s; }
+.type-card svg { width: 64px; height: 44px; }
+.type-card b { display: block; font-size: 14.5px; font-weight: 600; line-height: 1.2; }
+.type-card small { font-size: 12px; color: var(--ink-3); }
+.type-card:hover { border-color: var(--ink); }
+.type-card[aria-checked="true"] { border-color: var(--ink); background: #f6efc4; box-shadow: inset 0 0 0 1px var(--ink); }
+.hp-opts .seg { grid-template-columns: 1fr 1fr; }
+.hp-opts .seg button:disabled { opacity: .4; cursor: not-allowed; }
+.checks { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
+.checks li { display: grid; grid-template-columns: 22px 1fr; gap: 8px; align-items: start; color: var(--ink-2); }
+.checks li .icon { width: 18px; height: 18px; margin-top: 2px; border-radius: 6px; padding: 2px; }
+.checks li.ok .icon { background: #e1edd5; color: #2c4b20; }
+.checks li.bad { color: #9b2c1f; }
+.checks li.bad .icon { background: #f6dcd6; color: #9b2c1f; }
+.hp-cta { gap: 8px; margin-top: auto; }
+.hp-cta .btn { width: 100%; }
+.house-note { padding: 32px 0 0; }
+.house-note p { font-size: 14px; color: var(--ink-3); max-width: 90ch; }
+@media (max-width: 1100px) { .house-app { grid-template-columns: 1fr; } .house-stage { height: 70svh; min-height: 460px; } .house-panel { max-height: none; } }
+@media (max-width: 640px) {
+  .house-app { margin-inline: 8px; }
+  .house-views { left: 8px; top: 8px; } .house-views .lbl { display: none; }
+  .house-sun { left: 8px; right: 8px; bottom: 8px; width: auto; }
+  .house-panel { padding: 16px; }
+}
+.plot-actions .btn-house { flex: 0 0 auto; }
+.rules-cta { margin-top: 32px; }
+.btn-house { width: 100%; }
+.nav a[aria-current="page"] { opacity: 1; background: rgba(127,127,127,.12); }
+.hp-opts [hidden] { display: none !important; }
+.gallery-note { margin-top: 18px; font-size: 12px; color: var(--ink-3); }

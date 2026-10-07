@@ -40,7 +40,7 @@ for i, p in enumerate(parcels):
         html = html.replace("{{" + k + "}}", v)
     (out / f"{n}.html").write_text(html)
 
-urls = [f"{BASE}/", f"{BASE}/brand"] + [f"{BASE}/pozemky/{n}" for n in nums]
+urls = [f"{BASE}/", f"{BASE}/dum", f"{BASE}/brand"] + [f"{BASE}/pozemky/{n}" for n in nums]
 (root / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"  <url><loc>{u}</loc></url>\n" for u in urls) + "</urlset>\n")
 (root / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n")
 print(f"{len(parcels)} stránek, sitemap {len(urls)} URL")

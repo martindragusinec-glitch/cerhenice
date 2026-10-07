@@ -30,6 +30,8 @@ Deploy: složku nahrát na Vercel / Cloudflare Pages jako statický web, nic se 
 
 - **`/pozemky/1` až `/pozemky/45`**: stránka každého pozemku (plánek s rozměry a severkou, stín ukázkového domu podle ročního období a času, poloha v lokalitě, podobné pozemky, vzdálenosti, poptávka s předvyplněným pozemkem). Generuje je `python3 tools/build_plots.py` ze šablony `tools/plot-template.html`; skript zároveň obnoví `sitemap.xml` a `robots.txt`. Po změně šablony nebo dat ho spusťte znovu.
 - **Slunce ve 3D**: tlačítko „Slunce“ v liště modelu (léto / jaro / zima, posuvník času, přehrání dne). Výpočet polohy slunce je v `assets/js/sun.js` pro Cerhenice (CEST/CET).
+- **Stránka `/dum` – Váš dům na pozemku**: výběr pozemku a jednoho ze 4 ilustračních typů domu (bungalov, dům s podkrovím, patrový, dům s garáží do L, `assets/js/houses.js`), natočení okapem nebo štítem k ulici, odstup od ulice, slunce a stíny. Počítá zastavěnost proti limitu 20 %, zbývající zahradu a kontroluje pravidla zástavby. Sestava se ukládá do adresy (`/dum?pozemek=12&typ=podkrovi`), takže jde sdílet. Odkaz vede z menu, ze sekce Pravidla zástavby a ze stránky každého pozemku.
+- **Vizualizace z pohledu chodce** `assets/img/render-*` (ulice, zahrada, přelet, veřejná zeleň, vjezd): AI vizualizace v Higgsfieldu podle letecké vizualizace projektanta, na webu označené jako ilustrační.
 - **Okolí ve 3D**: budovy, ulice, železnice, pole, lesy a voda z OpenStreetMap (`assets/data/context3d.js`, převod a zarovnání na silnici III/3297 dělá jednorázový skript; data © OSM, ODbL). Pohled „Okolí“ v liště ukáže celou obec s popisky. Model okolí se dostaví až po prvním snímku, aby se 3D objevilo hned.
 - **Oblíbené a porovnání**: srdíčko v detailu pozemku (ve 3D i na stránce pozemku), uloženo v prohlížeči návštěvníka, max 4. V liště 3D se objeví počet a porovnání vedle sebe s tlačítkem „Poslat výběr“, které předvyplní formulář.
 
@@ -65,7 +67,7 @@ Až budou skutečné záběry z dronu: přepsat tyto dva soubory (H.264, bez zvu
 - [ ] Zdravotní středisko v obci existuje (cerhenice.cz), ale v OSM chybí jeho poloha; do mapy ho doplnit, až bude adresa
 - [ ] Časy vlakem (S1: Kolín 13 min, Praha Masarykovo ~55 min) podle jízdního řádu PID 2023 – ověřit aktuální
 - [ ] IČO investora do patičky
-- [ ] Měření (GTM / Meta) – události už jdou do `dataLayer`: `plot_select`, `plot_cta`, `plot_share`, `plot_favorite`, `compare_open`, `compare_send`, `plot_page`, `plot_sun`, `sun_open`, `filter_change`, `list_view_open`, `houses_toggle`, `map_destination`, `flyover_open`, `lead_submit`
+- [ ] Měření (GTM / Meta) – události už jdou do `dataLayer`: `plot_select`, `plot_cta`, `plot_share`, `plot_favorite`, `compare_open`, `compare_send`, `plot_page`, `plot_sun`, `sun_open`, `house_page`, `house_type`, `house_plot`, `house_share`, `filter_change`, `list_view_open`, `houses_toggle`, `map_destination`, `flyover_open`, `lead_submit`
 
 ## Zdroje
 
