@@ -229,7 +229,6 @@
         <button type="button" data-view="top" aria-pressed="false"><svg class="icon"><use href="#i-map-trifold"/></svg><span class="lbl">Shora</span></button>
         <button type="button" data-view="street" aria-pressed="false"><svg class="icon"><use href="#i-road-horizon"/></svg><span class="lbl">Z ulice</span></button>
         <button type="button" data-view="okoli" aria-pressed="false"><svg class="icon"><use href="#i-compass"/></svg><span class="lbl">Okolí</span></button>
-        <button type="button" class="walk-btn" id="walk-start"><svg class="icon"><use href="#i-eye"/></svg><span class="lbl">Procházka</span></button>
         <span class="sep" aria-hidden="true"></span>
         <label class="mini-toggle"><input type="checkbox" id="toggle-houses"><span>Ukázka domů</span></label>
         <button type="button" class="sun-btn" id="toggle-sun" aria-pressed="false" aria-controls="hud-sun"><svg class="icon"><use href="#i-sun"/></svg><span class="lbl">Slunce</span></button>
@@ -249,12 +248,6 @@
           <output id="sun-out">16:00</output>
         </div>
         <p class="sun-note" id="sun-note">Stíny ukázkových domů a stromů, 21. června</p>
-      </div>
-
-      <div class="panel hud hud-walk" id="hud-walk" hidden>
-        <button type="button" class="icon-btn" id="walk-play" aria-label="Pozastavit"><svg class="icon"><use href="#i-pause"/></svg></button>
-        <div class="walk-track"><span>Procházka ulicemi lokality</span><input type="range" id="walk-pos" min="0" max="1000" value="0" aria-label="Pozice na trase"></div>
-        <button type="button" class="btn btn-ink btn-sm" id="walk-stop">Ukončit</button>
       </div>
 
       <div class="panel hud hud-compass" aria-hidden="true"><div class="needle" id="compass"><b>S</b><i></i></div></div>

@@ -54,7 +54,9 @@ function pointIn([x, z], poly) {
 export function buildContext(scene, { mobile = false } = {}) {
   const group = new THREE.Group();
   group.name = "okoli";
-  const flatMat = new THREE.MeshLambertMaterial({ vertexColors: true, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 });
+  // podklad (pole, lesy, silnice) leží v rovině: nezapisuje hloubku a kreslí se v pevném pořadí, takže nebliká
+  const flatMat = new THREE.MeshLambertMaterial({ vertexColors: true, depthWrite: false });
+  const roadMat = new THREE.MeshLambertMaterial({ vertexColors: true, depthWrite: false });
 
   // pole, louky, zahrady obce, lesy, voda
   const fields = ["#e2e3cb", "#d6ddc3", "#e5e4cf", "#d1d9bd", "#dcdfc7", "#cfd8bb", "#e0e2c9"];
@@ -63,7 +65,7 @@ export function buildContext(scene, { mobile = false } = {}) {
   CONTEXT.resi.forEach((a) => flats.push(flatGeo(pairs(a), -0.16, "#e9ebe2")));
   CONTEXT.wood.forEach((a) => flats.push(flatGeo(pairs(a), -0.12, "#a9c08f")));
   CONTEXT.water.forEach((a) => flats.push(flatGeo(pairs(a), -0.08, "#bcd3cc")));
-  if (flats.length) group.add(new THREE.Mesh(mergeGeometries(flats), flatMat));
+  if (flats.length) { const m = new THREE.Mesh(mergeGeometries(flats), flatMat); m.renderOrder = -9; group.add(m); }
 
   // silnice a železnice
   const roadGeos = [];
@@ -72,7 +74,7 @@ export function buildContext(scene, { mobile = false } = {}) {
   add(CONTEXT.minor, 5, 0.06, "#f6f6f1");
   add(CONTEXT.major, 7, 0.1, "#cfd3c8");
   add(CONTEXT.rail, 3.2, 0.12, "#9aa197");
-  if (roadGeos.length) group.add(new THREE.Mesh(mergeGeometries(roadGeos), new THREE.MeshLambertMaterial({ vertexColors: true })));
+  if (roadGeos.length) { const m = new THREE.Mesh(mergeGeometries(roadGeos), roadMat); m.renderOrder = -8; group.add(m); }
 
   // budovy: bílé makety jako ve vizualizacích
   const bGeos = [];

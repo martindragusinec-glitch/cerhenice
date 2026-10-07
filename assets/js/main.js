@@ -361,11 +361,6 @@ async function boot() {
     mp = createMasterplan(host, {
       onSelect: (p, source) => openDrawer(p, { source }),
       onHover: showTip,
-      onWalk: (t, playing) => {
-        $("#walk-pos").value = Math.round(t * 1000);
-        $("#walk-play").innerHTML = `<svg class="icon"><use href="#i-${playing ? "pause" : "play"}"/></svg>`;
-        $("#walk-play").setAttribute("aria-label", playing ? "Pozastavit" : "Pokračovat");
-      },
       startView: isMobile() ? "top" : "persp",
     });
     if (isMobile()) $$("[data-view]").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.view === "top")));
@@ -554,37 +549,4 @@ syncFavCount();
     };
     playing = requestAnimationFrame(tick);
   });
-}
-
-/* ---------- procházka ulicemi ---------- */
-{
-  const walkHud = $("#hud-walk");
-  let playing = true;
-  const startBtn = $("#walk-start");
-  function exitWalk() {
-    if (!stage.classList.contains("is-walking")) return;
-    stage.classList.remove("is-walking");
-    walkHud.hidden = true;
-    mp && mp.stopWalk();
-  }
-  startBtn.addEventListener("click", () => {
-    if (!mp) return;
-    if (drawer.classList.contains("is-open")) mp.select(null);
-    setList(false);
-    $("#hud-sun").hidden = true; $("#toggle-sun").setAttribute("aria-pressed", "false");
-    $("#toggle-houses").checked = true;
-    stage.classList.add("is-walking");
-    walkHud.hidden = false;
-    playing = true;
-    mp.startWalk();
-    $("#walk-stop").focus({ preventScroll: true });
-    track("walk_start");
-  });
-  $("#walk-stop").addEventListener("click", exitWalk);
-  $("#walk-play").addEventListener("click", () => {
-    playing = $("#walk-play").getAttribute("aria-label") !== "Pozastavit";
-    mp && mp.walkPlay(playing);
-  });
-  $("#walk-pos").addEventListener("input", (e) => { mp && mp.walkPlay(false); mp && mp.walkSeek(Number(e.target.value) / 1000); });
-  addEventListener("keydown", (e) => { if (e.key === "Escape") exitWalk(); });
 }

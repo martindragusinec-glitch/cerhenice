@@ -106,10 +106,10 @@ function fieldTexture() {
   return t;
 }
 
-export function createMasterplan(host, { onSelect, onHover, onWalk, startView = "persp" } = {}) {
+export function createMasterplan(host, { onSelect, onHover, startView = "persp" } = {}) {
   const W0 = host.clientWidth, H0 = host.clientHeight;
   const mobile = innerWidth < 900;
-  const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+  const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance", logarithmicDepthBuffer: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, mobile ? 1.5 : 1.75));
   renderer.setSize(W0, H0);
   renderer.shadowMap.enabled = true;
@@ -153,6 +153,7 @@ export function createMasterplan(host, { onSelect, onHover, onWalk, startView = 
   tex.repeat.set(4, 4);
   const ground = new THREE.Mesh(new THREE.PlaneGeometry(9000, 9000), new THREE.MeshLambertMaterial({ map: tex }));
   ground.rotation.x = -Math.PI / 2; ground.position.set(0, -0.4, -1200); ground.receiveShadow = true;
+  ground.material.depthWrite = false; ground.renderOrder = -10;
   scene.add(ground);
 
   // silnice podél východní hrany
@@ -444,11 +445,8 @@ export function createMasterplan(host, { onSelect, onHover, onWalk, startView = 
   let running = false, raf = 0;
   const ease = (t) => 1 - Math.pow(1 - t, 3);
   const bound = 2400;
-  let last = performance.now();
   function frame(now) {
     raf = requestAnimationFrame(frame);
-    const dt = Math.min(0.05, (now - last) / 1000); last = now;
-    if (walk) { stepWalk(dt); renderPlots(); renderer.render(scene, camera); labels.render(scene, camera); return; }
     if (fly) {
       const k = fly.dur ? Math.min(1, (now - fly.start) / fly.dur) : 1;
       camera.position.lerpVectors(fly.p0, fly.p1, ease(k));
@@ -479,64 +477,7 @@ export function createMasterplan(host, { onSelect, onHover, onWalk, startView = 
     }
   }
 
-  // ------- procházka ulicemi (kamera ve výšce očí jede po trase) -------
-  const U2 = new THREE.Vector2(Math.cos(A), Math.sin(A));
-  const P2 = (n) => byId[String(n).padStart(2, "0")];
-  const sp = (n) => { const f = P2(n).frame; return f.c.clone().add(f.L.clone().multiplyScalar(f.tmin - 6)); };
-  const westOf = (n) => { const o = P2(n); let m = Infinity; for (const [x, z] of o.p.poly) m = Math.min(m, (x - o.p.c[0]) * U2.x + (z - o.p.c[1]) * U2.y); return new THREE.Vector2(...o.p.c).add(U2.clone().multiplyScalar(m - 6)); };
-  const onLine = (a, b) => a.clone().add(U2.clone().multiplyScalar(b.clone().sub(a).dot(U2)));
-  function walkCurve() {
-    const seq = [
-      onLine(sp(15), sp(31)),
-      ...[15, 14, 13, 12, 11, 10, 9].map(sp),
-      onLine(sp(9), westOf(16)),
-      onLine(sp(23), westOf(23)),
-      ...[23, 24, 25, 26, 27, 28, 29, 30].map(sp),
-      onLine(sp(30), sp(34)),
-      ...[34, 35, 44, 45].map(sp),
-      onLine(sp(43), sp(45)),
-      ...[43, 42, 41, 40, 39, 38, 37, 36].map(sp),
-      onLine(sp(36), westOf(36)),
-    ];
-    return new THREE.CatmullRomCurve3(seq.map((v) => new THREE.Vector3(v.x, 1.7, v.y)), false, "centripetal", 0.4);
-  }
-  let walk = null, walkCurveCache = null;
-  const WALK_SPEED = 9; // m/s
-  const look = new THREE.Vector3();
-  function stepWalk(dt) {
-    if (walk.playing) {
-      walk.t = Math.min(1, walk.t + (dt * WALK_SPEED) / walk.len);
-      if (walk.t >= 1) walk.playing = false;
-    }
-    const c = walk.curve;
-    const p = c.getPointAt(walk.t);
-    const a = c.getPointAt(Math.min(1, walk.t + 14 / walk.len));
-    camera.position.lerp(p, walk.snap ? 1 : 0.35);
-    look.lerp(new THREE.Vector3(a.x, 1.45, a.z), walk.snap ? 1 : 0.08);
-    walk.snap = false;
-    camera.lookAt(look);
-    if (onWalk) onWalk(walk.t, walk.playing);
-  }
-  function startWalk() {
-    walkCurveCache = walkCurveCache || walkCurve();
-    fly = null;
-    controls.enabled = false;
-    camera.near = 0.3; camera.updateProjectionMatrix();
-    scene.fog.near = 90; scene.fog.far = 900;
-    houseGroup.visible = true;
-    walk = { curve: walkCurveCache, len: walkCurveCache.getLength(), t: 0, playing: !reduceMotion, snap: true };
-    look.copy(walkCurveCache.getPointAt(0.01));
-    if (onWalk) onWalk(0, walk.playing);
-  }
-  function stopWalk() {
-    if (!walk) return;
-    walk = null;
-    controls.enabled = true;
-    camera.near = 5; camera.updateProjectionMatrix();
-    setView(currentView === "street" ? "street" : "persp");
-  }
-
-  function start() { if (!running) { running = true; last = performance.now(); raf = requestAnimationFrame(frame); } }
+  function start() { if (!running) { running = true; raf = requestAnimationFrame(frame); } }
   function stop() { running = false; cancelAnimationFrame(raf); }
   start();
   // okolí se dostaví až po prvním snímku, aby se model objevil hned
@@ -557,9 +498,6 @@ export function createMasterplan(host, { onSelect, onHover, onWalk, startView = 
     setStatus(map) { state.status = { ...map }; refreshLabels(); },
     setView,
     setHouses(on) { houseGroup.visible = on; },
-    startWalk, stopWalk,
-    walkPlay(on) { if (walk) { if (on && walk.t >= 1) walk.t = 0; walk.playing = on; } },
-    walkSeek(t) { if (walk) { walk.t = THREE.MathUtils.clamp(t, 0, 1); walk.snap = true; } },
     // slunce podle ročního období a místního času; bez parametrů výchozí světlo
     setSun(season, hours) {
       if (!season) { sun.position.set(-170, 260, 210); sun.intensity = 2.0; sun.color.set(0xfff6e4); hemi.intensity = 1.6; return null; }
