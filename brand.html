@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Za Kapličkou · brand</title>
+<link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700;1,75..100,400..700&family=Geist+Mono:wght@400..600&display=swap" rel="stylesheet">
+<style>
+:root { --paper:#f2f4ee; --paper-2:#e7ebdf; --ink:#132019; --ink-3:#5f6b64; --forest:#17281e; --accent:#e4cb3c; --grass:#a9c98d; --line:rgba(19,32,25,.13); }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: "Instrument Sans", sans-serif; font-size: 16px; line-height: 1.55; }
+.wrap { width: min(100% - 32px, 1240px); margin: 0 auto; padding: 56px 0 96px; }
+h1 { font-size: clamp(44px, 6vw, 84px); font-weight: 500; letter-spacing: -.04em; line-height: .96; margin: 0; }
+h2 { font-size: 30px; font-weight: 500; letter-spacing: -.03em; margin: 0 0 18px; }
+.mono { font-family: "Geist Mono", monospace; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); }
+section { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--ink); }
+.intro { display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: end; }
+.intro p { color: #3a473f; max-width: 52ch; }
+.grid { display: grid; gap: 14px; }
+.g3 { grid-template-columns: repeat(3, 1fr); }
+.g2 { grid-template-columns: repeat(2, 1fr); }
+.tile { border-radius: 18px; padding: 36px; display: grid; place-items: center; min-height: 220px; position: relative; }
+.tile img { max-width: 100%; }
+.tile .mono { position: absolute; left: 18px; bottom: 14px; }
+.sw { border-radius: 18px; padding: 18px; min-height: 160px; display: flex; flex-direction: column; justify-content: flex-end; }
+.sw b { font-size: 20px; font-weight: 500; letter-spacing: -.02em; }
+.sw span { font-family: "Geist Mono", monospace; font-size: 13px; }
+.g5 { grid-template-columns: 2fr 2fr 1.3fr 1fr 1fr; }
+.type { border-radius: 18px; background: #fbfcf8; border: 1px solid var(--line); padding: 32px; }
+.type .big { font-size: 76px; letter-spacing: -.042em; line-height: 1; font-weight: 500; }
+.rules { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.rule { background: #fbfcf8; border: 1px solid var(--line); border-radius: 18px; padding: 22px; }
+.rule h3 { margin: 10px 0 6px; font-size: 20px; font-weight: 500; letter-spacing: -.02em; }
+.rule p { margin: 0; color: #3a473f; font-size: 15px; }
+.apps { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.9fr); gap: 14px; align-items: start; }
+.post { aspect-ratio: 1; border-radius: 18px; overflow: hidden; position: relative; background: var(--forest); color: #fbfcf8; padding: 34px; display: flex; flex-direction: column; justify-content: space-between; }
+.post img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .55; }
+.post > * { position: relative; }
+.post h4 { font-size: 46px; line-height: .98; letter-spacing: -.04em; font-weight: 500; margin: 0; }
+.post .pill { display: inline-flex; height: 46px; align-items: center; padding: 0 18px; border-radius: 12px; background: var(--accent); color: var(--ink); font-weight: 600; margin-top: 18px; width: fit-content; }
+.banner { aspect-ratio: 3 / 1; border-radius: 18px; background: var(--accent); color: var(--ink); padding: 34px 40px; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 36px; }
+.banner .big { font-size: clamp(30px, 4vw, 58px); font-weight: 600; letter-spacing: -.04em; line-height: .95; }
+.banner .tel { white-space: nowrap; font-family: "Geist Mono", monospace; font-size: clamp(18px, 2vw, 28px); font-weight: 600; text-align: right; }
+.og { border-radius: 18px; overflow: hidden; margin-top: 14px; } .og img { width: 100%; display: block; }
+.corners-demo { position: relative; border-radius: 18px; overflow: hidden; aspect-ratio: 16/9; }
+.corners-demo img { width: 100%; height: 100%; object-fit: cover; }
+.corners-demo i { position: absolute; width: 26px; height: 26px; border: 0 solid #fbfcf8; }
+a.dl { color: inherit; }
+@media (max-width: 900px) { .g3, .g2, .g5, .rules, .apps, .intro { grid-template-columns: 1fr; } .banner { grid-template-columns: 1fr; aspect-ratio: auto; } .banner .tel { text-align: left; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="intro">
+    <div><p class="mono">Brand manuál · verze 1 · 10/2026</p><h1 style="margin-top:14px">Za Kapličkou</h1></div>
+    <p>Značka pro prodej 45 stavebních pozemků v Cerhenicích. Název je skutečný místní název pole z katastru. Symbol tvoří rohové značky geodeta, které vymezují žlutý čtverec: váš pozemek. Prodáváme pozemky, proto ve značce nejsou domy.</p>
+  </div>
+
+  <section>
+    <h2>Logo</h2>
+    <div class="grid g3">
+      <div class="tile" style="background:#fbfcf8;border:1px solid var(--line)"><img src="assets/brand/logo.svg" alt="Logo Za Kapličkou" style="height:84px"><span class="mono">logo.svg</span></div>
+      <div class="tile" style="background:var(--forest)"><img src="assets/brand/logo-negative.svg" alt="Logo negativ" style="height:84px"><span class="mono" style="color:#a9b4ac">logo-negative.svg</span></div>
+      <div class="tile" style="background:var(--accent)"><img src="assets/brand/logo-mono.svg" alt="Logo jednobarevné" style="height:84px"><span class="mono" style="color:var(--ink)">logo-mono.svg</span></div>
+      <div class="tile" style="background:#fbfcf8;border:1px solid var(--line)"><img src="assets/brand/logo-compact.svg" alt="Logo kompaktní" style="height:46px"><span class="mono">logo-compact.svg · web, malé plochy</span></div>
+      <div class="tile" style="background:var(--paper-2)"><img src="assets/brand/mark.svg" alt="Symbol" style="height:110px"><span class="mono">mark.svg</span></div>
+      <div class="tile" style="background:var(--paper-2)"><img src="assets/brand/favicon.svg" alt="Ikona" style="height:110px"><span class="mono">favicon.svg · ikona, avatar</span></div>
+    </div>
+    <p class="mono" style="margin-top:14px">Ochranná zóna kolem loga = šířka žlutého čtverce. Nejmenší výška loga 24 px. Logo nedeformovat, nepřebarvovat mimo tyto varianty.</p>
+  </section>
+
+  <section>
+    <h2>Barvy</h2>
+    <div class="grid g5">
+      <div class="sw" style="background:var(--forest);color:#f2f4ee"><b>Ornice</b><span>#17281E · text #132019</span></div>
+      <div class="sw" style="background:var(--paper);border:1px solid var(--line)"><b>Pole</b><span>#F2F4EE · pozadí</span></div>
+      <div class="sw" style="background:var(--accent)"><b>Řepka</b><span>#E4CB3C · CTA, výběr</span></div>
+      <div class="sw" style="background:var(--grass)"><b>Tráva</b><span>#A9C98D</span></div>
+      <div class="sw" style="background:var(--paper-2)"><b>Mez</b><span>#E7EBDF</span></div>
+    </div>
+    <p class="mono" style="margin-top:14px">Žlutá jen na jednu věc na ploše: hlavní tlačítko, vybraný pozemek nebo symbol. Na žlutou vždy tmavý text.</p>
+  </section>
+
+  <section>
+    <h2>Písmo</h2>
+    <div class="grid g2">
+      <div class="type"><p class="mono">Instrument Sans · nadpisy, text, logo</p><div class="big">Pozemky u&nbsp;Kolína</div><p style="font-size:19px;margin-top:16px;color:#3a473f">Parcely 852 až 1 378 m² na klidném okraji Cerhenic. Nadpisy Medium s těsnějším prokladem, text Regular.</p></div>
+      <div class="type"><p class="mono">Geist Mono · čísla, data, popisky</p><div class="big" style="font-family:'Geist Mono';font-size:54px;letter-spacing:-.03em">983 m² · č. 12</div><p style="font-size:19px;margin-top:16px;color:#3a473f">Výměry, čísla parcel, malé popisky verzálkami. Připomíná zaměření geodeta.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Motiv: rohové značky</h2>
+    <div class="grid g2">
+      <div class="corners-demo"><img src="assets/img/viz-shora.jpg" alt=""><i style="top:16px;left:16px;border-top-width:2px;border-left-width:2px"></i><i style="top:16px;right:16px;border-top-width:2px;border-right-width:2px"></i><i style="bottom:16px;left:16px;border-bottom-width:2px;border-left-width:2px"></i><i style="bottom:16px;right:16px;border-bottom-width:2px;border-right-width:2px"></i></div>
+      <div class="rules" style="grid-template-columns:1fr">
+        <div class="rule"><p class="mono">Fotky a vizualizace</p><h3>Rámujeme rohy, ne celý obrázek</h3><p>Čtyři tenké rohy 2 px ve světlé barvě, odsazení 14 až 20 px od kraje.</p></div>
+        <div class="rule"><p class="mono">Vybraný pozemek</p><h3>Žlutý čtverec = váš pozemek</h3><p>Ve 3D plánu, na mapě i v tiskovinách je vybraná parcela vždy žlutá.</p></div>
+        <div class="rule"><p class="mono">Tón komunikace</p><h3>Věcně, konkrétně, s čísly</h3><p>Výměry, minuty, metry. Žádné „luxusní bydlení snů“. Tykání ne, vykáme.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Použití</h2>
+    <div class="apps">
+      <div class="post"><img class="bg" src="assets/img/viz-jihozapad.jpg" alt=""><img src="assets/brand/logo-negative.svg" alt="" style="height:30px;width:auto;align-self:flex-start"><div><h4>Pozemek od 852&nbsp;m², 13&nbsp;minut od Kolína</h4><span class="pill">zakaplickou.cz</span></div></div>
+      <div>
+        <div class="banner"><img src="assets/brand/mark-mono.svg" alt="" style="height:120px"><div class="big">Prodej stavebních pozemků</div><div class="tel">+420 123 456 789<br>zakaplickou.cz</div></div>
+        <div class="og"><img src="assets/img/og.jpg" alt="Náhled pro sdílení 1200 × 630"></div>
+      </div>
+    </div>
+    <p class="mono" style="margin-top:14px">Příspěvek 1:1 · plachta na plot 3:1 · náhled pro sdílení 1200 × 630 (assets/img/og.jpg)</p>
+  </section>
+</div>
+</body>
+</html>
