@@ -110,10 +110,7 @@ p { margin: 0; text-wrap: pretty; }
 .hero-media { position: absolute; inset: 0; z-index: -2; }
 .hero-media img, .hero-media video { width: 100%; height: 100%; object-fit: cover; }
 .hero-media .drift { width: 100%; height: 100%; transform-origin: 62% 45%; }
-@media (prefers-reduced-motion: no-preference) {
-  .hero-media .drift { animation: drone 40s var(--ease) infinite alternate; }
-  @keyframes drone { from { transform: scale(1.05) translate3d(1%, 0.6%, 0); } to { transform: scale(1.15) translate3d(-1.8%, -1.2%, 0); } }
-}
+/* úvodní snímek stojí: je to první snímek videa, takže video na něj navazuje bez skoku */
 .hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background:
   linear-gradient(180deg, rgba(19, 32, 25, 0.5) 0%, rgba(19, 32, 25, 0) 20%),
   linear-gradient(0deg, rgba(19, 32, 25, 0.86) 0%, rgba(19, 32, 25, 0.42) 36%, rgba(19, 32, 25, 0) 64%),
