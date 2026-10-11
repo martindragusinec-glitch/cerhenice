@@ -879,3 +879,7 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
   .sp-times { display: grid; grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); }
   .sp-time span { min-width: 0; width: 100%; height: 38px; padding: 0 4px; font-size: 14px; }
 }
+
+/* hero nadpis vždy na 2 řádky: na úzkých displejích se písmo zmenší s šířkou */
+.hero h1 { text-wrap: balance; }
+@media (max-width: 480px) { .hero h1 { font-size: min(46px, 11.2vw); max-width: none; } }
