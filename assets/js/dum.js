@@ -3,8 +3,11 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { PARCELS, SITE } from "./../data/parcels.js";
 import { STATUS } from "./config.js";
-import { sunAt, daylight, fmtTime } from "./sun.js";
+import { sunAt, daylight, fmtTime, NORTH } from "./sun.js";
 import { TYPES, buildHouse } from "./houses.js";
+import { loadLive } from "./live.js";
+
+await loadLive();
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -72,6 +75,21 @@ const camera = new THREE.PerspectiveCamera(35, host.clientWidth / host.clientHei
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.maxPolarAngle = THREE.MathUtils.degToRad(84);
+// kolečko posouvá stránku, přiblížení s Ctrl / ⌘ nebo sevřením prstů; na dotyku svislý tah posouvá stránku
+renderer.domElement.style.touchAction = "pan-y";
+{
+  const hint = document.createElement("div");
+  hint.className = "zoom-hint";
+  hint.innerHTML = /Mac|iPhone|iPad/.test(navigator.platform) ? "Přiblížení: <kbd>⌘</kbd> + kolečko, nebo sevřením na touchpadu" : "Přiblížení: <kbd>Ctrl</kbd> + kolečko";
+  host.appendChild(hint);
+  let t = 0, shown = 0;
+  host.addEventListener("wheel", (e) => {
+    if (e.ctrlKey || e.metaKey) return;
+    e.stopPropagation();
+    const now = performance.now();
+    if (now - shown > 4000 && Math.abs(e.deltaY) > 4) { shown = now; hint.classList.add("on"); clearTimeout(t); t = setTimeout(() => hint.classList.remove("on"), 1600); }
+  }, { capture: true, passive: true });
+}
 controls.minDistance = 14;
 controls.maxDistance = 260;
 
@@ -178,7 +196,8 @@ function applySun() {
   const s = sunAt(state.season, state.time);
   const el = Math.max(s.el, 0.03);
   const t = sun.target.position;
-  sun.position.set(t.x + Math.sin(s.az) * Math.cos(el) * 200, Math.sin(el) * 200, t.z - Math.cos(s.az) * Math.cos(el) * 200);
+  const a = s.az + NORTH;
+  sun.position.set(t.x + Math.sin(a) * Math.cos(el) * 200, Math.sin(el) * 200, t.z - Math.cos(a) * Math.cos(el) * 200);
   const k = Math.min(1, el / 0.45);
   sun.intensity = s.el > 0 ? 0.8 + 1.5 * k : 0;
   sun.color.set(0xffb074).lerp(new THREE.Color(0xfff6e4), k);

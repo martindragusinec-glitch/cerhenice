@@ -48,4 +48,6 @@ export function daylight(season) {
 export const fmtTime = (t) => `${Math.floor(t)}:${String(Math.round((t % 1) * 60)).padStart(2, "0")}`.replace(/:60$/, ":59");
 
 // směr ke slunci v rovině plánu (x = východ, z = jih)
-export const toSun = (az) => [Math.sin(az), -Math.cos(az)];
+// Plán (osa -z) je proti skutečnému severu pootočený: S-JTSK a natočení výkresu, změřeno z katastru a fotek z dronu.
+export const NORTH = (7.68 * Math.PI) / 180;
+export const toSun = (az) => [Math.sin(az + NORTH), -Math.cos(az + NORTH)];

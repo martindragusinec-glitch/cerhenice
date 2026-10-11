@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <title>Fotomontáž · render zástavby do fotky z dronu</title>
+  <script type="importmap">
+    { "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    } }
+  </script>
+  <style>html, body { margin: 0; background: transparent; } canvas { display: block; }</style>
+</head>
+<body>
+<!-- Použití: /tools/photomatch/?cam=p9&w=2736&h=1824&t=1  (t = průběh výstavby 0–1). Parametry kamery a slunce: scene.json (z GPS a úhlů dronu, dorovnáno na sloupy VN a silnici). -->
+<script type="module" src="photomatch.js"></script>
+</body>
+</html>

@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
 import { SITE, PUBLIC, PARCELS } from "../data/parcels.js";
-import { sunAt } from "./sun.js";
+import { sunAt, NORTH } from "./sun.js";
 import { buildContext, CONTEXT_FOCUS } from "./context3d.js";
 
 const COL = {
@@ -135,6 +135,24 @@ export function createMasterplan(host, { onSelect, onHover, startView = "persp" 
   controls.maxPolarAngle = THREE.MathUtils.degToRad(78);
   controls.screenSpacePanning = false;
   controls.rotateSpeed = 0.6;
+  // Kolečko myši patří stránce: bez Ctrl / ⌘ ho OrbitControls nedostane a stránka se posune dál.
+  // Gesto sevření na touchpadu posílá wheel s ctrlKey, takže přiblížení prsty funguje.
+  // Na dotyku: svislý tah posouvá stránku, vodorovný otáčí modelem, dvěma prsty přiblížení.
+  renderer.domElement.style.touchAction = "pan-y";
+  const zoomHint = document.createElement("div");
+  zoomHint.className = "zoom-hint";
+  zoomHint.innerHTML = /Mac|iPhone|iPad/.test(navigator.platform) ? "Přiblížení: <kbd>⌘</kbd> + kolečko, nebo sevřením na touchpadu" : "Přiblížení: <kbd>Ctrl</kbd> + kolečko";
+  host.appendChild(zoomHint);
+  let hintT = 0, hintShown = 0;
+  host.addEventListener("wheel", (e) => {
+    if (e.ctrlKey || e.metaKey) return;
+    e.stopPropagation();
+    const now = performance.now();
+    if (now - hintShown > 4000 && Math.abs(e.deltaY) > 4) {
+      hintShown = now; zoomHint.classList.add("on");
+      clearTimeout(hintT); hintT = setTimeout(() => zoomHint.classList.remove("on"), 1600);
+    }
+  }, { capture: true, passive: true });
 
   const hemi = new THREE.HemisphereLight(0xffffff, 0xc9d1bd, 1.6);
   scene.add(hemi);
@@ -462,7 +480,7 @@ export function createMasterplan(host, { onSelect, onHover, startView = "persp" 
     scene.fog.near = dist * 0.9; scene.fog.far = dist * 2.6 + 500;
     labels.domElement.classList.toggle("is-far", dist > 1100);
     renderPlots();
-    if (compass) compass.style.transform = `rotate(${controls.getAzimuthalAngle()}rad)`;
+    if (compass) compass.style.transform = `rotate(${controls.getAzimuthalAngle() + NORTH}rad)`;
     renderer.render(scene, camera);
     labels.render(scene, camera);
   }
@@ -503,7 +521,8 @@ export function createMasterplan(host, { onSelect, onHover, startView = "persp" 
       if (!season) { sun.position.set(-170, 260, 210); sun.intensity = 2.0; sun.color.set(0xfff6e4); hemi.intensity = 1.6; return null; }
       const p = sunAt(season, hours);
       const el = Math.max(p.el, 0.02);
-      sun.position.set(Math.sin(p.az) * Math.cos(el), Math.sin(el), -Math.cos(p.az) * Math.cos(el)).multiplyScalar(420);
+      const a = p.az + NORTH;
+      sun.position.set(Math.sin(a) * Math.cos(el), Math.sin(el), -Math.cos(a) * Math.cos(el)).multiplyScalar(420);
       const k = Math.min(1, el / 0.45);
       sun.intensity = p.el > 0 ? 0.7 + 1.5 * k : 0;
       sun.color.set(0xffb074).lerp(new THREE.Color(0xfff6e4), k);

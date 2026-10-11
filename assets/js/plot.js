@@ -2,8 +2,11 @@
 import { PARCELS, SITE } from "../data/parcels.js";
 import { POIS, DEST } from "../data/geo.js";
 import { PRICE_PER_M2, PRICE_OVERRIDE, STATUS } from "./config.js";
-import { SEASONS, sunAt, daylight, fmtTime, toSun } from "./sun.js";
+import { SEASONS, sunAt, daylight, fmtTime, toSun, NORTH } from "./sun.js";
 import { isFav, toggleFav, favs, FAV_MAX } from "./favs.js";
+import { loadLive, submitLead, mountSlotPicker, trackLead, fmtSlot } from "./live.js";
+
+await loadLive();
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -131,7 +134,7 @@ function planSvg(season, hours) {
   }
   // sever
   const nx = VB.x + VB.w - 5, ny = VB.y + 6;
-  g += `<g transform="translate(${nx} ${ny})"><path d="M0 -3.4L1.8 1.8L0 0.9L-1.8 1.8Z" fill="#132019"/><text y="${-4.6}" text-anchor="middle" font-size="${fs * 0.9}" font-family="Geist Mono, monospace" fill="#132019">S</text></g>`;
+  g += `<g transform="translate(${nx} ${ny}) rotate(${((NORTH * 180) / Math.PI).toFixed(1)})"><path d="M0 -3.4L1.8 1.8L0 0.9L-1.8 1.8Z" fill="#132019"/><text y="${-4.6}" text-anchor="middle" font-size="${fs * 0.9}" font-family="Geist Mono, monospace" fill="#132019">S</text></g>`;
   return { svg: `<svg viewBox="${VB.x} ${VB.y} ${VB.w} ${VB.h}" preserveAspectRatio="xMidYMid meet">${g}</svg>`, s, d };
 }
 
@@ -252,7 +255,7 @@ track("plot_page", { plot_id: P.id, plot_area: P.area });
 /* ---------- formulář ---------- */
 {
   const form = $("#lead-form");
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
     let first = null;
     for (const f of $$(".field", form)) {
@@ -267,8 +270,18 @@ track("plot_page", { plot_id: P.id, plot_area: P.area });
     c.closest(".consent").classList.toggle("is-invalid", !c.checked);
     if (!c.checked && !first) first = c;
     if (first) return first.focus();
-    // DOPLNIT: odeslání na backend (stejně jako na hlavní stránce)
-    track("lead_submit", { plot_id: P.id, page: "detail" });
+    const btn = $('button[type="submit"]', form), label = btn.innerHTML;
+    btn.disabled = true; btn.textContent = "Odesílám…";
+    const sv = picker ? picker.value() : { slotId: "", when: $("#f-when").value };
+    const res = await submitLead({ name: $("#f-name").value, phone: $("#f-phone").value, email: $("#f-email").value, plot: P.id, when: sv.when, slotId: sv.slotId, consent: c.checked, web: $("#f-web")?.value || "" });
+    btn.disabled = false; btn.innerHTML = label;
+    const err = $("#form-error");
+    if (!res.ok) { err.hidden = false; err.textContent = res.offline ? "Poptávku se nepodařilo odeslat. Zavolejte nám prosím, nebo to zkuste znovu." : res.error; return; }
+    err.hidden = true;
+    trackLead({ plot_id: P.id, page: "detail" });
+    if (res.viewing) $(".form-success p", form).textContent = `Prohlídku máte zapsanou na ${fmtSlot(res.viewing)}. Den předem vám zavoláme pro potvrzení.`;
     form.classList.add("is-sent");
   });
+  let picker = null;
+  mountSlotPicker($("#f-when")).then((x) => (picker = x));
 }

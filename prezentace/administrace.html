@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<title>Za Kapličkou · Administrace webu</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&family=Geist+Mono:wght@400..600&display=swap" rel="stylesheet">
+<style>
+  @page { size: 297mm 210mm; margin: 0; }
+  :root { --paper: #f2f4ee; --paper-2: #e7ebdf; --ink: #132019; --ink-2: #3a473f; --ink-3: #5f6b64; --forest: #17281e; --accent: #e4cb3c; --line: rgba(19, 32, 25, .13); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #888; }
+  body { font: 11pt/1.45 "Instrument Sans", sans-serif; color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { width: 297mm; height: 210mm; overflow: hidden; position: relative; background: var(--paper); page-break-after: always; break-after: page; padding: 14mm 16mm 12mm; display: flex; flex-direction: column; }
+  .page:last-child { page-break-after: auto; break-after: auto; }
+  .mono { font-family: "Geist Mono", monospace; }
+  .eyebrow { font-family: "Geist Mono", monospace; font-size: 8pt; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); margin: 0; }
+  h1 { font-size: 46pt; line-height: .98; letter-spacing: -.04em; font-weight: 500; margin: 0; }
+  h2 { font-size: 24pt; line-height: 1.05; letter-spacing: -.035em; font-weight: 500; margin: 6px 0 0; }
+  p { margin: 0; }
+  .lead { font-size: 12.5pt; color: var(--ink-2); line-height: 1.45; }
+  .foot { position: absolute; left: 16mm; right: 16mm; bottom: 7mm; display: flex; justify-content: space-between; font-family: "Geist Mono", monospace; font-size: 7pt; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15pt; letter-spacing: -.03em; }
+  .mark { width: 22px; height: 22px; position: relative; }
+  .mark::before { content: ""; position: absolute; inset: 0; background:
+    linear-gradient(currentColor, currentColor) top left / 7px 2px no-repeat, linear-gradient(currentColor, currentColor) top left / 2px 7px no-repeat,
+    linear-gradient(currentColor, currentColor) top right / 7px 2px no-repeat, linear-gradient(currentColor, currentColor) top right / 2px 7px no-repeat,
+    linear-gradient(currentColor, currentColor) bottom left / 7px 2px no-repeat, linear-gradient(currentColor, currentColor) bottom left / 2px 7px no-repeat,
+    linear-gradient(currentColor, currentColor) bottom right / 7px 2px no-repeat, linear-gradient(currentColor, currentColor) bottom right / 2px 7px no-repeat; }
+  .mark::after { content: ""; position: absolute; inset: 6px; background: var(--accent); }
+
+  /* titul */
+  .cover { background: var(--forest); color: #f2f4ee; padding: 0; }
+  .cover .bg { position: absolute; inset: 0; background: url("img/cover.jpg") 60% 55% / cover; }
+  .cover .shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(14, 24, 18, .9) 0%, rgba(14, 24, 18, .62) 42%, rgba(14, 24, 18, .05) 75%), linear-gradient(0deg, rgba(14, 24, 18, .55), rgba(14, 24, 18, 0) 35%); }
+  .cover .in { position: relative; height: 100%; padding: 16mm 18mm 14mm; display: flex; flex-direction: column; justify-content: space-between; }
+  .cover h1 { font-size: 54pt; max-width: 15ch; }
+  .cover .lead { color: rgba(242, 244, 238, .82); max-width: 52ch; margin-top: 14px; font-size: 13pt; }
+  .cover .eyebrow { color: var(--accent); }
+  .cover .meta { display: flex; gap: 8px; flex-wrap: wrap; }
+  .cover .meta span { font-family: "Geist Mono", monospace; font-size: 8pt; padding: 6px 11px; border-radius: 99px; border: 1px solid rgba(255, 255, 255, .25); background: rgba(255, 255, 255, .08); }
+  .cover .foot { color: rgba(242, 244, 238, .55); }
+
+  /* obsah */
+  .two { display: grid; grid-template-columns: 70mm 1fr; gap: 10mm; flex: 1; min-height: 0; align-items: center; }
+  .copy { display: flex; flex-direction: column; gap: 12px; }
+  .copy ul { margin: 4px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; font-size: 10pt; color: var(--ink-2); }
+  .copy li { position: relative; padding-left: 16px; }
+  .copy li::before { content: ""; position: absolute; left: 0; top: .5em; width: 7px; height: 7px; background: var(--accent); border-radius: 2px; }
+  .copy li b { color: var(--ink); font-weight: 600; }
+  .shot { position: relative; border-radius: 10px; overflow: hidden; box-shadow: 0 0 0 1px var(--line), 0 18px 40px -22px rgba(19, 32, 25, .5); background: #fff; }
+  .shot img { display: block; width: 100%; height: auto; }
+  .shots { display: grid; gap: 5mm; }
+  .shots.g2 { grid-template-columns: 1fr 1fr; }
+  .cap { font-size: 8.5pt; color: var(--ink-3); margin-top: 5px; }
+  .num { font-family: "Geist Mono", monospace; font-size: 8pt; color: var(--ink-3); }
+  .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 4px; }
+  .kpis div { padding: 10px 12px; border-radius: 10px; background: #fbfcf8; border: 1px solid var(--line); font-size: 9pt; color: var(--ink-2); }
+  .kpis b { display: block; font-size: 15pt; letter-spacing: -.03em; color: var(--ink); font-weight: 500; }
+  .tag { display: inline-block; font-family: "Geist Mono", monospace; font-size: 7.5pt; letter-spacing: .06em; text-transform: uppercase; padding: 4px 8px; border-radius: 6px; background: var(--accent); color: var(--ink); align-self: flex-start; }
+
+
+  /* široké stránky: text nahoře, dva snímky přes celou šířku */
+  .wide-top { display: grid; grid-template-columns: 1.05fr 1fr; gap: 12mm; align-items: end; margin-bottom: 8mm; }
+  .wide-top .copy { gap: 8px; }
+  .wide-top ul { margin: 0; }
+  .wide-shots { display: grid; grid-template-columns: 1fr 1fr; gap: 7mm; flex: 1; align-items: start; }
+  .page.wide { justify-content: center; }
+  .page.wide .wide-shots { flex: 0 0 auto; }
+  .phone-wrap { position: relative; }
+  .phone { position: absolute; right: -7mm; bottom: -9mm; width: 21%; filter: drop-shadow(0 18px 24px rgba(19, 32, 25, .35)); }
+
+  /* závěr */
+  .end { background: var(--forest); color: #f2f4ee; }
+  .end .eyebrow { color: var(--accent); }
+  .end .lead { color: rgba(242, 244, 238, .78); }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8mm; margin-top: 12mm; }
+  .steps div { border-top: 1px solid rgba(242, 244, 238, .2); padding-top: 12px; }
+  .steps b { display: block; font-size: 14pt; font-weight: 500; letter-spacing: -.02em; margin: 6px 0 6px; }
+  .steps p { color: rgba(242, 244, 238, .72); font-size: 10pt; }
+  .end .foot { color: rgba(242, 244, 238, .5); }
+</style>
+</head>
+<body>
+
+<!-- 1 titul -->
+<section class="page cover">
+  <div class="bg"></div><div class="shade"></div>
+  <div class="in">
+    <div class="logo"><span class="mark"></span>Za Kapličkou</div>
+    <div>
+      <p class="eyebrow">Ukázka administrace webu</p>
+      <h1 style="margin-top:12px">Prodej pozemků pod kontrolou.</h1>
+      <p class="lead">Jedno místo pro celý prodej: stav všech 45 pozemků, poptávky z webu, prohlídky na místě a úpravy webu bez programátora. Co se změní v administraci, je na webu do pár vteřin.</p>
+    </div>
+    <div class="meta"><span>Přehled pro vedení</span><span>Pozemky a ceny</span><span>Poptávky</span><span>Prohlídky</span><span>Úpravy webu</span><span>Nastavení</span></div>
+  </div>
+  <div class="foot"><span>Rodinné domy Cerhenice · Comfort Development s.r.o.</span><span>Ilustrační data</span></div>
+</section>
+
+<!-- 2 přehled -->
+<section class="page">
+  <div class="two">
+    <div class="copy">
+      <span class="num">01</span>
+      <p class="eyebrow">Přehled</p>
+      <h2>Jak jde prodej, na jeden pohled</h2>
+      <p class="lead" style="font-size:10.5pt">Úvodní obrazovka pro vedení a marketing. Ukazuje, co je prodané, co rezervované a kde je potřeba zasáhnout.</p>
+      <ul>
+        <li><b>Stav prodeje</b> v kusech, m² i korunách</li>
+        <li><b>Poptávky za 30 dní</b> s trendem proti minulému měsíci</li>
+        <li><b>Co je potřeba udělat:</b> komu zavolat, dnešní prohlídky, končící rezervace</li>
+        <li><b>Plánek lokality</b>, klikem se upraví pozemek</li>
+        <li><b>Konverze a doba reakce</b> obchodu</li>
+      </ul>
+    </div>
+    <div class="shot"><img src="img/02-prehled.jpg" alt=""></div>
+  </div>
+  <div class="foot"><span>Za Kapličkou · administrace</span><span>02</span></div>
+</section>
+
+<!-- 3 marketing -->
+<section class="page wide">
+  <div class="wide-top"><div class="copy"><span class="num">02</span>
+      <p class="eyebrow">Marketing</p>
+      <h2>Odkud lidé chodí a o co je zájem</h2>
+      <p class="lead" style="font-size:10.5pt">Každá poptávka si nese zdroj z reklamy (Facebook, Google, Sklik, Sreality…) i název kampaně. Mapa zájmu ukáže, které pozemky táhnou.</p></div><div class="copy"><ul>
+        <li><b>Zdroje a kampaně</b> včetně toho, kolik z nich skončilo rezervací</li>
+        <li><b>Obchodní trychtýř</b> od nové poptávky po prodej</li>
+        <li><b>Mapa zájmu</b> podle počtu poptávek na pozemek, podklad pro cenu</li>
+        <li><b>Historie změn</b> v administraci</li>
+      </ul></div></div>
+  <div class="wide-shots">
+      <div><div class="shot"><img src="img/03b-zajem.jpg" alt=""></div><p class="cap">Mapa zájmu: žlutě pozemky s nejvíc poptávkami</p></div>
+      <div><div class="shot"><img src="img/03-prehled-2.jpg" alt=""></div><p class="cap">Zdroje poptávek, prohlídky a poslední změny</p></div>
+    </div>
+  <div class="foot"><span>Za Kapličkou · administrace</span><span>03</span></div>
+</section>
+
+<!-- 4 pozemky -->
+<section class="page">
+  <div class="two">
+    <div class="copy">
+      <span class="num">03</span>
+      <p class="eyebrow">Pozemky</p>
+      <h2>Stav a cena všech 45 parcel</h2>
+      <p class="lead" style="font-size:10.5pt">Tabulka jako v Excelu. Změna se uloží hned a propíše se do 3D modelu na webu, do seznamu, na stránku pozemku i do formuláře.</p>
+      <ul>
+        <li><b>Volný, rezervace, prodáno</b> jedním výběrem</li>
+        <li><b>Vlastní cena</b> nebo výchozí Kč/m² pro všechny</li>
+        <li><b>Rezervace do</b> s upozorněním, když končí</li>
+        <li><b>Zájemce a interní poznámka</b> u každého pozemku</li>
+      </ul>
+    </div>
+    <div class="shot"><img src="img/04-pozemky.jpg" alt=""></div>
+  </div>
+  <div class="foot"><span>Za Kapličkou · administrace</span><span>04</span></div>
+</section>
+
+<!-- 5 poptávky -->
+<section class="page wide">
+  <div class="wide-top"><div class="copy"><span class="num">04</span>
+      <p class="eyebrow">Poptávky</p>
+      <h2>Každý zájemce od prvního kontaktu po podpis</h2>
+      <p class="lead" style="font-size:10.5pt">Poptávky z webu přicházejí rovnou sem i s vybraným pozemkem a termínem prohlídky. V detailu je vše pro obchodníka.</p></div><div class="copy"><ul>
+        <li><b>Zavolat nebo napsat</b> jedním klikem</li>
+        <li><b>Stav obchodu:</b> nová, kontaktováno, prohlídka, rezervace, prodáno</li>
+        <li><b>Rezervovat pozemek</b> rovnou z poptávky</li>
+        <li><b>Poznámky s historií</b>, export do Excelu, smazání podle GDPR</li>
+      </ul></div></div>
+  <div class="wide-shots">
+      <div><div class="shot"><img src="img/05-poptavky.jpg" alt=""></div><p class="cap">Seznam poptávek s filtry a hledáním</p></div>
+      <div><div class="shot"><img src="img/06-lead.jpg" alt=""></div><p class="cap">Detail zájemce: stav, pozemky, poznámky</p></div>
+    </div>
+  <div class="foot"><span>Za Kapličkou · administrace</span><span>05</span></div>
+</section>
+
+<!-- 6 prohlídky -->
+<section class="page wide">
+  <div class="wide-top"><div class="copy"><span class="num">05</span>
+      <p class="eyebrow">Prohlídky</p>
+      <h2>Termíny na místě, které si lidé sami vyberou</h2>
+      <p class="lead" style="font-size:10.5pt">Obchodník vypíše termíny, třeba každou sobotu 10 až 12 h na několik týdnů dopředu. Volné termíny se hned nabídnou ve formuláři na webu.</p></div><div class="copy"><ul>
+        <li><b>Vypsání termínů</b> na den nebo opakovaně po týdnech</li>
+        <li><b>Obsazené termíny</b> se jménem a telefonem zájemce</li>
+        <li><b>Na webu</b> si zájemce vybere čas jedním klikem</li>
+      </ul></div></div>
+  <div class="wide-shots">
+      <div><div class="shot"><img src="img/07-prohlidky.jpg" alt=""></div><p class="cap">Kalendář prohlídek v administraci</p></div>
+      <div><div class="shot"><img src="img/15-web-form.jpg" alt=""></div><p class="cap">Na webu: výběr termínu přímo ve formuláři</p></div>
+    </div>
+  <div class="foot"><span>Za Kapličkou · administrace</span><span>06</span></div>
+</section>
+
+<!-- 7 editor -->
+<section class="page">
+  <div class="two">
+    <div class="copy">
+      <span class="num">06</span>
+      <p class="eyebrow">Obsah webu</p>
+      <h2>Texty se upravují přímo na webu</h2>
+      <p class="lead" style="font-size:10.5pt">Web se otevře v režimu úprav. Do textu se klikne a píše, jako ve Wordu. Žádné formuláře ani programátor.</p>
+      <ul>
+        <li><b>Po najetí myší</b> se ukáže, co se dá upravit</li>
+        <li><b>Počítadlo znaků</b> a upozornění, když je text moc dlouhý</li>
+        <li><b>Seznam změn</b> před zveřejněním, každou jde vrátit</li>
+        <li><b>Zveřejnit</b> jedním tlačítkem, rozpracované se neztratí</li>
+        <li><b>Náhled na mobilu</b> a tabletu ještě před zveřejněním</li>
+      </ul>
+    </div>
+    <div class="phone-wrap"><div class="shot"><img src="img/10-editor-tip.jpg" alt=""></div><img class="phone" src="img/phone.png" alt=""></div>
+  </div>
+  <div class="foot"><span>Za Kapličkou · administrace</span><span>07</span></div>
+</section>
+
+<!-- 8 editor obrázky -->
+<section class="page wide">
+  <div class="wide-top"><div class="copy"><span class="num">06</span><p class="eyebrow">Obsah webu</p><h2>Každou změnu vidíte, než ji zveřejníte</h2></div>
+  <div class="copy"><ul><li><b>Seznam změn</b>: co se upravilo, „Ukázat“ na webu nebo „Vrátit“</li><li><b>Výměna obrázku</b> z knihovny vizualizací nebo nahráním z počítače, fotka se sama zmenší</li><li><b>Skrytí položky</b> galerie, FAQ nebo harmonogramu jedním přepínačem</li></ul></div></div>
+  <div class="wide-shots">
+    <div><div class="shot"><img src="img/11-editor-changes.jpg" alt=""></div><p class="cap">Neuložené změny před zveřejněním</p></div>
+    <div><div class="shot"><img src="img/13-editor-picker.jpg" alt=""></div><p class="cap">Výměna obrázku z knihovny nebo z počítače</p></div>
+  </div>
+  <div class="foot"><span>Za Kapličkou · administrace</span><span>08</span></div>
+</section>
+
+<!-- 9 nastavení -->
+<section class="page">
+  <div class="two">
+    <div class="copy">
+      <span class="num">07</span>
+      <p class="eyebrow">Nastavení</p>
+      <h2>Kontakty, ceny, akce a měření</h2>
+      <p class="lead" style="font-size:10.5pt">Vše, co se na webu mění občas, je na jednom místě.</p>
+      <ul>
+        <li><b>Kontakt prodejce</b> se změní na celém webu najednou</li>
+        <li><b>Ceny</b> zobrazit, nebo nabízet „Ceník pošleme obratem“</li>
+        <li><b>Akční lišta</b> nahoře, třeba pozvánka na sobotní prohlídky</li>
+        <li><b>Google Tag Manager a Meta Pixel</b> se souhlasem s cookies</li>
+        <li><b>Titulek a popis pro Google</b> s náhledem výsledku hledání</li>
+      </ul>
+    </div>
+    <div class="shot"><img src="img/08-nastaveni.jpg" alt=""></div>
+  </div>
+  <div class="foot"><span>Za Kapličkou · administrace</span><span>09</span></div>
+</section>
+
+<!-- 10 závěr -->
+<section class="page end">
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center">
+    <div class="logo" style="margin-bottom:14mm"><span class="mark"></span>Za Kapličkou</div>
+    <p class="eyebrow">Bezpečnost a provoz</p>
+    <h2 style="font-size:32pt; max-width: 20ch; margin-top:10px">Přístup jen na heslo, data na zabezpečeném serveru.</h2>
+    <div class="steps">
+      <div><span class="mono" style="font-size:8pt;color:#e4cb3c">01</span><b>Přihlášení heslem</b><p>Omezený počet pokusů, automatické odhlášení po 12 hodinách.</p></div>
+      <div><span class="mono" style="font-size:8pt;color:#e4cb3c">02</span><b>Ochrana formuláře</b><p>Ochrana proti robotům a hromadnému odesílání, souhlas se zpracováním údajů.</p></div>
+      <div><span class="mono" style="font-size:8pt;color:#e4cb3c">03</span><b>E-mail o poptávce</b><p>Každá nová poptávka může přijít i e-mailem obchodníkovi.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>Za Kapličkou · administrace</span><span>Data na snímcích jsou ilustrační</span></div>
+</section>
+
+</body>
+</html>

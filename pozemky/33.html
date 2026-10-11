@@ -74,7 +74,7 @@
       <a href="../dum">Váš dům</a>
     </nav>
     <div class="header-cta">
-      <a class="header-phone" href="tel:+420123456789"><svg class="icon"><use href="#i-phone"/></svg><span>+420 123 456 789</span></a>
+      <a class="header-phone" href="tel:+420123456789" data-contact="phone"><svg class="icon"><use href="#i-phone"/></svg><span>+420 123 456 789</span></a>
       <a class="btn btn-accent btn-sm" href="#poptavka">Zjistit cenu</a>
     </div>
   </div>
@@ -146,8 +146,8 @@
         <h2 id="contact-title">Pozemek 33 vám ukážeme na místě</h2>
         <p class="lead">Pošleme ceník, domluvíme prohlídku a odpovíme na všechno kolem koupě.</p>
         <div class="contact-links">
-          <a href="tel:+420123456789"><svg class="icon"><use href="#i-phone"/></svg>+420 123 456 789</a>
-          <a href="mailto:prodej@zakaplickou.cz"><svg class="icon"><use href="#i-envelope-simple"/></svg>prodej@zakaplickou.cz</a>
+          <a href="tel:+420123456789" data-contact="phone"><svg class="icon"><use href="#i-phone"/></svg>+420 123 456 789</a>
+          <a href="mailto:prodej@zakaplickou.cz" data-contact="email"><svg class="icon"><use href="#i-envelope-simple"/></svg>prodej@zakaplickou.cz</a>
         </div>
       </div>
       <form class="form" id="lead-form" novalidate>
@@ -160,6 +160,8 @@
           </div>
           <div class="field"><label for="f-email">E-mail <span class="opt">nepovinné, pošleme na něj ceník</span></label><input id="f-email" name="email" type="email" autocomplete="email"><span class="err">Zkontrolujte prosím e-mail.</span></div>
           <div class="field"><label for="f-when">Prohlídka</label><select id="f-when" name="when"><option>Kdykoli</option><option>Tento týden</option><option>Příští týden</option><option selected>Zatím jen ceník</option></select></div>
+          <div class="hp-field" aria-hidden="true"><label for="f-web">Web</label><input id="f-web" name="web" tabindex="-1" autocomplete="off"></div>
+          <p class="form-error" id="form-error" role="alert" hidden></p>
           <label class="consent"><input type="checkbox" required id="f-consent"><span>Souhlasím se <a href="#" target="_blank" rel="noopener">zpracováním osobních údajů</a> za účelem odpovědi na poptávku.</span></label>
           <button class="btn btn-accent" type="submit">Odeslat poptávku <svg class="icon icon-arrow"><use href="#i-arrow-right"/></svg></button>
         </div>
@@ -184,7 +186,7 @@
 </footer>
 
 <div class="mbar is-on" id="mbar">
-  <a class="btn btn-call" href="tel:+420123456789" aria-label="Zavolat"><svg class="icon"><use href="#i-phone"/></svg></a>
+  <a class="btn btn-call" href="tel:+420123456789" data-contact="phone" aria-label="Zavolat"><svg class="icon"><use href="#i-phone"/></svg></a>
   <a class="btn btn-accent" href="#poptavka">Zjistit cenu pozemku 33</a>
 </div>
 <div class="toast page-toast" id="toast" role="status" aria-live="polite"></div>

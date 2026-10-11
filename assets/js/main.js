@@ -2,6 +2,10 @@ import { PARCELS, SITE } from "../data/parcels.js";
 import { PRICE_PER_M2, PRICE_OVERRIDE, STATUS } from "./config.js";
 import { favs, isFav, toggleFav, onFavs, FAV_MAX } from "./favs.js";
 import { SEASONS, daylight, fmtTime } from "./sun.js";
+import { loadLive, submitLead, mountSlotPicker, trackLead, fmtSlot } from "./live.js";
+
+// živá data z administrace (stavy, ceny, texty, kontakty) ještě před vykreslením
+await loadLive();
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -45,28 +49,6 @@ const io = new IntersectionObserver((entries) => {
 }, { rootMargin: "0px 0px -8% 0px" });
 $$(".reveal").forEach((el) => io.observe(el));
 
-/* ---------- modal (přelet dronem) ---------- */
-let lastFocus = null;
-function openModal(id) {
-  const m = $(`#modal-${id}`);
-  lastFocus = document.activeElement;
-  m.inert = false;
-  m.classList.add("is-open"); m.setAttribute("aria-hidden", "false");
-  $(".modal-close", m).focus();
-  track("flyover_open");
-}
-function closeModal() {
-  const m = $(".modal.is-open");
-  if (!m) return false;
-  m.classList.remove("is-open"); m.setAttribute("aria-hidden", "true"); m.inert = true;
-  m.querySelector("video")?.pause();
-  lastFocus && lastFocus.focus();
-  return true;
-}
-$$("[data-open-modal]").forEach((b) => b.addEventListener("click", () => openModal(b.dataset.openModal)));
-$$("[data-close-modal]").forEach((b) => b.addEventListener("click", closeModal));
-$$(".modal").forEach((m) => m.addEventListener("click", (e) => { if (e.target === m) closeModal(); }));
-
 /* ---------- galerie ---------- */
 const gal = $("#gallery");
 $$("[data-gal]").forEach((b) => b.addEventListener("click", () => {
@@ -100,10 +82,37 @@ form.addEventListener("submit", (e) => {
   consent.closest(".consent").classList.toggle("is-invalid", !consent.checked);
   if (!consent.checked && !first) first = consent;
   if (first) { first.focus(); return; }
-  // DOPLNIT: odeslání na backend (webhook / CRM). Zatím jen potvrzení na stránce.
-  track("lead_submit", { plot_id: plotSelect.value || null, visit: $("#f-when").value });
-  form.classList.add("is-sent");
+  sendLead();
 });
+let slotPicker = null;
+mountSlotPicker($("#f-when")).then((p) => (slotPicker = p));
+async function sendLead() {
+  const btn = $('button[type="submit"]', form);
+  const label = btn.innerHTML;
+  btn.disabled = true;
+  btn.textContent = "Odesílám…";
+  const msg = $("#f-msg").value.trim();
+  const fromCompare = (msg.match(/pozemky ([\d, ]+)/) || [])[1];
+  const sv = slotPicker ? slotPicker.value() : { slotId: "", when: $("#f-when").value };
+  const res = await submitLead({
+    name: $("#f-name").value, phone: $("#f-phone").value, email: $("#f-email").value,
+    plot: plotSelect.value, plots: fromCompare ? fromCompare.split(",").map((x) => x.trim().padStart(2, "0")) : [],
+    when: sv.when, slotId: sv.slotId, message: msg, consent: $("#f-consent").checked, web: $("#f-web")?.value || "",
+  });
+  btn.disabled = false;
+  btn.innerHTML = label;
+  const err = $("#form-error");
+  if (!res.ok) {
+    err.hidden = false;
+    err.textContent = res.offline ? "Poptávku se nepodařilo odeslat. Zavolejte nám prosím, nebo to zkuste znovu." : res.error;
+    for (const [k, v] of Object.entries(res.errors || {})) { const f = $(`#f-${k}`)?.closest(".field"); if (f) { f.classList.add("is-invalid"); $(".err", f).textContent = v; } }
+    return;
+  }
+  err.hidden = true;
+  trackLead({ plot_id: plotSelect.value || null, visit: sv.slotId ? "termin" : sv.when });
+  if (res.viewing) $(".form-success p", form).textContent = `Prohlídku máte zapsanou na ${fmtSlot(res.viewing)}. Den předem vám zavoláme pro potvrzení.`;
+  form.classList.add("is-sent");
+}
 $$("input", form).forEach((i) => i.addEventListener("input", () => { i.closest(".field")?.classList.remove("is-invalid"); i.removeAttribute("aria-invalid"); }));
 
 /* ---------- 3D výběr ---------- */
@@ -230,7 +239,6 @@ $("#d-share").addEventListener("click", async () => {
 
 addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
-    if (closeModal()) return;
     if (menu.classList.contains("is-open")) return setMenu(false);
     if (drawer.classList.contains("is-open")) (mp ? mp.select(null) : openDrawer(null));
     return;
@@ -424,13 +432,56 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
     if (document.readyState === "complete") setTimeout(start, 300); else addEventListener("load", () => setTimeout(start, 300), { once: true });
   }
 }
+/* ---------- proměna: posuvník před a po, video proměny ---------- */
 {
-  const mv = $("#modal-video");
-  $$("[data-open-modal]").forEach((b) => b.addEventListener("click", () => {
-    if (!mv.src) mv.src = mv.dataset.src;
-    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) mv.play().catch(() => {});
-  }));
-  $$("[data-close-modal], .modal").forEach((el) => el.addEventListener("click", (e) => { if (e.target === el || el.matches("[data-close-modal]")) mv.pause(); }));
+  const slider = $("#pm-slider"), handle = $("#cmp-handle"), vid = $("#promena-video");
+  if (slider && handle) {
+    const reduceM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let x = 50, drag = false, intro = 0, used = false;
+    const set = (v) => { x = Math.max(0, Math.min(100, v)); slider.style.setProperty("--x", `${x}%`); handle.setAttribute("aria-valuenow", String(Math.round(x))); };
+    const fromEvent = (e) => { const r = slider.getBoundingClientRect(); set(((e.clientX - r.left) / r.width) * 100); };
+    const firstUse = () => { cancelAnimationFrame(intro); if (!used) { used = true; track("promena_slider"); } };
+    slider.addEventListener("pointerdown", (e) => { drag = true; firstUse(); slider.setPointerCapture(e.pointerId); fromEvent(e); });
+    slider.addEventListener("pointermove", (e) => { if (drag) fromEvent(e); });
+    const end = () => { drag = false; };
+    slider.addEventListener("pointerup", end); slider.addEventListener("pointercancel", end);
+    handle.addEventListener("keydown", (e) => {
+      const step = { ArrowLeft: -5, ArrowRight: 5, PageDown: -20, PageUp: 20 }[e.key];
+      if (step !== undefined) { e.preventDefault(); firstUse(); set(x + step); }
+      else if (e.key === "Home") { e.preventDefault(); firstUse(); set(0); }
+      else if (e.key === "End") { e.preventDefault(); firstUse(); set(100); }
+    });
+    // úvodní ukázka, že se dá táhnout: tam a zpět, jednou
+    if (!reduceM) new IntersectionObserver(([e], obs) => {
+      if (!e.isIntersecting) return;
+      obs.disconnect();
+      const keys = [50, 74, 30, 50], t0 = performance.now() + 350, dur = 2600;
+      const ease = (k) => (k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2);
+      const step = (now) => {
+        if (used) return;
+        const k = Math.min(1, Math.max(0, (now - t0) / dur)), seg = Math.min(keys.length - 2, Math.floor(k * (keys.length - 1)));
+        const local = k * (keys.length - 1) - seg;
+        set(keys[seg] + (keys[seg + 1] - keys[seg]) * ease(local));
+        if (k < 1) intro = requestAnimationFrame(step);
+      };
+      intro = requestAnimationFrame(step);
+    }, { threshold: 0.55 }).observe(slider);
+    // přepínač posuvník / video
+    const panes = { slider, video: $("#pm-video") };
+    let vio = null;
+    $$("[data-pm]").forEach((b) => b.addEventListener("click", () => {
+      const mode = b.dataset.pm;
+      $$("[data-pm]").forEach((t) => t.setAttribute("aria-selected", String(t === b)));
+      for (const [k, el] of Object.entries(panes)) el.hidden = k !== mode;
+      if (mode === "video" && vid) {
+        if (!vid.src) vid.src = innerWidth < 760 ? vid.dataset.srcSm : vid.dataset.src;
+        vid.currentTime = 0;
+        vid.play().catch(() => {});
+        if (!vio) requestAnimationFrame(() => { vio = new IntersectionObserver(([e]) => { if (panes.video.hidden) return; e.isIntersecting ? vid.play().catch(() => {}) : vid.pause(); }); vio.observe(panes.video); });
+      } else vid?.pause();
+      track("promena_tab", { mode });
+    }));
+  }
 }
 
 /* ---------- oblíbené a porovnání ---------- */

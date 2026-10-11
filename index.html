@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700;1,75..100,400..700&family=Geist+Mono:wght@400..600&display=swap" rel="stylesheet">
-  <link rel="preload" as="image" type="image/webp" imagesrcset="assets/img/hero-sm.webp 1100w, assets/img/hero.webp 2400w" imagesizes="100vw" fetchpriority="high">
+  <link rel="preload" as="image" type="image/webp" imagesrcset="assets/img/hero-dron-sm.webp 1100w, assets/img/hero-dron.webp 1920w" imagesizes="100vw" fetchpriority="high">
   <link rel="stylesheet" href="assets/css/site.css">
   <script type="importmap">
     { "imports": {
@@ -25,7 +25,7 @@
     } }
   </script>
 </head>
-<body>
+<body data-page="home">
 <!--ICONS-->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
 <symbol id="i-arrow-down" viewBox="0 0 256 256"><path d="M205.66,149.66l-72,72a8,8,0,0,1-11.32,0l-72-72a8,8,0,0,1,11.32-11.32L120,196.69V40a8,8,0,0,1,16,0V196.69l58.34-58.35a8,8,0,0,1,11.32,11.32Z"/></symbol>
@@ -88,7 +88,7 @@
       <a href="dum">Váš dům</a>
     </nav>
     <div class="header-cta">
-      <a class="header-phone" href="tel:+420123456789"><svg class="icon"><use href="#i-phone"/></svg><span>+420 123 456 789</span></a>
+      <a class="header-phone" href="tel:+420123456789" data-contact="phone"><svg class="icon"><use href="#i-phone"/></svg><span>+420 123 456 789</span></a>
       <a class="btn btn-accent btn-sm" href="#pozemky">Vybrat pozemek</a>
       <button class="menu-btn" type="button" aria-label="Otevřít menu" aria-expanded="false" aria-controls="mobile-menu"><svg class="icon"><use href="#i-list"/></svg></button>
     </div>
@@ -109,78 +109,103 @@
     <a href="dum">Váš dům ve 3D</a>
     <a href="#kontakt">Kontakt</a>
   </nav>
-  <a class="btn btn-accent" href="#pozemky">Vybrat pozemek <svg class="icon icon-arrow"><use href="#i-arrow-right"/></svg></a>
+  <a class="btn btn-accent" href="#pozemky"><span data-cms="hero.cta1" data-cms-label="Hlavní tlačítko">Vybrat pozemek</span> <svg class="icon icon-arrow"><use href="#i-arrow-right"/></svg></a>
 </div>
 
 <main>
   <!-- HERO. Pozadí = místo pro přelet dronem. Zatím vizualizace s pomalým "drone drift". Video vložit do .hero-media (README). -->
-  <section class="hero" aria-labelledby="hero-title">
+  <section class="hero" aria-labelledby="hero-title" data-cms-section="Úvod (hero)">
     <div class="hero-media" id="hero-media">
       <div class="drift">
         <picture>
-          <source type="image/webp" srcset="assets/img/hero-sm.webp 1100w, assets/img/hero.webp 2400w" sizes="100vw">
-          <img src="assets/img/hero.jpg" alt="Vizualizace lokality Za Kapličkou z ptačí perspektivy: nové ulice a zahrady mezi poli" fetchpriority="high">
+          <source type="image/webp" srcset="assets/img/hero-dron-sm.webp 1100w, assets/img/hero-dron.webp 1920w" sizes="100vw">
+          <img data-cms="hero.image" data-cms-type="image" data-cms-label="Hlavní obrázek (pod videem)" src="assets/img/hero-dron.jpg" alt="Lokalita Za Kapličkou z dronu: rozorané pole na jižním okraji Cerhenic" fetchpriority="high">
         </picture>
       </div>
-      <!-- Animovaný přelet z vizualizace (Higgsfield / Kling). Skutečné záběry z dronu: nahradit soubory v assets/video/. -->
+      <!-- Skutečné záběry z dronu: stabilizovaný sestřih tří záběrů s prolnutím (README → Video z dronu). -->
       <video class="hero-video" id="hero-video" muted loop playsinline preload="none" aria-hidden="true" data-src="assets/video/prelet.mp4" data-src-sm="assets/video/prelet-sm.mp4"></video>
     </div>
     <div class="hero-frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
     <div class="hero-inner">
       <div class="container hero-grid">
         <div class="hero-copy">
-          <p class="eyebrow rise" style="--i:0">Cerhenice · okres Kolín</p>
-          <h1 id="hero-title" class="rise" style="--i:1">45 stavebních pozemků u&nbsp;Kolína</h1>
-          <p class="lead rise" style="--i:2">Parcely 852 až 1 378 m² na klidném okraji Cerhenic. Územní rozhodnutí je pravomocné, sítě povedou až k hranici pozemku.</p>
+          <p class="eyebrow rise" style="--i:0" data-cms="hero.eyebrow" data-cms-label="Nadtitulek">Cerhenice · okres Kolín</p>
+          <h1 id="hero-title" class="rise" style="--i:1" data-cms="hero.title" data-cms-label="Hlavní nadpis">45 stavebních pozemků u&nbsp;Kolína</h1>
+          <p class="lead rise" style="--i:2" data-cms="hero.lead" data-cms-type="textarea" data-cms-label="Podnadpis">Parcely 852 až 1 378 m² na klidném okraji Cerhenic. Územní rozhodnutí je pravomocné, sítě povedou až k hranici pozemku.</p>
           <div class="hero-actions rise" style="--i:3">
             <a class="btn btn-accent" href="#pozemky">Vybrat pozemek <svg class="icon icon-arrow"><use href="#i-arrow-right"/></svg></a>
-            <a class="btn btn-glass" href="#kontakt">Domluvit prohlídku</a>
+            <a class="btn btn-glass" href="#kontakt" data-cms="hero.cta2" data-cms-label="Druhé tlačítko">Domluvit prohlídku</a>
           </div>
         </div>
         <div class="hero-side rise" style="--i:4">
-          <button class="flyover" type="button" data-open-modal="flyover">
-            <span class="flyover-play"><svg class="icon"><use href="#i-play"/></svg></span>
-            <span><b>Přelet lokalitou</b><small>animace z vizualizace</small></span>
-          </button>
-          <p class="hero-caption">Ilustrační vizualizace</p>
+          <p class="hero-caption" data-cms="hero.caption" data-cms-label="Popisek obrázku">Skutečný záběr z dronu</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- INTRO -->
-  <section class="section intro" id="ctvrt" aria-labelledby="intro-title">
+  <section class="section intro" id="ctvrt" aria-labelledby="intro-title" data-cms-section="Úvod: čtvrť a čísla">
     <div class="container">
-      <p class="intro-statement reveal" id="intro-title">Pole jižně od Cerhenic se odjakživa jmenují Za Kapličkou. <span>Teď je dělíme na 45 velkých stavebních pozemků s novou ulicí, chodníky a zelení.</span></p>
+      <p class="intro-statement reveal" id="intro-title" data-cms="intro.statement" data-cms-type="html" data-cms-label="Úvodní věta (šedá část ve &lt;span&gt;)">Pole jižně od Cerhenic se odjakživa jmenují Za Kapličkou. <span>Teď je dělíme na 45 velkých stavebních pozemků s novou ulicí, chodníky a zelení.</span></p>
       <div class="intro-row">
-        <p class="reveal" style="--i:1">Kupujete pozemek, dům si postavíte podle sebe. Jednotná pravidla zástavby drží čtvrť pohromadě a každý dům má kolem sebe prostor.</p>
+        <p class="reveal" style="--i:1" data-cms="intro.text" data-cms-type="textarea" data-cms-label="Text pod větou">Kupujete pozemek, dům si postavíte podle sebe. Jednotná pravidla zástavby drží čtvrť pohromadě a každý dům má kolem sebe prostor.</p>
         <a class="btn btn-ghost reveal" style="--i:2" href="#pravidla">Pravidla zástavby <svg class="icon icon-arrow"><use href="#i-arrow-right"/></svg></a>
       </div>
       <dl class="facts">
-        <div class="fact reveal"><dt>pozemků ve dvou etapách</dt><dd class="num">45</dd></div>
-        <div class="fact reveal" style="--i:1"><dt>průměrná výměra</dt><dd class="num">1 005<small>m²</small></dd></div>
-        <div class="fact reveal" style="--i:2"><dt>vlakem do Kolína</dt><dd class="num">13<small>min</small></dd></div>
-        <div class="fact reveal" style="--i:3"><dt>celá lokalita</dt><dd class="num">6<small>ha</small></dd></div>
+        <div class="fact reveal"><dt data-cms="intro.fact1.label" data-cms-label="Číslo 1: popisek">pozemků ve dvou etapách</dt><dd class="num" data-cms="intro.fact1.value" data-cms-type="html" data-cms-label="Číslo 1: hodnota (jednotka v &lt;small&gt;)">45</dd></div>
+        <div class="fact reveal" style="--i:1"><dt data-cms="intro.fact2.label" data-cms-label="Číslo 2: popisek">průměrná výměra</dt><dd class="num" data-cms="intro.fact2.value" data-cms-type="html" data-cms-label="Číslo 2: hodnota (jednotka v &lt;small&gt;)">1 005<small>m²</small></dd></div>
+        <div class="fact reveal" style="--i:2"><dt data-cms="intro.fact3.label" data-cms-label="Číslo 3: popisek">vlakem do Kolína</dt><dd class="num" data-cms="intro.fact3.value" data-cms-type="html" data-cms-label="Číslo 3: hodnota (jednotka v &lt;small&gt;)">13<small>min</small></dd></div>
+        <div class="fact reveal" style="--i:3"><dt data-cms="intro.fact4.label" data-cms-label="Číslo 4: popisek">celá lokalita</dt><dd class="num" data-cms="intro.fact4.value" data-cms-type="html" data-cms-label="Číslo 4: hodnota (jednotka v &lt;small&gt;)">6<small>ha</small></dd></div>
       </dl>
     </div>
   </section>
 
+  <!-- PROMĚNA: skutečná fotka z dronu (11. 10. 2026) a stejný záběr se zástavbou podle studie.
+       Parcely a ulice osazené do fotky podle katastru ČÚZK a GPS dronu, domy ilustrační. Postup: tools/photomatch/. -->
+  <section class="section promena" id="promena" aria-labelledby="promena-title" data-cms-section="Proměna: před a po">
+    <div class="container promena-grid">
+      <div class="promena-copy">
+        <p class="eyebrow-sm reveal" data-cms="promena.eyebrow" data-cms-label="Nadtitulek">Dnes a po dostavbě</p>
+        <h2 id="promena-title" class="reveal" style="--i:1" data-cms="promena.title" data-cms-label="Nadpis">Z pole ulice</h2>
+        <p class="lead reveal" style="--i:2" data-cms="promena.lead" data-cms-type="textarea" data-cms-label="Text">Takhle vypadá lokalita dnes a takhle bude vypadat, až se dostaví. Parcely, ulice i zeleň jsme do skutečné fotky z dronu osadili přesně podle studie a katastru.</p>
+        <div class="pm-tabs reveal" style="--i:3" role="tablist" aria-label="Způsob zobrazení">
+          <button type="button" role="tab" aria-selected="true" aria-controls="pm-slider" data-pm="slider" data-cms="promena.tab1" data-cms-label="Přepínač: posuvník">Před a po</button>
+          <button type="button" role="tab" aria-selected="false" aria-controls="pm-video" data-pm="video" data-cms="promena.tab2" data-cms-label="Přepínač: video">Video proměny</button>
+        </div>
+      </div>
+      <div class="pm-frame reveal" id="pm-frame">
+        <div class="cmp-stage" id="pm-slider" role="tabpanel" style="--x:50%">
+          <picture><source type="image/webp" srcset="assets/img/promena-po-sm.webp 1100w, assets/img/promena-po.webp 2048w" sizes="(max-width: 1440px) 100vw, 1360px"><img class="cmp-img" data-cms="promena.after" data-cms-type="image" data-cms-label="Obrázek po dostavbě" src="assets/img/promena-po.jpg" alt="Stejný záběr po dostavbě: 45 rodinných domů se zahradami podle studie (vizualizace)" loading="lazy" width="2048" height="1152"></picture>
+          <div class="cmp-before"><picture><source type="image/webp" srcset="assets/img/promena-pred-sm.webp 1100w, assets/img/promena-pred.webp 2048w" sizes="(max-width: 1440px) 100vw, 1360px"><img class="cmp-img" data-cms="promena.before" data-cms-type="image" data-cms-label="Obrázek dnes" src="assets/img/promena-pred.jpg" alt="Lokalita dnes z dronu: rozorané pole a neoraná mez, v pozadí Cerhenice" loading="lazy" width="2048" height="1152"></picture></div>
+          <span class="cmp-tag cmp-tag-l" data-cms="promena.tagBefore" data-cms-label="Štítek vlevo">Dnes</span>
+          <span class="cmp-tag cmp-tag-r" data-cms="promena.tagAfter" data-cms-label="Štítek vpravo">Po dostavbě</span>
+          <div class="cmp-handle" id="cmp-handle" role="slider" tabindex="0" aria-label="Porovnání dnes a po dostavbě" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><i></i><b><svg class="icon flip"><use href="#i-arrow-right"/></svg><svg class="icon"><use href="#i-arrow-right"/></svg></b></div>
+        </div>
+        <div class="cmp-stage" id="pm-video" role="tabpanel" hidden>
+          <video id="promena-video" muted playsinline loop preload="none" poster="assets/img/promena-pred.jpg" data-src="assets/video/promena.mp4" data-src-sm="assets/video/promena-sm.mp4" aria-label="Video: na poli se vytyčí parcely a ulice a vyrostou domy"></video>
+        </div>
+      </div>
+      <p class="promena-note" data-cms="promena.note" data-cms-label="Poznámka pod obrázkem">Skutečná fotka z dronu. Parcelace a ulice podle studie APRIS a katastru, podoba domů a zahrad je ilustrační.</p>
+    </div>
+  </section>
+
   <!-- PÁS: KAPLIČKA -->
-  <section class="band" aria-label="Původ názvu Za Kapličkou">
+  <section class="band" aria-label="Původ názvu Za Kapličkou" data-cms-section="Pás s kapličkou">
     <div class="band-media px">
-      <picture><source type="image/webp" srcset="assets/img/life-kaplicka.webp"><img src="assets/img/life-kaplicka.jpg" alt="Kaplička s lipou na kraji pole za úsvitu" loading="lazy" width="2000" height="1119"></picture>
+      <picture><source type="image/webp" srcset="assets/img/life-kaplicka.webp"><img data-cms="band.image" data-cms-type="image" data-cms-label="Obrázek" src="assets/img/life-kaplicka.jpg" alt="Kaplička s lipou na kraji pole za úsvitu" loading="lazy" width="2000" height="1119"></picture>
     </div>
     <div class="container band-copy">
-      <p class="band-title reveal">Za kapličkou.<br>Odtud to jméno.</p>
-      <p class="band-note">Ilustrační foto</p>
+      <p class="band-title reveal" data-cms="band.title" data-cms-type="html" data-cms-label="Text (zalomení &lt;br&gt;)">Za kapličkou.<br>Odtud to jméno.</p>
+      <p class="band-note" data-cms="band.note" data-cms-label="Popisek">Ilustrační foto</p>
     </div>
   </section>
 
   <!-- 3D VÝBĚR -->
-  <section class="section plan-section" id="pozemky" aria-labelledby="plan-title">
+  <section class="section plan-section" id="pozemky" aria-labelledby="plan-title" data-cms-section="3D výběr pozemku">
     <div class="container plan-head">
-      <h2 id="plan-title" class="reveal">Vyberte si pozemek</h2>
-      <p class="lead reveal" style="--i:1">Klikněte na parcelu v modelu a uvidíte výměru, rozměry i to, kolik smíte zastavět. Ceník vám pošleme obratem.</p>
+      <h2 id="plan-title" class="reveal" data-cms="plan.title" data-cms-label="Nadpis">Vyberte si pozemek</h2>
+      <p class="lead reveal" style="--i:1" data-cms="plan.lead" data-cms-type="textarea" data-cms-label="Podnadpis">Klikněte na parcelu v modelu a uvidíte výměru, rozměry i to, kolik smíte zastavět. Ceník vám pošleme obratem.</p>
     </div>
 
     <div class="stage" id="stage">
@@ -224,7 +249,7 @@
         </div>
       </div>
 
-      <div class="panel hud hud-hint" id="hud-hint"><svg class="icon"><use href="#i-arrows-clockwise"/></svg><span>Táhněte pro otočení, kolečkem přiblížíte</span></div>
+      <div class="panel hud hud-hint" id="hud-hint"><svg class="icon"><use href="#i-arrows-clockwise"/></svg><span>Táhněte pro otočení, přiblížení Ctrl / ⌘ + kolečko</span></div>
 
       <div class="panel hud hud-views" role="toolbar" aria-label="Pohled na model">
         <button type="button" data-view="persp" aria-pressed="true"><svg class="icon"><use href="#i-cube"/></svg><span class="lbl">3D</span></button>
@@ -312,10 +337,10 @@
   </section>
 
   <!-- LOKALITA + MAPA -->
-  <section class="section" id="lokalita" aria-labelledby="loc-title">
+  <section class="section" id="lokalita" aria-labelledby="loc-title" data-cms-section="Lokalita a mapa">
     <div class="container loc-head">
-      <h2 id="loc-title" class="reveal">Na vesnici, ale ne z ruky</h2>
-      <p class="lead reveal" style="--i:1">Cerhenice jsou městys s necelými dvěma tisíci obyvateli. Vlak S1 jezdí přímo do Kolína i do Prahy, škola, školka a lékař jsou v obci.</p>
+      <h2 id="loc-title" class="reveal" data-cms="loc.title" data-cms-label="Nadpis">Na vesnici, ale ne z ruky</h2>
+      <p class="lead reveal" style="--i:1" data-cms="loc.lead" data-cms-type="textarea" data-cms-label="Text">Cerhenice jsou městys s necelými dvěma tisíci obyvateli. Vlak S1 jezdí přímo do Kolína i do Prahy, škola, školka a lékař jsou v obci.</p>
     </div>
     <div class="mapcard" id="mapcard">
       <div class="map-svg" id="map-svg" role="img" aria-label="Mapa okolí Cerhenic s trasami do Kolína, Prahy a dalších měst"></div>
@@ -340,34 +365,34 @@
   </section>
 
   <!-- ŽIVOT ZA HUMNY -->
-  <section class="section life" aria-labelledby="life-title">
+  <section class="section life" aria-labelledby="life-title" data-cms-section="Život za humny">
     <div class="container life-head">
-      <h2 id="life-title" class="reveal">Život za humny</h2>
-      <p class="lead reveal" style="--i:1">Velká zahrada, klidná ulice a pole na dohled. Do města přitom dojedete za čtvrt hodiny.</p>
+      <h2 id="life-title" class="reveal" data-cms="life.title" data-cms-label="Nadpis">Život za humny</h2>
+      <p class="lead reveal" style="--i:1" data-cms="life.lead" data-cms-type="textarea" data-cms-label="Text">Velká zahrada, klidná ulice a pole na dohled. Do města přitom dojedete za čtvrt hodiny.</p>
     </div>
     <div class="container mosaic">
       <div class="m-col">
-      <figure class="tile t-a reveal"><div class="ph px"><picture><source type="image/webp" srcset="assets/img/life-terasa.webp"><img src="assets/img/life-terasa.jpg" alt="Ranní káva na terase s výhledem na zahradu a pole" loading="lazy" width="1600" height="1075"></picture></div><figcaption><b>Ráno s výhledem do polí</b><span>Pozemky mají v průměru přes 1 000 m², místa na zahradu je dost.</span></figcaption></figure>
-      <figure class="tile t-c reveal"><div class="ph px"><picture><source type="image/webp" srcset="assets/img/life-ulice.webp"><img src="assets/img/life-ulice.jpg" alt="Nová klidná ulice se stromořadím a chodníkem" loading="lazy" width="1400" height="941"></picture></div><figcaption><b>Klidná ulice se stromy</b><span>Zelený pás, chodníky a parkování, žádná průjezdná doprava.</span></figcaption></figure>
+      <figure class="tile t-a reveal" data-cms-item="life.1" data-cms-label="Dlaždice 1"><div class="ph px"><picture><source type="image/webp" srcset="assets/img/life-terasa.webp"><img data-cms="life.1.image" data-cms-type="image" data-cms-label="Dlaždice 1: obrázek" src="assets/img/life-terasa.jpg" alt="Ranní káva na terase s výhledem na zahradu a pole" loading="lazy" width="1600" height="1075"></picture></div><figcaption><b data-cms="life.1.title" data-cms-label="Dlaždice 1: titulek">Ráno s výhledem do polí</b><span data-cms="life.1.text" data-cms-label="Dlaždice 1: text">Pozemky mají v průměru přes 1 000 m², místa na zahradu je dost.</span></figcaption></figure>
+      <figure class="tile t-c reveal" data-cms-item="life.2" data-cms-label="Dlaždice 2"><div class="ph px"><picture><source type="image/webp" srcset="assets/img/life-ulice.webp"><img data-cms="life.2.image" data-cms-type="image" data-cms-label="Dlaždice 2: obrázek" src="assets/img/life-ulice.jpg" alt="Nová klidná ulice se stromořadím a chodníkem" loading="lazy" width="1400" height="941"></picture></div><figcaption><b data-cms="life.2.title" data-cms-label="Dlaždice 2: titulek">Klidná ulice se stromy</b><span data-cms="life.2.text" data-cms-label="Dlaždice 2: text">Zelený pás, chodníky a parkování, žádná průjezdná doprava.</span></figcaption></figure>
       </div>
       <div class="m-col m-col-r">
-      <figure class="tile t-b reveal" style="--i:1"><div class="ph px"><picture><source type="image/webp" srcset="assets/img/life-par.webp"><img src="assets/img/life-par.jpg" alt="Rodina na vytyčeném pozemku ukazuje, kde bude stát dům" loading="lazy" width="1100" height="1375"></picture></div><figcaption><b>Dům podle vašich představ</b><span>Kupujete pozemek, stavíte s kým chcete.</span></figcaption></figure>
-      <figure class="tile t-d reveal" style="--i:1"><div class="ph px"><picture><source type="image/webp" srcset="assets/img/life-repka.webp"><img src="assets/img/life-repka.jpg" alt="Kvetoucí řepkové pole a alej v Polabí" loading="lazy" width="1600" height="895"></picture></div><figcaption><b>Polabí za humny</b><span>Rovina jako stvořená na kolo, kočárek i běh.</span></figcaption></figure>
+      <figure class="tile t-b reveal" data-cms-item="life.3" data-cms-label="Dlaždice 3" style="--i:1"><div class="ph px"><picture><source type="image/webp" srcset="assets/img/life-par.webp"><img data-cms="life.3.image" data-cms-type="image" data-cms-label="Dlaždice 3: obrázek" src="assets/img/life-par.jpg" alt="Rodina na vytyčeném pozemku ukazuje, kde bude stát dům" loading="lazy" width="1100" height="1375"></picture></div><figcaption><b data-cms="life.3.title" data-cms-label="Dlaždice 3: titulek">Dům podle vašich představ</b><span data-cms="life.3.text" data-cms-label="Dlaždice 3: text">Kupujete pozemek, stavíte s kým chcete.</span></figcaption></figure>
+      <figure class="tile t-d reveal" data-cms-item="life.4" data-cms-label="Dlaždice 4" style="--i:1"><div class="ph px"><picture><source type="image/webp" srcset="assets/img/life-repka.webp"><img data-cms="life.4.image" data-cms-type="image" data-cms-label="Dlaždice 4: obrázek" src="assets/img/life-repka.jpg" alt="Kvetoucí řepkové pole a alej v Polabí" loading="lazy" width="1600" height="895"></picture></div><figcaption><b data-cms="life.4.title" data-cms-label="Dlaždice 4: titulek">Polabí za humny</b><span data-cms="life.4.text" data-cms-label="Dlaždice 4: text">Rovina jako stvořená na kolo, kočárek i běh.</span></figcaption></figure>
       </div>
     </div>
-    <p class="container life-note">Ilustrační fotografie.</p>
+    <p class="container life-note" data-cms="life.note" data-cms-label="Poznámka pod fotkami">Ilustrační fotografie.</p>
   </section>
 
   <!-- STAV PROJEKTU -->
-  <section class="section ready" id="projekt" aria-labelledby="ready-title">
+  <section class="section ready" id="projekt" aria-labelledby="ready-title" data-cms-section="Stav projektu a harmonogram">
     <div class="container">
       <div class="ready-head">
-        <h2 id="ready-title" class="reveal">Územní rozhodnutí máme. Sítě se projektují.</h2>
-        <p class="lead reveal" style="--i:1">Obě etapy mají pravomocné územní rozhodnutí o dělení pozemků, ulicích a sítích. Dokumentaci pro stavební povolení zpracovává projekční kancelář APRIS.</p>
+        <h2 id="ready-title" class="reveal" data-cms="ready.title" data-cms-label="Nadpis">Územní rozhodnutí máme. Sítě se projektují.</h2>
+        <p class="lead reveal" style="--i:1" data-cms="ready.lead" data-cms-type="textarea" data-cms-label="Text">Obě etapy mají pravomocné územní rozhodnutí o dělení pozemků, ulicích a sítích. Dokumentaci pro stavební povolení zpracovává projekční kancelář APRIS.</p>
       </div>
       <div class="bento">
         <figure class="cell cell-plan reveal">
-          <img src="assets/img/plan-site.jpg" alt="Výřez koordinační situace: nová ulice s vodovodem, kanalizací a elektřinou podél pozemků" loading="lazy" width="1600" height="993">
+          <img data-cms="ready.image" data-cms-type="image" data-cms-label="Obrázek situace" src="assets/img/plan-site.jpg" alt="Výřez koordinační situace: nová ulice s vodovodem, kanalizací a elektřinou podél pozemků" loading="lazy" width="1600" height="993">
           <figcaption>
             <span><i style="background:#5c8ab8"></i>Vodovod</span>
             <span><i style="background:#94700a"></i>Splašková kanalizace</span>
@@ -376,25 +401,25 @@
           </figcaption>
         </figure>
         <div class="cell cell-time reveal" style="--i:1">
-          <h3>Harmonogram</h3>
+          <h3 data-cms="ready.tl.title" data-cms-label="Harmonogram: nadpis">Harmonogram</h3>
           <ol class="timeline">
-            <li class="done"><span class="when">06/2023</span><div><b>Územní rozhodnutí, etapa 1</b><span>35 pozemků, pravomocné, platnost do 02/2028</span></div></li>
-            <li class="done"><span class="when">05/2024</span><div><b>Územní rozhodnutí, etapa 2</b><span>10 pozemků, pravomocné, požádáno o prodloužení</span></div></li>
-            <li class="now"><span class="when">Teď</span><div><b>Stavební povolení na ulici a sítě</b><span>dokumentaci zpracovává APRIS s.r.o.</span></div></li>
-            <li><span class="when">Potom</span><div><b>Výstavba ulice a sítí</b><span>pak se připojíte a stavíte svůj dům</span></div></li>
+            <li data-cms-item="ready.tl1" data-cms-label="Krok harmonogramu 1" class="done"><span class="when" data-cms="ready.tl1.when" data-cms-label="Krok 1: kdy">06/2023</span><div><b data-cms="ready.tl1.title" data-cms-label="Krok 1: co">Územní rozhodnutí, etapa 1</b><span data-cms="ready.tl1.text" data-cms-label="Krok 1: detail">35 pozemků, pravomocné, platnost do 02/2028</span></div></li>
+            <li data-cms-item="ready.tl2" data-cms-label="Krok harmonogramu 2" class="done"><span class="when" data-cms="ready.tl2.when" data-cms-label="Krok 2: kdy">05/2024</span><div><b data-cms="ready.tl2.title" data-cms-label="Krok 2: co">Územní rozhodnutí, etapa 2</b><span data-cms="ready.tl2.text" data-cms-label="Krok 2: detail">10 pozemků, pravomocné, požádáno o prodloužení</span></div></li>
+            <li data-cms-item="ready.tl3" data-cms-label="Krok harmonogramu 3" class="now"><span class="when" data-cms="ready.tl3.when" data-cms-label="Krok 3: kdy">Teď</span><div><b data-cms="ready.tl3.title" data-cms-label="Krok 3: co">Stavební povolení na ulici a sítě</b><span data-cms="ready.tl3.text" data-cms-label="Krok 3: detail">dokumentaci zpracovává APRIS s.r.o.</span></div></li>
+            <li data-cms-item="ready.tl4" data-cms-label="Krok harmonogramu 4"><span class="when" data-cms="ready.tl4.when" data-cms-label="Krok 4: kdy">Potom</span><div><b data-cms="ready.tl4.title" data-cms-label="Krok 4: co">Výstavba ulice a sítí</b><span data-cms="ready.tl4.text" data-cms-label="Krok 4: detail">pak se připojíte a stavíte svůj dům</span></div></li>
           </ol>
         </div>
         <div class="cell cell-list reveal" style="--i:2">
-          <div class="li"><svg class="icon"><use href="#i-road-horizon"/></svg><div><h3>Nová ulice</h3><p>Dvoupruhová ulice šířky 6 m, zelený pás, chodníky a parkovací stání.</p></div></div>
-          <div class="li"><svg class="icon"><use href="#i-drop"/></svg><div><h3>Voda a kanalizace</h3><p>Napojení na kapacitní vodovod městyse, splašky do obecní sítě přes čerpací stanici.</p></div></div>
-          <div class="li"><svg class="icon"><use href="#i-lightning"/></svg><div><h3>Elektřina v zemi</h3><p>Nová trafostanice, vedení VN přeložíme pod zem. Předjednáno s ČEZ.</p></div></div>
+          <div class="li"><svg class="icon"><use href="#i-road-horizon"/></svg><div><h3 data-cms="ready.inf1.title" data-cms-label="Infrastruktura 1: nadpis">Nová ulice</h3><p data-cms="ready.inf1.text" data-cms-type="textarea" data-cms-label="Infrastruktura 1: text">Dvoupruhová ulice šířky 6 m, zelený pás, chodníky a parkovací stání.</p></div></div>
+          <div class="li"><svg class="icon"><use href="#i-drop"/></svg><div><h3 data-cms="ready.inf2.title" data-cms-label="Infrastruktura 2: nadpis">Voda a kanalizace</h3><p data-cms="ready.inf2.text" data-cms-type="textarea" data-cms-label="Infrastruktura 2: text">Napojení na kapacitní vodovod městyse, splašky do obecní sítě přes čerpací stanici.</p></div></div>
+          <div class="li"><svg class="icon"><use href="#i-lightning"/></svg><div><h3 data-cms="ready.inf3.title" data-cms-label="Infrastruktura 3: nadpis">Elektřina v zemi</h3><p data-cms="ready.inf3.text" data-cms-type="textarea" data-cms-label="Infrastruktura 3: text">Nová trafostanice, vedení VN přeložíme pod zem. Předjednáno s ČEZ.</p></div></div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- PRAVIDLA ZÁSTAVBY -->
-  <section class="section" id="pravidla" aria-labelledby="rules-title">
+  <section class="section" id="pravidla" aria-labelledby="rules-title" data-cms-section="Pravidla zástavby">
     <div class="container rules-grid">
       <div class="rules-visual reveal" aria-hidden="true">
         <svg viewBox="0 0 420 420" fill="none" font-family="Geist Mono, monospace">
@@ -410,16 +435,16 @@
           <text x="210" y="140" text-anchor="middle" font-size="12" fill="#132019">zahrada</text>
           <g stroke="#132019" stroke-width="3"><path d="M106 34v-12h12M314 34v-12h-12M106 366v12h12M314 366v12h-12"/></g>
         </svg>
-        <p class="rules-cap">Typický pozemek 983 m², 23 × 43 m</p>
+        <p class="rules-cap" data-cms="rules.cap" data-cms-label="Popisek plánku">Typický pozemek 983 m², 23 × 43 m</p>
       </div>
       <div>
-        <h2 id="rules-title" class="reveal">Co si na pozemku postavíte</h2>
-        <p class="lead reveal" style="--i:1">Územní plán tu určuje venkovské bydlení: samostatné rodinné domy s užitkovou zahradou. Pravidla jsou jednoduchá.</p>
+        <h2 id="rules-title" class="reveal" data-cms="rules.title" data-cms-label="Nadpis">Co si na pozemku postavíte</h2>
+        <p class="lead reveal" style="--i:1" data-cms="rules.lead" data-cms-type="textarea" data-cms-label="Text">Územní plán tu určuje venkovské bydlení: samostatné rodinné domy s užitkovou zahradou. Pravidla jsou jednoduchá.</p>
         <div class="rules-list">
-          <div class="rule reveal"><div class="num">20<small>%</small></div><p>Nejvýše tolik pozemku zastavíte. Na parcele 983 m² až 196 m².</p></div>
-          <div class="rule reveal" style="--i:1"><div class="num">2<small>NP</small></div><p>Dům má nejvýše dvě nadzemní podlaží včetně podkroví.</p></div>
-          <div class="rule reveal" style="--i:2"><div class="num">40-50<small>°</small></div><p>Sedlová nebo valbová střecha se stejným sklonem.</p></div>
-          <div class="rule reveal" style="--i:3"><div class="num">1<small>dům</small></div><p>Jeden samostatný rodinný dům na pozemek, s přístupem z ulice.</p></div>
+          <div class="rule reveal"><div class="num" data-cms="rules.r1.num" data-cms-type="html" data-cms-label="Pravidlo 1: číslo">20<small>%</small></div><p data-cms="rules.r1.text" data-cms-label="Pravidlo 1: text">Nejvýše tolik pozemku zastavíte. Na parcele 983 m² až 196 m².</p></div>
+          <div class="rule reveal" style="--i:1"><div class="num" data-cms="rules.r2.num" data-cms-type="html" data-cms-label="Pravidlo 2: číslo">2<small>NP</small></div><p data-cms="rules.r2.text" data-cms-label="Pravidlo 2: text">Dům má nejvýše dvě nadzemní podlaží včetně podkroví.</p></div>
+          <div class="rule reveal" style="--i:2"><div class="num" data-cms="rules.r3.num" data-cms-type="html" data-cms-label="Pravidlo 3: číslo">40-50<small>°</small></div><p data-cms="rules.r3.text" data-cms-label="Pravidlo 3: text">Sedlová nebo valbová střecha se stejným sklonem.</p></div>
+          <div class="rule reveal" style="--i:3"><div class="num" data-cms="rules.r4.num" data-cms-type="html" data-cms-label="Pravidlo 4: číslo">1<small>dům</small></div><p data-cms="rules.r4.text" data-cms-label="Pravidlo 4: text">Jeden samostatný rodinný dům na pozemek, s přístupem z ulice.</p></div>
         </div>
         <a class="btn btn-ink rules-cta reveal" href="dum"><svg class="icon"><use href="#i-house-line"/></svg>Vyzkoušet dům na pozemku ve 3D <svg class="icon icon-arrow"><use href="#i-arrow-right"/></svg></a>
       </div>
@@ -427,76 +452,78 @@
   </section>
 
   <!-- GALERIE -->
-  <section class="section gallery-section" aria-labelledby="gal-title">
+  <section class="section gallery-section" aria-labelledby="gal-title" data-cms-section="Galerie">
     <div class="container gallery-head">
-      <h2 id="gal-title" class="reveal">Jak tu bude</h2>
+      <h2 id="gal-title" class="reveal" data-cms="gal.title" data-cms-label="Nadpis">Jak tu bude</h2>
       <div class="gallery-ctrl">
         <button type="button" data-gal="-1" aria-label="Předchozí vizualizace"><svg class="icon flip"><use href="#i-arrow-right"/></svg></button>
         <button type="button" data-gal="1" aria-label="Další vizualizace"><svg class="icon"><use href="#i-arrow-right"/></svg></button>
       </div>
     </div>
     <div class="gallery" id="gallery" tabindex="0" aria-label="Galerie vizualizací">
-      <figure><div class="ph"><picture><source type="image/webp" srcset="assets/img/render-ulice.webp"><img src="assets/img/render-ulice.jpg" alt="Vizualizace nové ulice se stromořadím, chodníky a rodinnými domy se sedlovými střechami" loading="lazy" width="1600" height="905"></picture></div><figcaption>Nová ulice ráno: stromořadí, chodníky a zelený pás</figcaption></figure>
-      <figure><div class="ph"><picture><source type="image/webp" srcset="assets/img/render-zahrada.webp"><img src="assets/img/render-zahrada.jpg" alt="Vizualizace velké zahrady za domem s ovocnými stromy a výhledem do polí" loading="lazy" width="1600" height="1063"></picture></div><figcaption>Zahrada za domem s výhledem do polí</figcaption></figure>
-      <figure><div class="ph"><picture><source type="image/webp" srcset="assets/img/render-dron.webp"><img src="assets/img/render-dron.jpg" alt="Vizualizace lokality z nízkého přeletu při západu slunce" loading="lazy" width="1600" height="905"></picture></div><figcaption>Při západu slunce z nízkého přeletu</figcaption></figure>
-      <figure><div class="ph"><picture><source type="image/webp" srcset="assets/img/render-park.webp"><img src="assets/img/render-park.jpg" alt="Vizualizace veřejné zeleně s lavičkami a dětským hřištěm" loading="lazy" width="1600" height="1063"></picture></div><figcaption>Veřejná zeleň s místem na hraní</figcaption></figure>
-      <figure><div class="ph"><picture><source type="image/webp" srcset="assets/img/render-vjezd.webp"><img src="assets/img/render-vjezd.jpg" alt="Vizualizace vjezdu do lokality za soumraku s rozsvícenými lampami" loading="lazy" width="1600" height="905"></picture></div><figcaption>Vjezd do lokality za soumraku</figcaption></figure>
-      <figure><div class="ph"><img src="assets/img/viz-shora.jpg" alt="Vizualizace lokality shora: tři ulice a zahrady mezi poli" loading="lazy" width="1586" height="992"></div><figcaption>Pohled shora, etapa 1 a 2</figcaption></figure>
-      <figure><div class="ph"><img src="assets/img/viz-studie.jpg" alt="Architektonická studie zástavby lokality" loading="lazy" width="1600" height="1000"></div><figcaption>Studie zástavby od projektanta</figcaption></figure>
+      <figure data-cms-item="gal.1" data-cms-label="Obrázek 1"><div class="ph"><picture><source type="image/webp" srcset="assets/img/render-ulice.webp"><img data-cms="gal.1.image" data-cms-type="image" data-cms-label="Obrázek 1" src="assets/img/render-ulice.jpg" alt="Vizualizace nové ulice se stromořadím, chodníky a rodinnými domy se sedlovými střechami" loading="lazy" width="1600" height="905"></picture></div><figcaption data-cms="gal.1.caption" data-cms-label="Obrázek 1: popisek">Nová ulice ráno: stromořadí, chodníky a zelený pás</figcaption></figure>
+      <figure data-cms-item="gal.2" data-cms-label="Obrázek 2"><div class="ph"><picture><source type="image/webp" srcset="assets/img/render-zahrada.webp"><img data-cms="gal.2.image" data-cms-type="image" data-cms-label="Obrázek 2" src="assets/img/render-zahrada.jpg" alt="Vizualizace velké zahrady za domem s ovocnými stromy a výhledem do polí" loading="lazy" width="1600" height="1063"></picture></div><figcaption data-cms="gal.2.caption" data-cms-label="Obrázek 2: popisek">Zahrada za domem s výhledem do polí</figcaption></figure>
+      <figure data-cms-item="gal.3" data-cms-label="Obrázek 3"><div class="ph"><picture><source type="image/webp" srcset="assets/img/render-dron.webp"><img data-cms="gal.3.image" data-cms-type="image" data-cms-label="Obrázek 3" src="assets/img/render-dron.jpg" alt="Vizualizace lokality z nízkého přeletu při západu slunce" loading="lazy" width="1600" height="905"></picture></div><figcaption data-cms="gal.3.caption" data-cms-label="Obrázek 3: popisek">Při západu slunce z nízkého přeletu</figcaption></figure>
+      <figure data-cms-item="gal.4" data-cms-label="Obrázek 4"><div class="ph"><picture><source type="image/webp" srcset="assets/img/render-park.webp"><img data-cms="gal.4.image" data-cms-type="image" data-cms-label="Obrázek 4" src="assets/img/render-park.jpg" alt="Vizualizace veřejné zeleně s lavičkami a dětským hřištěm" loading="lazy" width="1600" height="1063"></picture></div><figcaption data-cms="gal.4.caption" data-cms-label="Obrázek 4: popisek">Veřejná zeleň s místem na hraní</figcaption></figure>
+      <figure data-cms-item="gal.5" data-cms-label="Obrázek 5"><div class="ph"><picture><source type="image/webp" srcset="assets/img/render-vjezd.webp"><img data-cms="gal.5.image" data-cms-type="image" data-cms-label="Obrázek 5" src="assets/img/render-vjezd.jpg" alt="Vizualizace vjezdu do lokality za soumraku s rozsvícenými lampami" loading="lazy" width="1600" height="905"></picture></div><figcaption data-cms="gal.5.caption" data-cms-label="Obrázek 5: popisek">Vjezd do lokality za soumraku</figcaption></figure>
+      <figure data-cms-item="gal.6" data-cms-label="Obrázek 6"><div class="ph"><img data-cms="gal.6.image" data-cms-type="image" data-cms-label="Obrázek 6" src="assets/img/viz-shora.jpg" alt="Vizualizace lokality shora: tři ulice a zahrady mezi poli" loading="lazy" width="1586" height="992"></div><figcaption data-cms="gal.6.caption" data-cms-label="Obrázek 6: popisek">Pohled shora, etapa 1 a 2</figcaption></figure>
+      <figure data-cms-item="gal.7" data-cms-label="Obrázek 7"><div class="ph"><img data-cms="gal.7.image" data-cms-type="image" data-cms-label="Obrázek 7" src="assets/img/viz-studie.jpg" alt="Architektonická studie zástavby lokality" loading="lazy" width="1600" height="1000"></div><figcaption data-cms="gal.7.caption" data-cms-label="Obrázek 7: popisek">Studie zástavby od projektanta</figcaption></figure>
     </div>
-    <p class="container gallery-note">Vizualizace jsou ilustrační. Podoba domů záleží na stavebnících, ulice a zeleň vycházejí z projektu.</p>
+    <p class="container gallery-note" data-cms="gal.note" data-cms-label="Poznámka pod galerií">Vizualizace jsou ilustrační. Podoba domů záleží na stavebnících, ulice a zeleň vycházejí z projektu.</p>
   </section>
 
   <!-- JAK KOUPIT -->
-  <section class="section" id="koupe" aria-labelledby="steps-title">
+  <section class="section" id="koupe" aria-labelledby="steps-title" data-cms-section="Jak koupit">
     <div class="container buy">
-      <div class="buy-visual reveal"><div class="ph px"><picture><source type="image/webp" srcset="assets/img/life-kolik.webp"><img src="assets/img/life-kolik.jpg" alt="Vytyčený pozemek se žlutými kolíky u nové ulice" loading="lazy" width="1100" height="1375"></picture></div></div>
+      <div class="buy-visual reveal"><div class="ph px"><picture><source type="image/webp" srcset="assets/img/life-kolik.webp"><img data-cms="buy.image" data-cms-type="image" data-cms-label="Obrázek" src="assets/img/life-kolik.jpg" alt="Vytyčený pozemek se žlutými kolíky u nové ulice" loading="lazy" width="1100" height="1375"></picture></div></div>
       <div class="buy-copy">
-        <h2 id="steps-title" class="reveal">Jak koupit pozemek</h2>
-        <p class="lead reveal" style="--i:1">Celou koupí vás provedeme. Pozemek si nejdřív v klidu prohlédnete na místě.</p>
+        <h2 id="steps-title" class="reveal" data-cms="buy.title" data-cms-label="Nadpis">Jak koupit pozemek</h2>
+        <p class="lead reveal" style="--i:1" data-cms="buy.lead" data-cms-type="textarea" data-cms-label="Text">Celou koupí vás provedeme. Pozemek si nejdřív v klidu prohlédnete na místě.</p>
         <ol class="steps">
-          <li class="step reveal"><span class="node"></span><h3>Vyberete</h3><p>Najdete pozemek ve 3D plánu a pošlete poptávku. Pošleme ceník a domluvíme prohlídku.</p></li>
-          <li class="step reveal" style="--i:1"><span class="node"></span><h3>Rezervujete</h3><p>Rezervační smlouvou pozemek stáhneme z nabídky, než si vyřídíte financování.</p></li>
-          <li class="step reveal" style="--i:2"><span class="node"></span><h3>Podepíšete</h3><p>Kupní smlouva a vklad do katastru. List vlastnictví vám ukážeme předem.</p></li>
-          <li class="step reveal" style="--i:3"><span class="node"></span><h3>Stavíte</h3><p>Po dokončení ulice a sítí se připojíte a začnete stavět svůj dům.</p></li>
+          <li class="step reveal"><span class="node"></span><h3 data-cms="buy.s1.title" data-cms-label="Krok 1: nadpis">Vyberete</h3><p data-cms="buy.s1.text" data-cms-type="textarea" data-cms-label="Krok 1: text">Najdete pozemek ve 3D plánu a pošlete poptávku. Pošleme ceník a domluvíme prohlídku.</p></li>
+          <li class="step reveal" style="--i:1"><span class="node"></span><h3 data-cms="buy.s2.title" data-cms-label="Krok 2: nadpis">Rezervujete</h3><p data-cms="buy.s2.text" data-cms-type="textarea" data-cms-label="Krok 2: text">Rezervační smlouvou pozemek stáhneme z nabídky, než si vyřídíte financování.</p></li>
+          <li class="step reveal" style="--i:2"><span class="node"></span><h3 data-cms="buy.s3.title" data-cms-label="Krok 3: nadpis">Podepíšete</h3><p data-cms="buy.s3.text" data-cms-type="textarea" data-cms-label="Krok 3: text">Kupní smlouva a vklad do katastru. List vlastnictví vám ukážeme předem.</p></li>
+          <li class="step reveal" style="--i:3"><span class="node"></span><h3 data-cms="buy.s4.title" data-cms-label="Krok 4: nadpis">Stavíte</h3><p data-cms="buy.s4.text" data-cms-type="textarea" data-cms-label="Krok 4: text">Po dokončení ulice a sítí se připojíte a začnete stavět svůj dům.</p></li>
         </ol>
       </div>
     </div>
   </section>
 
   <!-- FAQ -->
-  <section class="section faq-section" aria-labelledby="faq-title">
+  <section class="section faq-section" aria-labelledby="faq-title" data-cms-section="Časté otázky">
     <div class="container faq-wrap">
       <div class="faq-intro">
-        <h2 id="faq-title" class="reveal">Na co se ptáte</h2>
+        <h2 id="faq-title" class="reveal" data-cms="faq.title" data-cms-label="Nadpis">Na co se ptáte</h2>
         <a class="btn btn-ink reveal" style="--i:1" href="#kontakt">Zeptat se <svg class="icon icon-arrow"><use href="#i-arrow-right"/></svg></a>
       </div>
       <div class="faq">
-        <details><summary>Kdy budu moct začít stavět?<span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></summary><div class="ans"><p>Územní rozhodnutí jsou pravomocná a projektant připravuje stavební povolení na ulici a sítě. Stavět svůj dům začnete po jejich dokončení. Aktuální odhad termínu vám řekneme při prohlídce.</p></div></details>
-        <details><summary>Co je v ceně pozemku a co platí kupující?<span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></summary><div class="ans"><p>V ceně je pozemek s přístupem z nové ulice a sítěmi dovedenými k hranici parcely. Kupující platí přípojky na pozemku, poplatky distributorům a vklad do katastru. Přesný rozsah uvádí rezervační smlouva.</p></div></details>
-        <details><summary>Jaký dům si tu můžu postavit?<span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></summary><div class="ans"><p>Samostatný rodinný dům s nejvýše dvěma podlažími včetně podkroví a sedlovou nebo valbovou střechou se sklonem 40 až 50°. Zastavět lze nejvýše 20 % pozemku.</p></div></details>
-        <details><summary>Jak funguje rezervace?<span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></summary><div class="ans"><p>Po prohlídce podepíšete rezervační smlouvu a pozemek označíme v plánu jako rezervovaný. Máte tak čas vyřídit si financování.</p></div></details>
-        <details><summary>Dá se pozemek koupit na hypotéku?<span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></summary><div class="ans"><p>Ano, banky běžně financují koupi stavebního pozemku. Předáme vám podklady, které banka potřebuje: list vlastnictví, územní rozhodnutí a smlouvy.</p></div></details>
-        <details><summary>Kdo za projektem stojí?<span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></summary><div class="ans"><p>Investorem je Comfort Development s.r.o. z Kladna, projektantem kancelář APRIS s.r.o. z Prahy.</p></div></details>
+        <details data-cms-item="faq.1" data-cms-label="Otázka 1"><summary><span data-cms="faq.1.q" data-cms-label="Otázka 1">Kdy budu moct začít stavět?</span><span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></summary><div class="ans"><p data-cms="faq.1.a" data-cms-type="textarea" data-cms-label="Odpověď 1">Územní rozhodnutí jsou pravomocná a projektant připravuje stavební povolení na ulici a sítě. Stavět svůj dům začnete po jejich dokončení. Aktuální odhad termínu vám řekneme při prohlídce.</p></div></details>
+        <details data-cms-item="faq.2" data-cms-label="Otázka 2"><summary><span data-cms="faq.2.q" data-cms-label="Otázka 2">Co je v ceně pozemku a co platí kupující?</span><span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></summary><div class="ans"><p data-cms="faq.2.a" data-cms-type="textarea" data-cms-label="Odpověď 2">V ceně je pozemek s přístupem z nové ulice a sítěmi dovedenými k hranici parcely. Kupující platí přípojky na pozemku, poplatky distributorům a vklad do katastru. Přesný rozsah uvádí rezervační smlouva.</p></div></details>
+        <details data-cms-item="faq.3" data-cms-label="Otázka 3"><summary><span data-cms="faq.3.q" data-cms-label="Otázka 3">Jaký dům si tu můžu postavit?</span><span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></summary><div class="ans"><p data-cms="faq.3.a" data-cms-type="textarea" data-cms-label="Odpověď 3">Samostatný rodinný dům s nejvýše dvěma podlažími včetně podkroví a sedlovou nebo valbovou střechou se sklonem 40 až 50°. Zastavět lze nejvýše 20 % pozemku.</p></div></details>
+        <details data-cms-item="faq.4" data-cms-label="Otázka 4"><summary><span data-cms="faq.4.q" data-cms-label="Otázka 4">Jak funguje rezervace?</span><span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></summary><div class="ans"><p data-cms="faq.4.a" data-cms-type="textarea" data-cms-label="Odpověď 4">Po prohlídce podepíšete rezervační smlouvu a pozemek označíme v plánu jako rezervovaný. Máte tak čas vyřídit si financování.</p></div></details>
+        <details data-cms-item="faq.5" data-cms-label="Otázka 5"><summary><span data-cms="faq.5.q" data-cms-label="Otázka 5">Dá se pozemek koupit na hypotéku?</span><span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></summary><div class="ans"><p data-cms="faq.5.a" data-cms-type="textarea" data-cms-label="Odpověď 5">Ano, banky běžně financují koupi stavebního pozemku. Předáme vám podklady, které banka potřebuje: list vlastnictví, územní rozhodnutí a smlouvy.</p></div></details>
+        <details data-cms-item="faq.6" data-cms-label="Otázka 6"><summary><span data-cms="faq.6.q" data-cms-label="Otázka 6">Kdo za projektem stojí?</span><span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></summary><div class="ans"><p data-cms="faq.6.a" data-cms-type="textarea" data-cms-label="Odpověď 6">Investorem je Comfort Development s.r.o. z Kladna, projektantem kancelář APRIS s.r.o. z Prahy.</p></div></details>
+        <details data-cms-item="faq.7" data-cms-label="Otázka 7 (nová)" hidden><summary><span data-cms="faq.7.q" data-cms-label="Otázka 7">Nová otázka</span><span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></summary><div class="ans"><p data-cms="faq.7.a" data-cms-type="textarea" data-cms-label="Odpověď 7">Odpověď</p></div></details>
+        <details data-cms-item="faq.8" data-cms-label="Otázka 8 (nová)" hidden><summary><span data-cms="faq.8.q" data-cms-label="Otázka 8">Nová otázka</span><span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></summary><div class="ans"><p data-cms="faq.8.a" data-cms-type="textarea" data-cms-label="Odpověď 8">Odpověď</p></div></details>
       </div>
     </div>
   </section>
 
   <!-- KONTAKT -->
-  <section class="section contact" id="kontakt" aria-labelledby="contact-title">
+  <section class="section contact" id="kontakt" aria-labelledby="contact-title" data-cms-section="Kontakt a formulář">
     <div class="container contact-grid">
       <div class="contact-copy">
-        <h2 id="contact-title" class="reveal">Přijeďte se podívat</h2>
-        <p class="lead reveal" style="--i:1">Projdeme s vámi pozemky přímo na místě, pošleme ceník a odpovíme na všechno kolem koupě.</p>
+        <h2 id="contact-title" class="reveal" data-cms="contact.title" data-cms-label="Nadpis">Přijeďte se podívat</h2>
+        <p class="lead reveal" style="--i:1" data-cms="contact.lead" data-cms-type="textarea" data-cms-label="Text">Projdeme s vámi pozemky přímo na místě, pošleme ceník a odpovíme na všechno kolem koupě.</p>
         <div class="contact-links reveal" style="--i:2">
-          <a href="tel:+420123456789"><svg class="icon"><use href="#i-phone"/></svg>+420 123 456 789</a>
-          <a href="mailto:prodej@zakaplickou.cz"><svg class="icon"><use href="#i-envelope-simple"/></svg>prodej@zakaplickou.cz</a>
+          <a href="tel:+420123456789" data-contact="phone"><svg class="icon"><use href="#i-phone"/></svg>+420 123 456 789</a>
+          <a href="mailto:prodej@zakaplickou.cz" data-contact="email"><svg class="icon"><use href="#i-envelope-simple"/></svg>prodej@zakaplickou.cz</a>
         </div>
-        <p class="contact-meta reveal" style="--i:3">Prodej pozemků Za Kapličkou<br>Comfort Development s.r.o., gen. Klapálka 1345, Kladno</p>
+        <p class="contact-meta reveal" style="--i:3" data-cms="contact.meta" data-cms-type="html" data-cms-label="Firma a adresa (zalomení &lt;br&gt;)">Prodej pozemků Za Kapličkou<br>Comfort Development s.r.o., gen. Klapálka 1345, Kladno</p>
       </div>
       <form class="form reveal" id="lead-form" novalidate style="--i:1">
         <div class="form-body">
-          <h3>Poptávka a prohlídka</h3>
+          <h3 data-cms="contact.formtitle" data-cms-label="Nadpis formuláře">Poptávka a prohlídka</h3>
           <div class="field-row">
             <div class="field"><label for="f-name">Jméno a příjmení</label><input id="f-name" name="name" autocomplete="name" required aria-describedby="e-name"><span class="err" id="e-name">Vyplňte prosím jméno.</span></div>
             <div class="field"><label for="f-phone">Telefon</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required aria-describedby="e-phone"><span class="err" id="e-phone">Zadejte telefon, ať vám můžeme zavolat.</span></div>
@@ -507,26 +534,28 @@
             <div class="field"><label for="f-when">Prohlídka</label><select id="f-when" name="when"><option>Kdykoli</option><option>Tento týden</option><option>Příští týden</option><option>Zatím jen ceník</option></select></div>
           </div>
           <div class="field"><label for="f-msg">Zpráva <span class="opt">nepovinné</span></label><textarea id="f-msg" name="message"></textarea></div>
+          <div class="hp-field" aria-hidden="true"><label for="f-web">Web</label><input id="f-web" name="web" tabindex="-1" autocomplete="off"></div>
+          <p class="form-error" id="form-error" role="alert" hidden></p>
           <label class="consent"><input type="checkbox" required id="f-consent"><span>Souhlasím se <a href="#" target="_blank" rel="noopener">zpracováním osobních údajů</a> za účelem odpovědi na poptávku.</span></label>
           <button class="btn btn-accent" type="submit">Odeslat poptávku <svg class="icon icon-arrow"><use href="#i-arrow-right"/></svg></button>
         </div>
         <div class="form-success" role="status">
           <svg class="mark-ok" aria-hidden="true"><use href="#mark"/></svg>
-          <h3>Děkujeme, máme to</h3>
-          <p>Ozveme se vám do druhého pracovního dne a domluvíme prohlídku.</p>
+          <h3 data-cms="contact.thanks" data-cms-label="Poděkování: nadpis">Děkujeme, máme to</h3>
+          <p data-cms="contact.thankstext" data-cms-label="Poděkování: text">Ozveme se vám do druhého pracovního dne a domluvíme prohlídku.</p>
         </div>
       </form>
     </div>
   </section>
 </main>
 
-<footer class="site-footer">
+<footer class="site-footer" data-cms-section="Patička">
   <div class="container">
     <div class="footer-grid">
-      <div><p class="footer-claim">Stavební pozemky na jižním okraji Cerhenic, okres Kolín.</p></div>
+      <div><p class="footer-claim" data-cms="footer.claim" data-cms-label="Text v patičce">Stavební pozemky na jižním okraji Cerhenic, okres Kolín.</p></div>
       <div><h4>Projekt</h4><a href="#pozemky">Pozemky</a><a href="#lokalita">Lokalita</a><a href="#projekt">Stav projektu</a><a href="#pravidla">Pravidla zástavby</a></div>
       <div><h4>Investor</h4><p>Comfort Development s.r.o.<br>gen. Klapálka 1345<br>272 01 Kladno</p></div>
-      <div><h4>Kontakt</h4><a href="tel:+420123456789">+420 123 456 789</a><a href="mailto:prodej@zakaplickou.cz">prodej@zakaplickou.cz</a><a href="#">Ochrana osobních údajů</a></div>
+      <div><h4>Kontakt</h4><a href="tel:+420123456789" data-contact="phone">+420 123 456 789</a><a href="mailto:prodej@zakaplickou.cz" data-contact="email">prodej@zakaplickou.cz</a><a href="#">Ochrana osobních údajů</a></div>
     </div>
     <svg class="footer-logo" aria-label="Za Kapličkou" role="img"><use href="#logo"/></svg>
     <div class="footer-bottom">
@@ -537,23 +566,10 @@
 </footer>
 
 <div class="mbar" id="mbar">
-  <a class="btn btn-call" href="tel:+420123456789" aria-label="Zavolat"><svg class="icon"><use href="#i-phone"/></svg></a>
+  <a class="btn btn-call" href="tel:+420123456789" data-contact="phone" aria-label="Zavolat"><svg class="icon"><use href="#i-phone"/></svg></a>
   <a class="btn btn-accent" href="#pozemky">Vybrat pozemek</a>
 </div>
 
-<div class="modal" id="modal-flyover" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true" inert>
-  <div class="modal-box">
-    <button class="modal-close" type="button" data-close-modal aria-label="Zavřít"><svg class="icon"><use href="#i-x"/></svg></button>
-    <!-- Až budou skutečné záběry z dronu, nahradit zdroj videa. -->
-    <video class="modal-video" id="modal-video" muted loop playsinline preload="none" data-src="assets/video/prelet.mp4" poster="assets/img/hero.jpg"></video>
-    <div class="inner">
-      <p class="eyebrow">Animovaná vizualizace</p>
-      <h3 id="modal-title">Přelet nad lokalitou Za Kapličkou</h3>
-      <p>Animace vychází z vizualizace projektu. Skutečné záběry z dronu připravujeme.</p>
-      <div class="modal-actions"><a class="btn btn-accent" href="#pozemky" data-close-modal>Vybrat pozemek</a><a class="btn btn-glass" href="#kontakt" data-close-modal>Domluvit prohlídku</a></div>
-    </div>
-  </div>
-</div>
 
 <script type="module" src="assets/js/main.js"></script>
 </body>

@@ -2,3 +2,7 @@
 node_modules/
 brand-smery.png
 *.log
+.data/
+.env
+.env.local
+uploads/

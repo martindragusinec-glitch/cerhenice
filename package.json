@@ -1,0 +1,7 @@
+{
+  "name": "za-kaplickou",
+  "private": true,
+  "type": "module",
+  "description": "Web a administrace prodeje pozemků Za Kapličkou (Vercel: statické stránky + /api funkce)",
+  "engines": { "node": ">=18" }
+}

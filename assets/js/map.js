@@ -1,14 +1,15 @@
 // Mapa lokality: vlastní SVG ze skutečných souřadnic (assets/data/geo.js).
 // Režimy: autem (města), vlakem (S1), v obci (škola, zastávka, zámek… pěšky).
 // Po výběru cíle mapa plynule najede na celou trasu a trasa se vykreslí.
-import { SITE_LL, DEST, RAIL, RIVER, TOWNS, POIS } from "../data/geo.js";
+import { SITE_LL, SITE_TF, DEST, RAIL, RIVER, TOWNS, POIS } from "../data/geo.js";
 import { VILLAGE } from "../data/village.js";
 import { SITE, PARCELS } from "../data/parcels.js";
 
 // dekódování vrstev obce a půdorysu lokality do [lon, lat]
 const dec = (a) => { const o = []; for (let i = 0; i < a.length; i += 2) o.push([15 + a[i] / 1e5, 50 + a[i + 1] / 1e5]); return o; };
 const V = Object.fromEntries(Object.entries(VILLAGE).map(([k, v]) => [k, v.map(dec)]));
-const M2LL = ([x, z]) => [SITE_LL[0] + x / (111320 * Math.cos((SITE_LL[1] * Math.PI) / 180)), SITE_LL[1] - z / 111320];
+// model (metry plánu) → GPS: převod podle katastru, včetně pootočení plánu vůči severu
+const M2LL = ([x, z]) => { const T = SITE_TF; return [T.lon0 + (T.a * x + T.b * z + T.e) / T.kx, T.lat0 + (T.c * x + T.d * z + T.n) / T.ky]; };
 const SITE_POLY = SITE.outline.map(M2LL);
 const PLOTS = PARCELS.map((p) => p.poly.map(M2LL));
 
@@ -22,7 +23,7 @@ const MARK = "M4.5 32V4.5H32M68 4.5h27.5V32M95.5 68v27.5H68M32 95.5H4.5V68";
 const NOTES = {
   car: "Časy autem při volném provozu (OpenStreetMap).",
   train: "Vlak S1 podle jízdního řádu PID. Na zastávku 2 km, na kole cca 8 minut.",
-  local: "Pěší trasy podle OpenStreetMap. Poloha lokality je orientační.",
+  local: "Pěší trasy podle OpenStreetMap, poloha lokality podle katastru.",
 };
 
 // vlakové úseky po trati S1 (index zastávky Cerhenice v RAIL = 10)
@@ -118,13 +119,23 @@ export function createMap(host, list, modeButtons, chips = [], note = null) {
       g += `<text x="${(x + r + 7).toFixed(1)}" y="${(y + 4).toFixed(1)}" font-family="Geist Mono, monospace" font-size="${tier === 3 ? 13 : 11.5}" letter-spacing=".6" fill="${on ? "#132019" : "#5f6b64"}" font-weight="${on ? 600 : 400}">${name.toUpperCase()}</text>`;
     }
     if (km > 40) {
-      for (const p of POIS) {
+      // popisky se nesmí překrývat: aktivní první, ostatní jen když mají místo (jinak jen značka)
+      const boxes = [[px - 120, py - 24, px + 40, py + 24]];
+      const hit = (b) => boxes.some((q) => b[0] < q[2] && b[2] > q[0] && b[1] < q[3] && b[3] > q[1]);
+      const dots = [];
+      const order = [...POIS].sort((a, b) => (b.id === active) - (a.id === active));
+      for (const p of order) {
         const [x, y] = proj(p.ll);
         if (x < -40 || x > W + 40 || y < -20 || y > H + 20) continue;
         const on = mode === "local" && p.id === active;
+        if (!on && dots.some(([dx, dy]) => Math.hypot(dx - x, dy - y) < 26)) continue;
+        dots.push([x, y]);
+        const lb = [x + 16, y - 10, x + 24 + p.name.length * 7.2, y + 10];
+        const showLabel = on || !hit(lb);
+        if (showLabel) boxes.push(lb);
         g += `<g data-poi="${p.id}" style="cursor:pointer"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${on ? 15 : 12}" fill="${on ? "#132019" : "#fbfcf8"}" stroke="#132019" stroke-width="1.5"/>`;
         g += `<svg x="${(x - 8).toFixed(1)}" y="${(y - 8).toFixed(1)}" width="16" height="16" viewBox="0 0 256 256"><use href="#i-${p.icon}" fill="${on ? "#e4cb3c" : "#132019"}"/></svg>`;
-        g += `<text x="${(x + 20).toFixed(1)}" y="${(y + 4).toFixed(1)}" font-family="Geist Mono, monospace" font-size="11" letter-spacing=".4" fill="${on ? "#132019" : "#5f6b64"}" font-weight="${on ? 600 : 400}">${p.name.toUpperCase()}</text></g>`;
+        g += `${showLabel ? `<text x="${(x + 20).toFixed(1)}" y="${(y + 4).toFixed(1)}" font-family="Geist Mono, monospace" font-size="11" letter-spacing=".4" fill="${on ? "#132019" : "#5f6b64"}" font-weight="${on ? 600 : 400}" paint-order="stroke" stroke="#eef1e8" stroke-width="4">${p.name.toUpperCase()}</text>` : ""}</g>`;
       }
     } else if (km > 14) {
       const [sx, sy] = proj(STATION);

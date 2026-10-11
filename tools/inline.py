@@ -2,7 +2,7 @@
 Spuštění: python3 tools/inline.py  (opakovatelné, přepíše obsah mezi značkami)."""
 import re, pathlib
 root = pathlib.Path(__file__).resolve().parent.parent
-for page in ["index.html", "dum.html"]:
+for page in ["index.html", "dum.html", "admin.html"]:
   html = (root / page).read_text()
   for tag, src in [("ICONS", "assets/brand/icons-sprite.svg"), ("LOGO", "assets/brand/logo-sprite.svg")]:
     svg = (root / src).read_text().strip()
