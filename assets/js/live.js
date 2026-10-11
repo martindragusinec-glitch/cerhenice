@@ -174,24 +174,59 @@ const dayFmt = new Intl.DateTimeFormat("cs-CZ", { weekday: "short", day: "numeri
 const timeFmt = new Intl.DateTimeFormat("cs-CZ", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Prague" });
 export const fmtSlot = (iso) => `${dayFmt.format(new Date(iso))} ${timeFmt.format(new Date(iso))}`;
 
-// Nahradí výběr „Prohlídka“ volnými termíny z administrace (pokud nějaké jsou).
+// Nahradí výběr „Prohlídka“: nejdřív „jen ceník“ / „přijedu se podívat“, pak volné termíny po dnech (z administrace).
+const TZ = "Europe/Prague";
+const dayKey = (iso) => new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(iso));
+const part = (iso, opts) => new Intl.DateTimeFormat("cs-CZ", { timeZone: TZ, ...opts }).format(new Date(iso));
+const longDay = (iso) => { const t = part(iso, { weekday: "long", day: "numeric", month: "long" }); return t.charAt(0).toUpperCase() + t.slice(1); };
 export async function mountSlotPicker(select) {
   if (!select) return null;
   let slots = [];
   try { const r = await fetch(`${API}/slots`, { cache: "no-store" }); if (r.ok) slots = (await r.json()).slots || []; } catch { return null; }
   if (!slots.length) return null;
+  const days = [];
+  for (const s of slots) { const k = dayKey(s.start); let d = days.find((x) => x.k === k); if (!d) days.push((d = { k, slots: [] })); if (d.slots.length < 8 && !d.slots.some((o) => o.start === s.start)) d.slots.push(s); }
+  const shown = days.slice(0, 4);
   const field = select.closest(".field");
+  const uid = Math.random().toString(36).slice(2, 7);
   const box = document.createElement("div");
-  box.className = "slot-picker";
-  box.setAttribute("role", "radiogroup");
-  box.setAttribute("aria-label", "Termín prohlídky");
-  const opt = (value, label, checked) => `<label class="slot"><input type="radio" name="slot" value="${value}"${checked ? " checked" : ""}><span>${label}</span></label>`;
-  box.innerHTML = opt("", "Zatím jen ceník", true) + slots.slice(0, 9).map((s) => opt(s.id, fmtSlot(s.start))).join("") + opt("jiny", "Jiný termín");
-  field.querySelector("label[for]").textContent = "Termín prohlídky";
+  box.className = "sp";
+  box.innerHTML = `
+    <div class="sp-mode" role="radiogroup" aria-label="Co od nás potřebujete">
+      <label class="sp-opt"><input type="radio" name="sp-mode-${uid}" value="cenik" checked><span><b>Zatím jen ceník</b><small>Pošleme ho obratem</small></span></label>
+      <label class="sp-opt"><input type="radio" name="sp-mode-${uid}" value="visit"><span><b>Přijedu se podívat</b><small>Nejbližší termín ${part(slots[0].start, { weekday: "short", day: "numeric", month: "numeric" })}</small></span></label>
+    </div>
+    <div class="sp-cal" hidden>
+      ${shown.map((d) => `<div class="sp-day"><div class="sp-date" aria-hidden="true"><span>${part(d.slots[0].start, { weekday: "short" })}</span><b>${part(d.slots[0].start, { day: "numeric" })}</b><small>${part(d.slots[0].start, { day: "numeric", month: "long" }).split(" ").pop()}</small></div><div class="sp-times" role="radiogroup" aria-label="${longDay(d.slots[0].start)}">${d.slots.map((s) => `<label class="sp-time"><input type="radio" name="sp-slot-${uid}" value="${s.id}" data-start="${s.start}" data-dur="${s.dur || 30}"><span>${part(s.start, { hour: "2-digit", minute: "2-digit" })}</span></label>`).join("")}</div></div>`).join("")}
+      <label class="sp-time sp-other"><input type="radio" name="sp-slot-${uid}" value="jiny"><span>Žádný termín mi nesedí, domluvíme se po telefonu</span></label>
+    </div>
+    <p class="sp-sum" aria-live="polite" hidden></p>`;
+  const label = field.querySelector("label[for]");
+  label.textContent = "Prohlídka na místě";
+  label.removeAttribute("for");
   select.hidden = true;
   field.append(box);
+  const cal = box.querySelector(".sp-cal"), sum = box.querySelector(".sp-sum");
+  const mode = () => box.querySelector(".sp-mode input:checked").value;
+  const slot = () => box.querySelector(".sp-cal input:checked");
+  const paint = () => {
+    const visit = mode() === "visit", s = slot();
+    cal.hidden = !visit;
+    box.classList.toggle("is-visit", visit);
+    sum.hidden = !visit;
+    if (!visit) return;
+    if (!s) { sum.className = "sp-sum"; sum.textContent = "Vyberte čas, který vám vyhovuje."; return; }
+    sum.className = "sp-sum is-set";
+    sum.textContent = s.value === "jiny" ? "Zavoláme vám a domluvíme termín, který vám sedí." : `${longDay(s.dataset.start)} v ${part(s.dataset.start, { hour: "2-digit", minute: "2-digit" })}. Sejdeme se u vjezdu do lokality, prohlídka trvá asi ${s.dataset.dur} minut.`;
+  };
+  box.addEventListener("change", paint);
+  paint();
   return {
-    value() { const v = box.querySelector("input:checked")?.value || ""; return { slotId: v && v !== "jiny" ? v : "", when: v === "jiny" ? "Jiný termín" : v ? "" : "Zatím jen ceník" }; },
-    select(id) { const i = box.querySelector(`input[value="${id}"]`); if (i) i.checked = true; },
+    value() {
+      if (mode() !== "visit") return { slotId: "", when: "Zatím jen ceník" };
+      const s = slot();
+      return s && s.value !== "jiny" ? { slotId: s.value, when: "" } : { slotId: "", when: "Prohlídka, termín domluvíme" };
+    },
+    select(id) { box.querySelector('.sp-mode input[value="visit"]').checked = true; const i = box.querySelector(`.sp-cal input[value="${id}"]`); if (i) i.checked = true; paint(); },
   };
 }

@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700;1,75..100,400..700&family=Geist+Mono:wght@400..600&display=swap" rel="stylesheet">
-  <link rel="preload" as="image" type="image/webp" imagesrcset="assets/img/hero-dron-sm.webp 1100w, assets/img/hero-dron.webp 1920w" imagesizes="100vw" fetchpriority="high">
+  <link rel="preload" as="image" type="image/webp" imagesrcset="assets/img/hero-dron-v2-sm.webp 1100w, assets/img/hero-dron-v2.webp 1920w" imagesizes="100vw" fetchpriority="high">
   <link rel="stylesheet" href="assets/css/site.css">
   <script type="importmap">
     { "imports": {
@@ -118,12 +118,12 @@
     <div class="hero-media" id="hero-media">
       <div class="drift">
         <picture>
-          <source type="image/webp" srcset="assets/img/hero-dron-sm.webp 1100w, assets/img/hero-dron.webp 1920w" sizes="100vw">
-          <img data-cms="hero.image" data-cms-type="image" data-cms-label="Hlavní obrázek (pod videem)" src="assets/img/hero-dron.jpg" alt="Lokalita Za Kapličkou z dronu: rozorané pole na jižním okraji Cerhenic" fetchpriority="high">
+          <source type="image/webp" srcset="assets/img/hero-dron-v2-sm.webp 1100w, assets/img/hero-dron-v2.webp 1920w" sizes="100vw">
+          <img data-cms="hero.image" data-cms-type="image" data-cms-label="Hlavní obrázek (pod videem)" src="assets/img/hero-dron-v2.jpg" alt="Lokalita Za Kapličkou z dronu: rozorané pole na jižním okraji Cerhenic" fetchpriority="high">
         </picture>
       </div>
       <!-- Skutečné záběry z dronu: stabilizovaný sestřih tří záběrů s prolnutím (README → Video z dronu). -->
-      <video class="hero-video" id="hero-video" muted loop playsinline preload="none" aria-hidden="true" data-src="assets/video/hero-dron.mp4" data-src-sm="assets/video/hero-dron-sm.mp4"></video>
+      <video class="hero-video" id="hero-video" muted loop playsinline preload="none" aria-hidden="true" data-src="assets/video/hero-dron-v2.mp4" data-src-sm="assets/video/hero-dron-v2-sm.mp4"></video>
     </div>
     <div class="hero-frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
     <div class="hero-inner">
@@ -529,10 +529,8 @@
             <div class="field"><label for="f-phone">Telefon</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required aria-describedby="e-phone"><span class="err" id="e-phone">Zadejte telefon, ať vám můžeme zavolat.</span></div>
           </div>
           <div class="field"><label for="f-email">E-mail <span class="opt">nepovinné, pošleme na něj ceník</span></label><input id="f-email" name="email" type="email" autocomplete="email" aria-describedby="e-email"><span class="err" id="e-email">Zkontrolujte prosím e-mail.</span></div>
-          <div class="field-row">
-            <div class="field"><label for="f-plot">Pozemek</label><select id="f-plot" name="plot"><option value="">Zatím nevím</option></select></div>
-            <div class="field"><label for="f-when">Prohlídka</label><select id="f-when" name="when"><option>Kdykoli</option><option>Tento týden</option><option>Příští týden</option><option>Zatím jen ceník</option></select></div>
-          </div>
+          <div class="field"><label for="f-plot">Pozemek</label><select id="f-plot" name="plot"><option value="">Zatím nevím</option></select></div>
+          <div class="field"><label for="f-when">Prohlídka</label><select id="f-when" name="when"><option>Kdykoli</option><option>Tento týden</option><option>Příští týden</option><option>Zatím jen ceník</option></select></div>
           <div class="field"><label for="f-msg">Zpráva <span class="opt">nepovinné</span></label><textarea id="f-msg" name="message"></textarea></div>
           <div class="hp-field" aria-hidden="true"><label for="f-web">Web</label><input id="f-web" name="web" tabindex="-1" autocomplete="off"></div>
           <p class="form-error" id="form-error" role="alert" hidden></p>

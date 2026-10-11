@@ -476,3 +476,4 @@ body.editing .view { animation: none; }
 @media (max-width: 1080px) { .ed-bar { grid-template-columns: auto minmax(0, 1fr); } .ed-c { display: none; } .ed-back span, .ed-page small, .ed-list-btn { display: none; } }
 @media (max-width: 560px) { .ed-page { display: none; } .ed-hint { display: none; } }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.field select { appearance: none; -webkit-appearance: none; padding-right: 36px; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%2366726b' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }

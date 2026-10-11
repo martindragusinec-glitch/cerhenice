@@ -754,12 +754,7 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
 .consent-bar { position: fixed; z-index: 90; left: 16px; bottom: 16px; max-width: 520px; padding: 18px; border-radius: var(--r-m); background: var(--white); border: 1px solid var(--line); box-shadow: 0 24px 60px -24px rgba(19, 32, 25, .45); display: flex; flex-direction: column; gap: 14px; font-size: 14.5px; }
 .consent-bar div { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
 @media (max-width: 640px) { .consent-bar { left: 8px; right: 8px; bottom: 8px; } }
-.slot-picker { display: flex; flex-wrap: wrap; gap: 6px; }
-.slot { position: relative; }
-.slot input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
-.slot span { display: inline-flex; align-items: center; height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(19, 32, 25, 0.3); background: var(--white); font-size: 14px; font-weight: 500; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.slot input:checked + span { background: var(--ink); color: var(--paper); border-color: var(--ink); }
-.slot input:focus-visible + span { outline: 2px solid var(--ink); outline-offset: 2px; }
+/* výběr termínu prohlídky: viz konec souboru (.sp) */
 .form-error { font-size: 14px; color: #9b2c1f; background: #fbecea; border-radius: 10px; padding: 10px 12px; }
 .hp-field { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .form { position: relative; }
@@ -840,4 +835,50 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
   .tile figcaption { margin-top: 10px; }
   .tile figcaption b { font-size: 16px; }
   .tile figcaption span { font-size: 13px; }
+}
+
+
+/* ---------- formulář: vlastní šipka výběru ---------- */
+.field select, .hp-plot select { appearance: none; -webkit-appearance: none; padding-right: 46px; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23132019' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 18px center; background-size: 12px 8px; }
+.field select::-ms-expand { display: none; }
+
+/* ---------- termín prohlídky ---------- */
+.sp { display: flex; flex-direction: column; gap: 10px; }
+.sp input { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+.sp-mode { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.sp-opt { position: relative; display: block; cursor: pointer; }
+.sp-opt span { position: relative; display: flex; flex-direction: column; gap: 2px; height: 100%; padding: 12px 14px 12px 42px; border-radius: var(--r-s); border: 1px solid rgba(19, 32, 25, 0.3); background: var(--white); transition: border-color .2s, box-shadow .2s, background-color .2s; }
+.sp-opt span::before { content: ""; position: absolute; left: 14px; top: 14px; width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid rgba(19, 32, 25, 0.45); background: var(--white); transition: border-color .2s, box-shadow .2s; }
+.sp-opt b { font-size: 15px; font-weight: 600; line-height: 1.3; }
+.sp-opt small { font-size: 12.5px; color: var(--ink-3); line-height: 1.35; }
+.sp-opt:hover span { border-color: var(--ink); }
+.sp-opt input:checked + span { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); background: #fff; }
+.sp-opt input:checked + span::before { border-color: var(--ink); background: var(--accent); box-shadow: inset 0 0 0 4px var(--ink); }
+.sp-opt input:focus-visible + span { outline: 2px solid var(--ink); outline-offset: 2px; }
+.sp-cal { border: 1px solid rgba(19, 32, 25, 0.16); border-radius: var(--r-s); background: var(--white); padding: 2px 14px 12px; animation: sp-in .35s var(--ease) both; }
+@keyframes sp-in { from { opacity: 0; transform: translateY(-4px); } }
+.sp-day { display: grid; grid-template-columns: 46px minmax(0, 1fr); gap: 14px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.sp-date { display: flex; flex-direction: column; align-items: center; line-height: 1; gap: 3px; }
+.sp-date span { font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+.sp-date b { font-size: 24px; font-weight: 500; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.sp-date small { font-size: 11px; color: var(--ink-3); }
+.sp-times { display: flex; flex-wrap: wrap; gap: 6px; }
+.sp-time { position: relative; display: inline-block; cursor: pointer; }
+.sp-time span { display: inline-flex; align-items: center; justify-content: center; min-width: 72px; height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(19, 32, 25, 0.26); background: var(--paper); font: 500 15px var(--mono); font-variant-numeric: tabular-nums; transition: background-color .15s, color .15s, border-color .15s; }
+.sp-time:hover span { border-color: var(--ink); }
+.sp-time input:checked + span { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.sp-time input:focus-visible + span { outline: 2px solid var(--ink); outline-offset: 2px; }
+.sp-other { display: block; margin-top: 10px; }
+.sp-other span { width: 100%; justify-content: flex-start; min-width: 0; height: auto; min-height: 40px; padding: 9px 12px; font: 500 14px var(--font); background: transparent; border-style: dashed; }
+.sp-sum { margin: 0; font-size: 14px; color: var(--ink-3); }
+.sp-sum.is-set { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 10px; background: #f6efc4; color: var(--ink); }
+.sp-sum.is-set::before { content: ""; flex: none; width: 8px; height: 8px; margin-top: 7px; background: var(--accent); box-shadow: 0 0 0 2px var(--ink); border-radius: 1px; }
+.sp-sum[hidden] { display: none; }
+@media (max-width: 480px) {
+  .sp-opt span { padding: 11px 10px 11px 36px; }
+  .sp-opt span::before { left: 11px; }
+  .sp-cal { padding-inline: 10px; }
+  .sp-day { grid-template-columns: 38px minmax(0, 1fr); gap: 10px; }
+  .sp-times { display: grid; grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); }
+  .sp-time span { min-width: 0; width: 100%; height: 38px; padding: 0 4px; font-size: 14px; }
 }
