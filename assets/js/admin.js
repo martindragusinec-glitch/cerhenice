@@ -234,27 +234,25 @@ function prehled(v) {
 }
 
 /* ---------- POZEMKY ---------- */
-let plotFilter = "all", plotEtapa = "all", plotQuery = "";
+let plotFilter = "all", plotQuery = "";
 function pozemky(v) {
   const m = metrics();
   $("#top-actions").innerHTML = `<span class="muted" style="font-size:13px">Výchozí cena <b class="mono" style="color:var(--ink)">${D.settings.pricePerM2 ? `${fmt(D.settings.pricePerM2)} Kč/m²` : "neuvedena"}</b> · ceny ${D.settings.showPrices ? "se na webu zobrazují" : "jsou na webu skryté"}</span><button class="btn btn-ghost btn-sm" data-go="nastaveni">${ic("a-sliders")}Ceny a rezervace</button>`;
   $("#top-actions [data-go]").addEventListener("click", () => go("nastaveni"));
-  const rows = D.plots.filter((p) => (plotFilter === "all" || p.status === plotFilter) && (plotEtapa === "all" || String(p.etapa) === plotEtapa) && (!plotQuery || num(p.id) === plotQuery.trim() || (p.note || "").toLowerCase().includes(plotQuery)));
+  const rows = D.plots.filter((p) => (plotFilter === "all" || p.status === plotFilter) && (!plotQuery || num(p.id) === plotQuery.trim() || (p.note || "").toLowerCase().includes(plotQuery)));
   const leadOpts = (sel) => `<option value="">–</option>` + D.leads.map((l) => `<option value="${l.id}"${l.id === sel ? " selected" : ""}>${esc(l.name)}</option>`).join("");
   const chip = (k, t, n, color) => `<button class="chip" data-f="${k}" aria-pressed="${plotFilter === k}">${color ? `<i style="background:${color}"></i>` : ""}${t}<b>${n}</b></button>`;
   v.innerHTML = `
   <div class="toolbar">
     <div class="chips">${chip("all", "Vše", D.plots.length)}${chip("volny", "Volné", m.free.length, COLORS.volny)}${chip("rezervace", "Rezervace", m.res.length, COLORS.rezervace)}${chip("prodano", "Prodáno", m.sold.length, COLORS.prodano)}</div>
-    <span class="seg"><button type="button" data-e="all" aria-pressed="${plotEtapa === "all"}">Obě etapy</button><button type="button" data-e="1" aria-pressed="${plotEtapa === "1"}">Etapa 1</button><button type="button" data-e="2" aria-pressed="${plotEtapa === "2"}">Etapa 2</button></span>
     <span class="grow"></span>
     <label class="search">${ic("a-search")}<input type="search" id="pq" placeholder="Číslo nebo poznámka" value="${esc(plotQuery)}" aria-label="Hledat pozemek"></label>
   </div>
   <div class="table-wrap"><table>
-    <thead><tr><th>Č.</th><th>Výměra</th><th>Etapa</th><th>Stav</th><th class="r" style="min-width:130px">Cena Kč</th><th class="r">Kč/m²</th><th>Rezervace do</th><th style="min-width:150px">Zájemce</th><th style="min-width:170px">Interní poznámka</th><th>Zájem</th><th></th></tr></thead>
+    <thead><tr><th>Č.</th><th>Výměra</th><th>Stav</th><th class="r" style="min-width:130px">Cena Kč</th><th class="r">Kč/m²</th><th>Rezervace do</th><th style="min-width:150px">Zájemce</th><th style="min-width:170px">Interní poznámka</th><th>Zájem</th><th></th></tr></thead>
     <tbody>${rows.map((p) => `<tr data-id="${p.id}">
       <td class="num"><span class="pid">${num(p.id)}</span></td>
       <td>${fmt(p.area)} m²<span class="hint">${p.w} × ${p.d} m</span></td>
-      <td class="muted">${p.etapa}</td>
       <td><select class="cell st st-${p.status}" data-k="status" aria-label="Stav pozemku ${num(p.id)}">${Object.entries(STATUS_TXT).map(([k, t]) => `<option value="${k}"${p.status === k ? " selected" : ""}>${t}</option>`).join("")}</select></td>
       <td class="r"><input class="cell money" type="number" min="0" step="1000" data-k="price" value="${p.priceOwn ? p.price : ""}" placeholder="${p.price ? fmt(p.price) : "na dotaz"}" aria-label="Cena pozemku ${num(p.id)}"></td>
       <td class="r mono muted" style="font-size:12.5px">${p.price ? fmt(p.price / p.area) : "–"}${p.price && !p.priceOwn ? `<span class="hint">výchozí</span>` : ""}</td>
@@ -265,7 +263,6 @@ function pozemky(v) {
       <td><button class="btn btn-quiet btn-sm btn-icon" data-open="${p.id}" aria-label="Detail pozemku ${num(p.id)}">${ic("a-arrow")}</button></td></tr>`).join("") || `<tr><td colspan="11"><p class="empty">${ic("a-search")}Žádný pozemek neodpovídá filtru.</p></td></tr>`}</tbody>
   </table></div>`;
   $$("[data-f]", v).forEach((b) => b.addEventListener("click", () => { plotFilter = b.dataset.f; pozemky(v); }));
-  $$("[data-e]", v).forEach((b) => b.addEventListener("click", () => { plotEtapa = b.dataset.e; pozemky(v); }));
   $("#pq").addEventListener("input", (e) => { plotQuery = e.target.value.toLowerCase(); clearTimeout(pozemky.t); pozemky.t = setTimeout(() => { pozemky(v); const i = $("#pq"); i.focus(); i.setSelectionRange(99, 99); }, 220); });
   $$("[data-open]", v).forEach((b) => b.addEventListener("click", () => openPlot(b.dataset.open)));
   $$("tbody [data-k]", v).forEach((el) => el.addEventListener("change", safe(async () => {
@@ -283,7 +280,7 @@ function openPlot(id) {
   const p = D.plots.find((x) => x.id === id);
   const leads = D.leads.filter((l) => l.plots.includes(id));
   sheet(`
-    <div class="sheet-head"><div class="who"><span class="datebox" style="width:48px;height:48px"><b>${num(id)}</b><small>poz.</small></span><div><p class="eyebrow">Etapa ${p.etapa} · ${p.w} × ${p.d} m</p><h2>Pozemek ${num(id)} · ${fmt(p.area)} m²</h2></div></div><button class="x" data-close aria-label="Zavřít">${ic("a-x")}</button></div>
+    <div class="sheet-head"><div class="who"><span class="datebox" style="width:48px;height:48px"><b>${num(id)}</b><small>poz.</small></span><div><p class="eyebrow">${p.w} × ${p.d} m</p><h2>Pozemek ${num(id)} · ${fmt(p.area)} m²</h2></div></div><button class="x" data-close aria-label="Zavřít">${ic("a-x")}</button></div>
     <div class="sheet-body">
       <div class="row">
         <div class="field"><label for="pp-status">Stav</label><select id="pp-status">${Object.entries(STATUS_TXT).map(([k, t]) => `<option value="${k}"${p.status === k ? " selected" : ""}>${t}</option>`).join("")}</select></div>

@@ -63,7 +63,7 @@ for (const p of PARCELS) {
   if (statusOf(p.id) === "prodano") continue;
   const o = document.createElement("option");
   o.value = p.id;
-  o.textContent = `Pozemek ${num(p.id)} · ${fmt(p.area)} m² · etapa ${p.etapa}`;
+  o.textContent = `Pozemek ${num(p.id)} · ${fmt(p.area)} m²`;
   plotSelect.append(o);
 }
 form.addEventListener("submit", (e) => {
@@ -121,9 +121,10 @@ const host = $("#stage-canvas");
 const tooltip = $("#tooltip");
 const drawer = $("#drawer");
 const toast = $("#toast");
-let mp = null, current = null, drawerTrigger = null;
-const filter = { etapa: "all", minArea: 0, onlyFree: false };
-const matches = (p) => (filter.etapa === "all" || String(p.etapa) === filter.etapa) && p.area >= filter.minArea && (!filter.onlyFree || statusOf(p.id) === "volny");
+let mp = null, pm = null, mode = "foto", current = null, drawerTrigger = null;
+const view = () => (mode === "3d" ? mp : pm);
+const filter = { minArea: 0, onlyFree: false };
+const matches = (p) => p.area >= filter.minArea && (!filter.onlyFree || statusOf(p.id) === "volny");
 
 function showToast(msg) {
   toast.textContent = msg;
@@ -177,7 +178,7 @@ function openDrawer(p, { source = "3d" } = {}) {
     return;
   }
   const st = statusOf(p.id);
-  $("#drawer-etapa").textContent = `Etapa ${p.etapa}`;
+  $("#drawer-etapa").textContent = "Stavební pozemek";
   $("#d-num").textContent = num(p.id);
   const pill = $("#drawer-status");
   pill.textContent = STATUS_TXT[st];
@@ -210,7 +211,8 @@ function openDrawer(p, { source = "3d" } = {}) {
 function selectPlot(id, source) {
   const p = PARCELS.find((x) => x.id === id);
   if (!p) return;
-  if (mp) mp.select(id, { source });
+  const v = view();
+  if (v) v.select(id, { source });
   else openDrawer(p, { source });
 }
 
@@ -223,7 +225,7 @@ function step(dir) {
 }
 $("#d-prev").addEventListener("click", () => step(-1));
 $("#d-next").addEventListener("click", () => step(1));
-$("#drawer-close").addEventListener("click", () => (mp ? mp.select(null) : openDrawer(null)));
+$("#drawer-close").addEventListener("click", () => (view() ? view().select(null) : openDrawer(null)));
 $("#d-cta").addEventListener("click", () => {
   if (current && statusOf(current.id) !== "prodano") plotSelect.value = current.id;
   if (current && !priceOf(current)) $("#f-when").value = "Zatím jen ceník";
@@ -240,7 +242,7 @@ $("#d-share").addEventListener("click", async () => {
 addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     if (menu.classList.contains("is-open")) return setMenu(false);
-    if (drawer.classList.contains("is-open")) (mp ? mp.select(null) : openDrawer(null));
+    if (drawer.classList.contains("is-open")) (view() ? view().select(null) : openDrawer(null));
     return;
   }
   if (drawer.classList.contains("is-open") && stage.contains(document.activeElement) && !/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) {
@@ -256,14 +258,10 @@ function applyFilter() {
   $("#result-word").textContent = plural(n);
   $("#empty").hidden = n > 0;
   if (mp) mp.setFilter({ ...filter });
+  if (pm) pm.setFilter({ ...filter });
   renderList();
   track("filter_change", { ...filter, results: n });
 }
-$$(".seg button").forEach((b) => b.addEventListener("click", () => {
-  $$(".seg button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
-  filter.etapa = b.dataset.etapa;
-  applyFilter();
-}));
 const range = $("#min-area");
 const rangeOut = $("#min-area-out");
 function syncRange() {
@@ -274,12 +272,11 @@ function syncRange() {
 }
 range.addEventListener("input", syncRange);
 range.addEventListener("change", applyFilter);
-range.addEventListener("input", () => { if (mp) mp.setFilter({ ...filter }); const n = PARCELS.filter(matches).length; $("#result-count").textContent = n; $("#result-word").textContent = plural(n); $("#empty").hidden = n > 0; });
+range.addEventListener("input", () => { if (mp) mp.setFilter({ ...filter }); if (pm) pm.setFilter({ ...filter }); const n = PARCELS.filter(matches).length; $("#result-count").textContent = n; $("#result-word").textContent = plural(n); $("#empty").hidden = n > 0; });
 syncRange();
 $("#only-free").addEventListener("change", (e) => { filter.onlyFree = e.target.checked; applyFilter(); });
 $("#reset-filters").addEventListener("click", () => {
-  filter.etapa = "all"; filter.minArea = 0; filter.onlyFree = false;
-  $$(".seg button").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.etapa === "all")));
+  filter.minArea = 0; filter.onlyFree = false;
   range.value = range.min; syncRange();
   $("#only-free").checked = false;
   applyFilter();
@@ -323,7 +320,7 @@ function renderList() {
   tb.innerHTML = rows.map((p) => {
     const st = statusOf(p.id);
     return `<tr data-row="${p.id}">
-      <td>${num(p.id)}</td><td>${fmt(p.area)} m²</td><td class="hide-m">${p.etapa}</td><td class="hide-m">${p.w} × ${p.d} m</td>
+      <td>${num(p.id)}</td><td>${fmt(p.area)} m²</td><td class="hide-m">${p.w} × ${p.d} m</td>
       <td><span class="status-pill${st === "rezervace" ? " res" : st === "prodano" ? " sold" : ""}">${STATUS_TXT[st]}</span></td>
       <td style="text-align:right"><button class="btn btn-ghost" type="button" data-pick="${p.id}">Detail</button></td></tr>`;
   }).join("") || `<tr><td colspan="6" style="font-family:inherit;font-size:15px">Tomu nevyhovuje žádný pozemek.</td></tr>`;
@@ -343,7 +340,7 @@ $("#plot-table tbody").addEventListener("click", (e) => {
   setList(false);
   selectPlot(row.dataset.row, "list");
 });
-$("#plot-table tbody").addEventListener("mouseover", (e) => { const row = e.target.closest("[data-row]"); if (row && mp) mp.hover(row.dataset.row); });
+$("#plot-table tbody").addEventListener("mouseover", (e) => { const row = e.target.closest("[data-row]"); if (row && view()) view().hover(row.dataset.row); });
 renderList();
 
 // tooltip
@@ -361,30 +358,68 @@ function initialPlot() {
   return m ? m[1].padStart(2, "0") : null;
 }
 
+// výchozí je realistická fotomapa, 3D model se načte až po přepnutí
+const touch = matchMedia("(hover: none)").matches;
+const HINTS = {
+  foto: touch ? "Posuňte prstem, přiblížíte dvěma prsty" : "Táhněte pro posun, přiblížení Ctrl / ⌘ + kolečko",
+  "3d": touch ? "Otočte prstem, přiblížíte dvěma prsty" : "Táhněte pro otočení, přiblížení Ctrl / ⌘ + kolečko",
+};
+let stageIO = null;
 async function boot() {
-  try {
-    const t = document.createElement("canvas");
-    if (!(t.getContext("webgl2") || t.getContext("webgl"))) throw new Error("no webgl");
-    const { createMasterplan } = await import("./masterplan.js");
-    mp = createMasterplan(host, {
-      onSelect: (p, source) => openDrawer(p, { source }),
-      onHover: showTip,
-      startView: isMobile() ? "top" : "persp",
-    });
-    if (isMobile()) $$("[data-view]").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.view === "top")));
-    mp.setStatus(STATUS);
-    mp.setFilter({ ...filter });
-    stage.classList.add("is-ready");
-    const first = initialPlot();
-    if (first) setTimeout(() => selectPlot(first, "link"), 600);
-    new IntersectionObserver(([e]) => (e.isIntersecting ? mp.start() : mp.stop())).observe(stage);
-  } catch (err) {
-    console.warn("3D plán nelze spustit, zobrazuji seznam.", err);
-    stage.classList.add("is-ready");
-    setList(true);
-  }
+  const { createPhotomap } = await import("./photomap.js");
+  pm = createPhotomap($("#stage-photo"), { onSelect: (p, source) => openDrawer(p, { source }), onHover: showTip });
+  pm.setStatus(STATUS);
+  pm.setFilter({ ...filter });
+  await pm.ready;
+  stage.classList.add("is-ready");
+  const first = initialPlot();
+  if (first) setTimeout(() => selectPlot(first, "link"), 400);
 }
-new IntersectionObserver(([e], obs) => { if (e.isIntersecting) { obs.disconnect(); boot(); } }, { rootMargin: "600px 0px" }).observe(stage);
+async function boot3d() {
+  const t = document.createElement("canvas");
+  if (!(t.getContext("webgl2") || t.getContext("webgl"))) throw new Error("no webgl");
+  const { createMasterplan } = await import("./masterplan.js");
+  mp = createMasterplan(host, {
+    onSelect: (p, source) => openDrawer(p, { source }),
+    onHover: showTip,
+    startView: isMobile() ? "top" : "persp",
+  });
+  if (isMobile()) $$("[data-view]").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.view === "top")));
+  mp.setStatus(STATUS);
+  mp.setFilter({ ...filter });
+  stageIO = new IntersectionObserver(([e]) => (e.isIntersecting && mode === "3d" ? mp.start() : mp.stop()));
+  stageIO.observe(stage);
+}
+async function setMode(m) {
+  if (m === mode) return;
+  const sel = current?.id || null;
+  mode = m;
+  stage.classList.toggle("is-photo", m === "foto");
+  stage.classList.toggle("is-3d", m === "3d");
+  $$("[data-mode]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.mode === m)));
+  $("#hud-hint-text").textContent = HINTS[m];
+  $("#hud-hint").style.opacity = "";
+  showTip(null);
+  if (m === "3d") {
+    if (!mp) {
+      stage.classList.add("is-loading-3d");
+      try { await boot3d(); } catch (err) { console.warn("3D model nelze spustit.", err); showToast("3D model se v tomto prohlížeči nedá spustit"); stage.classList.remove("is-loading-3d"); return setMode("foto"); }
+      stage.classList.remove("is-loading-3d");
+    }
+    mp.start();
+    if (sel) mp.select(sel, { source: "step" });
+  } else {
+    if (mp) mp.stop();
+    if (sel) pm.select(sel, { source: "step" });
+  }
+  track("picker_mode", { mode: m });
+}
+$$("[data-mode]").forEach((b) => b.addEventListener("click", () => setMode(b.dataset.mode)));
+$("#fm-in").addEventListener("click", () => pm && pm.zoom(1.35));
+$("#fm-out").addEventListener("click", () => pm && pm.zoom(1 / 1.35));
+$("#fm-fit").addEventListener("click", () => pm && pm.fit());
+$("#hud-hint-text").textContent = HINTS.foto;
+new IntersectionObserver(([e], obs) => { if (e.isIntersecting) { obs.disconnect(); boot().catch((err) => { console.warn("Fotomapa se nenačetla, zobrazuji seznam.", err); stage.classList.add("is-ready"); setList(true); }); } }, { rootMargin: "600px 0px" }).observe(stage);
 new IntersectionObserver(([e]) => { stageVisible = e.isIntersecting; syncBar(); }, { threshold: 0.25 }).observe(stage);
 
 /* ---------- mapa ---------- */
@@ -506,7 +541,6 @@ function renderCompare() {
     ["Výměra", (p) => `${fmt(p.area)} m²`],
     ["Rozměry cca", (p) => `${p.w} × ${p.d} m`],
     ["Zastavět lze až", (p) => `${fmt(Math.floor(p.area * 0.2))} m²`],
-    ["Etapa", (p) => p.etapa],
     ["Zahrada", (p) => ({ N: "na jih", S: "na sever", E: "na západ" }[p.front])],
     ["Stav", (p) => STATUS_TXT[statusOf(p.id)]],
     ["Cena", (p) => (priceOf(p) ? `${fmt(priceOf(p))} Kč` : "na vyžádání")],

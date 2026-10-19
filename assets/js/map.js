@@ -21,7 +21,7 @@ const fmtKm = (n) => n.toLocaleString("cs-CZ", { maximumFractionDigits: 1 });
 const fmtDist = (m) => (m < 1000 ? `${Math.round(m / 10) * 10} m` : `${fmtKm(m / 1000)} km`);
 const MARK = "M4.5 32V4.5H32M68 4.5h27.5V32M95.5 68v27.5H68M32 95.5H4.5V68";
 const NOTES = {
-  car: "Časy autem při volném provozu (OpenStreetMap).",
+  car: "Autem k okraji města, u Prahy k hranici Prahy. Časy při volném provozu (OpenStreetMap).",
   train: "Vlak S1 podle jízdního řádu PID. Na zastávku 2 km, na kole cca 8 minut.",
   local: "Pěší trasy podle OpenStreetMap, poloha lokality podle katastru.",
 };
@@ -105,6 +105,8 @@ export function createMap(host, list, modeButtons, chips = [], note = null) {
       if (km > 90) g += `<path d="${PLOTS.map((pp) => line(pp) + "Z").join("")}" fill="rgba(169,201,141,.55)" stroke="#fbfcf8" stroke-width="1"/>`;
     }
     for (const d of DEST) g += `<path d="${line(d.route)}" fill="none" stroke="rgba(19,32,25,.14)" stroke-width="1.5" stroke-linejoin="round"/>`;
+    // obrys města (okraj zástavby, u Prahy hranice Prahy), ke kterému se měří vzdálenost
+    if (mode === "car" && current()?.area) g += `<path d="${line(current().area)}Z" fill="rgba(19,32,25,.06)" stroke="rgba(19,32,25,.45)" stroke-width="1.2" stroke-dasharray="4 4"/>`;
     if (mode === "local") for (const d of POIS) g += `<path d="${line(d.route)}" fill="none" stroke="rgba(19,32,25,.12)" stroke-width="1.5" stroke-linejoin="round"/>`;
     if (!local) g += `<path d="${line(RAIL)}" fill="none" stroke="#132019" stroke-width="3.2" opacity=".2"/><path d="${line(RAIL)}" fill="none" stroke="#f2f4ee" stroke-width="1.4" stroke-dasharray="6 6"/>`;
     const walk = mode === "local" && current()?.mode === "foot";
@@ -151,7 +153,8 @@ export function createMap(host, list, modeButtons, chips = [], note = null) {
     const d = current();
     const val = !d ? null : mode === "train" ? d.train_min : mode === "local" ? d.min : d.car_min;
     if (d && val) {
-      const [x, y] = proj(d.ll);
+      const [x, y] = proj(mode === "car" && d.edge ? d.edge : d.ll);
+      if (mode === "car" && d.edge) g += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5" fill="#e4cb3c" stroke="#132019" stroke-width="2"/>`;
       const short = d.name.split(",")[0].replace("Nájezd na D11 u Vrbové Lhoty", "D11");
       const txt = mode === "local" ? `${short} · ${val} min ${d.mode === "foot" ? "pěšky" : "autem"}` : `${d.name} · ${val} min`;
       const w = txt.length * 8 + 28;
@@ -204,7 +207,7 @@ export function createMap(host, list, modeButtons, chips = [], note = null) {
     list.innerHTML = items().map((d) => {
       const na = mode === "train" && !d.train_min;
       const val = mode === "train" ? d.train_min : mode === "local" ? d.min : d.car_min;
-      const meta = mode === "train" ? TRAIN[d.id]?.meta || "" : mode === "local" ? `${fmtDist(d.m)} ${d.mode === "foot" ? "pěšky" : "autem"}` : `${fmtKm(d.car_km)} km autem`;
+      const meta = mode === "train" ? TRAIN[d.id]?.meta || "" : mode === "local" ? `${fmtDist(d.m)} ${d.mode === "foot" ? "pěšky" : "autem"}` : `${fmtKm(d.car_km)} km k ${d.to === "hranice" ? "hranici Prahy" : "okraji města"}`;
       return `<li class="${na ? "is-na" : ""}"><button type="button" data-dest="${d.id}" aria-pressed="${d.id === active}">
         <span><span class="d-name">${d.name}</span><span class="d-meta">${meta}</span></span>
         <span class="d-time">${val ?? ""}<small>min</small></span></button></li>`;

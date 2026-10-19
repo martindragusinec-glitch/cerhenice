@@ -233,7 +233,7 @@ track("plot_page", { plot_id: P.id, plot_area: P.area });
 {
   const pick = [
     ...["skola", "vlak", "zamek"].map((k) => POIS.find((p) => p.id === k)).filter(Boolean).map((p) => ({ name: p.name, val: p.min, unit: "min pěšky", meta: p.m < 1000 ? `${Math.round(p.m / 10) * 10} m` : `${(p.m / 1000).toLocaleString("cs-CZ", { maximumFractionDigits: 1 })} km` })),
-    ...["kolin", "praha"].map((k) => DEST.find((d) => d.id === k)).filter(Boolean).map((d) => ({ name: d.name, val: d.car_min, unit: "min autem", meta: `${d.car_km.toLocaleString("cs-CZ")} km` })),
+    ...["kolin", "praha"].map((k) => DEST.find((d) => d.id === k)).filter(Boolean).map((d) => ({ name: d.name, val: d.car_min, unit: "min autem", meta: `${d.car_km.toLocaleString("cs-CZ")} km k ${d.to === "hranice" ? "hranici Prahy" : "okraji"}` })),
   ];
   $("#dist").innerHTML = pick.map((x) => `<div class="dist-item"><span class="num">${x.val}</span><span><b>${x.name}</b><small>${x.unit} · ${x.meta}</small></span></div>`).join("") + `<a class="btn btn-ghost btn-sm" href="../#lokalita">Mapa okolí <svg class="icon icon-arrow"><use href="#i-arrow-right"/></svg></a>`;
 }
@@ -247,7 +247,7 @@ track("plot_page", { plot_id: P.id, plot_area: P.area });
     return `<a class="sim-card" href="${num(p.id)}">
       <svg viewBox="${vb.join(" ")}" aria-hidden="true"><path d="${path(p.poly)}" fill="#b3d095" stroke="#132019" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg>
       <span class="sim-num">${num(p.id)}</span>
-      <span class="sim-meta"><b>${fmt(p.area)} m²</b><small>${p.w} × ${p.d} m · etapa ${p.etapa}</small></span>
+      <span class="sim-meta"><b>${fmt(p.area)} m²</b><small>${p.w} × ${p.d} m</small></span>
       <span class="sim-go">Detail <svg class="icon"><use href="#i-arrow-right"/></svg></span></a>`;
   }).join("");
 }

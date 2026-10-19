@@ -153,7 +153,7 @@
         <a class="btn btn-ghost reveal" style="--i:2" href="#pravidla">Pravidla zástavby <svg class="icon icon-arrow"><use href="#i-arrow-right"/></svg></a>
       </div>
       <dl class="facts">
-        <div class="fact reveal"><dt data-cms="intro.fact1.label" data-cms-label="Číslo 1: popisek">pozemků ve dvou etapách</dt><dd class="num" data-cms="intro.fact1.value" data-cms-type="html" data-cms-label="Číslo 1: hodnota (jednotka v &lt;small&gt;)">45</dd></div>
+        <div class="fact reveal"><dt data-cms="intro.fact1.label" data-cms-label="Číslo 1: popisek">stavebních pozemků</dt><dd class="num" data-cms="intro.fact1.value" data-cms-type="html" data-cms-label="Číslo 1: hodnota (jednotka v &lt;small&gt;)">45</dd></div>
         <div class="fact reveal" style="--i:1"><dt data-cms="intro.fact2.label" data-cms-label="Číslo 2: popisek">průměrná výměra</dt><dd class="num" data-cms="intro.fact2.value" data-cms-type="html" data-cms-label="Číslo 2: hodnota (jednotka v &lt;small&gt;)">1 005<small>m²</small></dd></div>
         <div class="fact reveal" style="--i:2"><dt data-cms="intro.fact3.label" data-cms-label="Číslo 3: popisek">vlakem do Kolína</dt><dd class="num" data-cms="intro.fact3.value" data-cms-type="html" data-cms-label="Číslo 3: hodnota (jednotka v &lt;small&gt;)">13<small>min</small></dd></div>
         <div class="fact reveal" style="--i:3"><dt data-cms="intro.fact4.label" data-cms-label="Číslo 4: popisek">celá lokalita</dt><dd class="num" data-cms="intro.fact4.value" data-cms-type="html" data-cms-label="Číslo 4: hodnota (jednotka v &lt;small&gt;)">6<small>ha</small></dd></div>
@@ -202,13 +202,14 @@
   </section>
 
   <!-- 3D VÝBĚR -->
-  <section class="section plan-section" id="pozemky" aria-labelledby="plan-title" data-cms-section="3D výběr pozemku">
+  <section class="section plan-section" id="pozemky" aria-labelledby="plan-title" data-cms-section="Výběr pozemku">
     <div class="container plan-head">
       <h2 id="plan-title" class="reveal" data-cms="plan.title" data-cms-label="Nadpis">Vyberte si pozemek</h2>
-      <p class="lead reveal" style="--i:1" data-cms="plan.lead" data-cms-type="textarea" data-cms-label="Podnadpis">Klikněte na parcelu v modelu a uvidíte výměru, rozměry i to, kolik smíte zastavět. Ceník vám pošleme obratem.</p>
+      <p class="lead reveal" style="--i:1" data-cms="plan.lead" data-cms-type="textarea" data-cms-label="Podnadpis">Klikněte na parcelu ve vizualizaci a uvidíte výměru, rozměry i to, kolik smíte zastavět. Ceník vám pošleme obratem.</p>
     </div>
 
-    <div class="stage" id="stage">
+    <div class="stage is-photo" id="stage">
+      <div class="stage-photo" id="stage-photo" role="application" aria-label="Vizualizace lokality s pozemky. Pro ovládání klávesnicí použijte Seznam."></div>
       <div class="stage-canvas" id="stage-canvas" role="application" aria-label="3D plán pozemků. Pro ovládání klávesnicí použijte Seznam."></div>
       <div class="stage-loading" aria-hidden="true"><div class="skeleton"></div></div>
       <div class="tooltip" id="tooltip" aria-hidden="true"></div>
@@ -220,14 +221,6 @@
             <button class="chip filter-more" type="button" id="filter-more" aria-expanded="false"><svg class="icon"><use href="#i-funnel"/></svg>Filtry</button>
           </div>
           <div class="filter-body">
-            <div class="filter-row">
-              <span class="label">Etapa</span>
-              <div class="seg" role="group" aria-label="Filtrovat podle etapy">
-                <button type="button" data-etapa="all" aria-pressed="true">Vše</button>
-                <button type="button" data-etapa="1" aria-pressed="false">Etapa 1</button>
-                <button type="button" data-etapa="2" aria-pressed="false">Etapa 2</button>
-              </div>
-            </div>
             <div class="filter-row">
               <label class="label" for="min-area">Výměra od <output id="min-area-out">852 m²</output></label>
               <input type="range" id="min-area" min="850" max="1378" step="10" value="850">
@@ -249,7 +242,18 @@
         </div>
       </div>
 
-      <div class="panel hud hud-hint" id="hud-hint"><svg class="icon"><use href="#i-arrows-clockwise"/></svg><span>Táhněte pro otočení, přiblížení Ctrl / ⌘ + kolečko</span></div>
+      <div class="hud hud-top">
+        <div class="panel hud-mode" role="group" aria-label="Zobrazení výběru">
+          <button type="button" data-mode="foto" aria-pressed="true">Realistická</button>
+          <button type="button" data-mode="3d" aria-pressed="false"><svg class="icon"><use href="#i-cube"/></svg>3D model</button>
+        </div>
+        <div class="panel hud-hint" id="hud-hint"><svg class="icon"><use href="#i-arrows-clockwise"/></svg><span id="hud-hint-text">Táhněte pro posun, přiblížení Ctrl / ⌘ + kolečko</span></div>
+      </div>
+      <div class="panel hud hud-zoom" role="group" aria-label="Přiblížení vizualizace">
+        <button type="button" id="fm-in" aria-label="Přiblížit"><svg class="icon"><use href="#i-plus"/></svg></button>
+        <button type="button" id="fm-out" aria-label="Oddálit"><svg class="icon"><use href="#i-minus"/></svg></button>
+        <button type="button" id="fm-fit" aria-label="Celá lokalita"><svg class="icon"><use href="#i-crosshair"/></svg></button>
+      </div>
 
       <div class="panel hud hud-views" role="toolbar" aria-label="Pohled na model">
         <button type="button" data-view="persp" aria-pressed="true"><svg class="icon"><use href="#i-cube"/></svg><span class="lbl">3D</span></button>
@@ -281,7 +285,7 @@
 
       <aside class="drawer" id="drawer" aria-labelledby="drawer-title" aria-hidden="true" inert>
         <div class="drawer-top">
-          <p class="eyebrow-sm" id="drawer-etapa">Etapa 1</p>
+          <p class="eyebrow-sm" id="drawer-etapa">Stavební pozemek</p>
           <div class="drawer-tools">
             <button class="icon-btn fav" type="button" id="d-fav" aria-pressed="false" aria-label="Uložit do oblíbených"><svg class="icon"><use href="#i-heart"/></svg></button>
             <button class="icon-btn" type="button" id="d-share" aria-label="Zkopírovat odkaz na pozemek"><svg class="icon"><use href="#i-share-network"/></svg></button>
@@ -325,7 +329,6 @@
           <thead><tr>
             <th scope="col" aria-sort="ascending"><button type="button" data-sort="id">Číslo</button></th>
             <th scope="col"><button type="button" data-sort="area">Výměra</button></th>
-            <th scope="col" class="hide-m">Etapa</th>
             <th scope="col" class="hide-m">Rozměry cca</th>
             <th scope="col">Stav</th>
             <th scope="col"><span class="sr-only">Akce</span></th>
@@ -388,7 +391,7 @@
     <div class="container">
       <div class="ready-head">
         <h2 id="ready-title" class="reveal" data-cms="ready.title" data-cms-label="Nadpis">Územní rozhodnutí máme. Sítě se projektují.</h2>
-        <p class="lead reveal" style="--i:1" data-cms="ready.lead" data-cms-type="textarea" data-cms-label="Text">Obě etapy mají pravomocné územní rozhodnutí o dělení pozemků, ulicích a sítích. Dokumentaci pro stavební povolení zpracovává projekční kancelář APRIS.</p>
+        <p class="lead reveal" style="--i:1" data-cms="ready.lead" data-cms-type="textarea" data-cms-label="Text">Celá lokalita má pravomocné územní rozhodnutí o dělení pozemků, ulicích a sítích. Dokumentaci pro stavební povolení zpracovává projekční kancelář APRIS.</p>
       </div>
       <div class="bento">
         <figure class="cell cell-plan reveal">
@@ -403,8 +406,8 @@
         <div class="cell cell-time reveal" style="--i:1">
           <h3 data-cms="ready.tl.title" data-cms-label="Harmonogram: nadpis">Harmonogram</h3>
           <ol class="timeline">
-            <li data-cms-item="ready.tl1" data-cms-label="Krok harmonogramu 1" class="done"><span class="when" data-cms="ready.tl1.when" data-cms-label="Krok 1: kdy">06/2023</span><div><b data-cms="ready.tl1.title" data-cms-label="Krok 1: co">Územní rozhodnutí, etapa 1</b><span data-cms="ready.tl1.text" data-cms-label="Krok 1: detail">35 pozemků, pravomocné, platnost do 02/2028</span></div></li>
-            <li data-cms-item="ready.tl2" data-cms-label="Krok harmonogramu 2" class="done"><span class="when" data-cms="ready.tl2.when" data-cms-label="Krok 2: kdy">05/2024</span><div><b data-cms="ready.tl2.title" data-cms-label="Krok 2: co">Územní rozhodnutí, etapa 2</b><span data-cms="ready.tl2.text" data-cms-label="Krok 2: detail">10 pozemků, pravomocné, požádáno o prodloužení</span></div></li>
+            <li data-cms-item="ready.tl1" data-cms-label="Krok harmonogramu 1" class="done"><span class="when" data-cms="ready.tl1.when" data-cms-label="Krok 1: kdy">06/2023</span><div><b data-cms="ready.tl1.title" data-cms-label="Krok 1: co">Územní rozhodnutí na 35 pozemků</b><span data-cms="ready.tl1.text" data-cms-label="Krok 1: detail">pravomocné, platnost do 02/2028</span></div></li>
+            <li data-cms-item="ready.tl2" data-cms-label="Krok harmonogramu 2" class="done"><span class="when" data-cms="ready.tl2.when" data-cms-label="Krok 2: kdy">05/2024</span><div><b data-cms="ready.tl2.title" data-cms-label="Krok 2: co">Územní rozhodnutí na dalších 10 pozemků</b><span data-cms="ready.tl2.text" data-cms-label="Krok 2: detail">pravomocné, požádáno o prodloužení</span></div></li>
             <li data-cms-item="ready.tl3" data-cms-label="Krok harmonogramu 3" class="now"><span class="when" data-cms="ready.tl3.when" data-cms-label="Krok 3: kdy">Teď</span><div><b data-cms="ready.tl3.title" data-cms-label="Krok 3: co">Stavební povolení na ulici a sítě</b><span data-cms="ready.tl3.text" data-cms-label="Krok 3: detail">dokumentaci zpracovává APRIS s.r.o.</span></div></li>
             <li data-cms-item="ready.tl4" data-cms-label="Krok harmonogramu 4"><span class="when" data-cms="ready.tl4.when" data-cms-label="Krok 4: kdy">Potom</span><div><b data-cms="ready.tl4.title" data-cms-label="Krok 4: co">Výstavba ulice a sítí</b><span data-cms="ready.tl4.text" data-cms-label="Krok 4: detail">pak se připojíte a stavíte svůj dům</span></div></li>
           </ol>
@@ -466,7 +469,7 @@
       <figure data-cms-item="gal.3" data-cms-label="Obrázek 3"><div class="ph"><picture><source type="image/webp" srcset="assets/img/render-dron.webp"><img data-cms="gal.3.image" data-cms-type="image" data-cms-label="Obrázek 3" src="assets/img/render-dron.jpg" alt="Vizualizace lokality z nízkého přeletu při západu slunce" loading="lazy" width="1600" height="905"></picture></div><figcaption data-cms="gal.3.caption" data-cms-label="Obrázek 3: popisek">Při západu slunce z nízkého přeletu</figcaption></figure>
       <figure data-cms-item="gal.4" data-cms-label="Obrázek 4"><div class="ph"><picture><source type="image/webp" srcset="assets/img/render-park.webp"><img data-cms="gal.4.image" data-cms-type="image" data-cms-label="Obrázek 4" src="assets/img/render-park.jpg" alt="Vizualizace veřejné zeleně s lavičkami a dětským hřištěm" loading="lazy" width="1600" height="1063"></picture></div><figcaption data-cms="gal.4.caption" data-cms-label="Obrázek 4: popisek">Veřejná zeleň s místem na hraní</figcaption></figure>
       <figure data-cms-item="gal.5" data-cms-label="Obrázek 5"><div class="ph"><picture><source type="image/webp" srcset="assets/img/render-vjezd.webp"><img data-cms="gal.5.image" data-cms-type="image" data-cms-label="Obrázek 5" src="assets/img/render-vjezd.jpg" alt="Vizualizace vjezdu do lokality za soumraku s rozsvícenými lampami" loading="lazy" width="1600" height="905"></picture></div><figcaption data-cms="gal.5.caption" data-cms-label="Obrázek 5: popisek">Vjezd do lokality za soumraku</figcaption></figure>
-      <figure data-cms-item="gal.6" data-cms-label="Obrázek 6"><div class="ph"><img data-cms="gal.6.image" data-cms-type="image" data-cms-label="Obrázek 6" src="assets/img/viz-shora.jpg" alt="Vizualizace lokality shora: tři ulice a zahrady mezi poli" loading="lazy" width="1586" height="992"></div><figcaption data-cms="gal.6.caption" data-cms-label="Obrázek 6: popisek">Pohled shora, etapa 1 a 2</figcaption></figure>
+      <figure data-cms-item="gal.6" data-cms-label="Obrázek 6"><div class="ph"><img data-cms="gal.6.image" data-cms-type="image" data-cms-label="Obrázek 6" src="assets/img/viz-shora.jpg" alt="Vizualizace lokality shora: tři ulice a zahrady mezi poli" loading="lazy" width="1586" height="992"></div><figcaption data-cms="gal.6.caption" data-cms-label="Obrázek 6: popisek">Pohled shora na celou lokalitu</figcaption></figure>
       <figure data-cms-item="gal.7" data-cms-label="Obrázek 7"><div class="ph"><img data-cms="gal.7.image" data-cms-type="image" data-cms-label="Obrázek 7" src="assets/img/viz-studie.jpg" alt="Architektonická studie zástavby lokality" loading="lazy" width="1600" height="1000"></div><figcaption data-cms="gal.7.caption" data-cms-label="Obrázek 7: popisek">Studie zástavby od projektanta</figcaption></figure>
     </div>
     <p class="container gallery-note" data-cms="gal.note" data-cms-label="Poznámka pod galerií">Vizualizace jsou ilustrační. Podoba domů záleží na stavebnících, ulice a zeleň vycházejí z projektu.</p>

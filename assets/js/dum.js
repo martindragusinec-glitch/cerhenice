@@ -229,7 +229,7 @@ function syncUI() {
   const p = plotOf(state.plot);
   sel.value = state.plot;
   $("#h-plot-link").href = `pozemky/${num(p.id)}`;
-  $("#h-plot-meta").textContent = `${fmt(p.area)} m² · ${p.w} × ${p.d} m · etapa ${p.etapa}`;
+  $("#h-plot-meta").textContent = `${fmt(p.area)} m² · ${p.w} × ${p.d} m`;
   $$(".type-card").forEach((b) => b.setAttribute("aria-checked", String(b.dataset.type === state.type)));
   const t = TYPES[state.type];
   $$("#h-ridge button").forEach((b) => { b.setAttribute("aria-pressed", String((b.dataset.ridge === "1") === state.ridge)); b.disabled = !!t.wing && b.dataset.ridge === "0"; });

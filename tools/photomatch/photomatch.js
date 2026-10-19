@@ -27,7 +27,13 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(CAM.vfov, W / H, 1, 4000);
+// ext=L,T,R,B: rozšíření plátna za okraj fotky (zlomky šířky/výšky fotky), třeba pro celou lokalitu ve fotomapě
+const EXT = (Q.get("ext") || "0,0,0,0").split(",").map(Number);
+const camera = new THREE.PerspectiveCamera(CAM.vfov, 1.5, 1, 4000);
+{
+  const fw = W / (1 + EXT[0] + EXT[2]), fh = fw / 1.5;
+  camera.setViewOffset(fw, fh, -EXT[0] * fw, -EXT[1] * fh, W, H);
+}
 camera.position.set(...CAM.pos);
 camera.up.set(...CAM.up);
 camera.lookAt(CAM.pos[0] + CAM.fwd[0] * 100, CAM.pos[1] + CAM.fwd[1] * 100, CAM.pos[2] + CAM.fwd[2] * 100);

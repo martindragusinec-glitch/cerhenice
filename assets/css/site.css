@@ -229,7 +229,7 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
 .hud-compass .needle { position: relative; width: 100%; height: 100%; display: grid; place-items: center; }
 .hud-compass b { position: absolute; top: 4px; font-family: var(--mono); font-size: 11px; }
 .hud-compass i { width: 2px; height: 20px; margin-top: 8px; border-radius: 2px; background: linear-gradient(var(--ink) 50%, var(--line-strong) 50%); }
-.hud-hint { right: 20px; top: 20px; padding: 10px 14px; font-size: 13px; color: var(--ink-2); display: flex; align-items: center; gap: 8px; transition: opacity .5s var(--ease); }
+.hud-hint { padding: 10px 14px; font-size: 13px; color: var(--ink-2); display: flex; align-items: center; gap: 8px; transition: opacity .5s var(--ease); }
 .stage.has-drawer .hud-compass, .stage.has-drawer .hud-hint { opacity: 0; pointer-events: none; }
 
 .tooltip { position: absolute; z-index: 4; pointer-events: none; padding: 10px 12px; border-radius: var(--r-s); background: var(--ink); color: var(--paper); font-size: 13px; line-height: 1.35; transform: translate(-50%, calc(-100% - 14px)); opacity: 0; transition: opacity .15s; white-space: nowrap; }
@@ -883,3 +883,52 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
 /* hero nadpis vždy na 2 řádky: na úzkých displejích se písmo zmenší s šířkou */
 .hero h1 { text-wrap: balance; }
 @media (max-width: 480px) { .hero h1 { font-size: min(46px, 11.2vw); max-width: none; } }
+
+
+/* ---------- výběr pozemku: realistická fotomapa / 3D model ---------- */
+.stage-photo { position: absolute; inset: 0; z-index: 0; background: #2a3328; }
+.stage.is-3d .stage-photo, .stage.is-photo .stage-canvas { visibility: hidden; pointer-events: none; }
+.stage.is-photo .hud-views [data-view], .stage.is-photo .hud-views .sep, .stage.is-photo .hud-views .mini-toggle, .stage.is-photo .hud-views .sun-btn, .stage.is-photo .hud-sun, .stage.is-photo .hud-compass { display: none !important; }
+.stage.is-3d .hud-zoom { display: none; }
+.hud-top { right: 20px; top: 20px; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.hud-mode { display: inline-grid; grid-auto-flow: column; gap: 2px; padding: 4px; border-radius: 15px; }
+.hud-mode button { display: inline-flex; align-items: center; gap: 7px; height: 38px; padding: 0 16px; border: 0; border-radius: 11px; background: transparent; font: 500 14px var(--font); color: var(--ink-2); cursor: pointer; transition: background-color .2s, color .2s; }
+.hud-mode button:hover { color: var(--ink); background: rgba(19, 32, 25, .06); }
+.hud-mode button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.stage.has-drawer .hud-top { opacity: 0; pointer-events: none; }
+.stage.is-loading-3d .stage-canvas::after { content: "Načítám 3D model…"; position: absolute; inset: 0; display: grid; place-items: center; font-size: 15px; color: var(--ink-2); background: #dfe5d3; }
+.hud-zoom { right: 20px; bottom: 20px; display: flex; flex-direction: column; padding: 4px; gap: 2px; border-radius: 14px; }
+.hud-zoom button { width: 40px; height: 40px; display: grid; place-items: center; border: 0; border-radius: 10px; background: transparent; color: var(--ink); cursor: pointer; }
+.hud-zoom button:hover { background: rgba(19, 32, 25, .07); }
+.stage.has-drawer .hud-zoom { right: calc(384px + 40px); }
+
+.fm { position: absolute; inset: 0; overflow: hidden; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.fm.is-dragging { cursor: grabbing; }
+.fm.is-pointer:not(.is-dragging) { cursor: pointer; }
+.fm-layer { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
+.fm-layer img { display: block; width: var(--fm-w); height: var(--fm-h); max-width: none; -webkit-user-drag: none; pointer-events: none; }
+.fm-layer svg { position: absolute; inset: 0; width: var(--fm-w); height: var(--fm-h); overflow: visible; }
+.fm-plot { pointer-events: all; fill: rgba(196, 228, 160, .14); stroke: rgba(255, 255, 255, .78); stroke-width: 1.4px; vector-effect: non-scaling-stroke; transition: fill .2s, stroke .2s; }
+.fm-plot.st-rezervace { fill: url(#fm-hatch); stroke: rgba(228, 203, 60, .95); }
+.fm-plot.st-prodano { fill: rgba(19, 32, 25, .5); stroke: rgba(255, 255, 255, .35); }
+.fm-plot.is-dim { fill: rgba(19, 32, 25, .55); stroke: rgba(255, 255, 255, .2); }
+.fm-plot.is-hover { fill: rgba(228, 203, 60, .34); stroke: #e4cb3c; stroke-width: 2.5px; }
+.fm-plot.is-sel { fill: rgba(228, 203, 60, .44); stroke: #fff; stroke-width: 3px; }
+.fm-labels { position: absolute; inset: 0; pointer-events: none; }
+.fm-label { position: absolute; left: 0; top: 0; display: inline-flex; align-items: center; gap: 5px; height: 24px; padding: 0 8px 0 7px; border-radius: 8px; background: rgba(251, 252, 248, .94); color: var(--ink); font: 600 12.5px/1 var(--mono); box-shadow: 0 4px 12px -4px rgba(0, 0, 0, .45); white-space: nowrap; transition: background-color .2s, color .2s, opacity .2s; }
+.fm-label::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #7fb35a; }
+.fm-label.st-rezervace::before { background: #d9b51a; }
+.fm-label.st-prodano { background: rgba(40, 48, 42, .82); color: rgba(242, 244, 238, .75); }
+.fm-label.st-prodano::before { background: #9aa197; }
+.fm-label.is-dim { opacity: .35; }
+.fm-label.is-hover, .fm-label.is-sel { background: var(--accent); color: var(--ink); opacity: 1; }
+.fm-label.is-sel { box-shadow: 0 0 0 2px var(--ink), 0 6px 16px -4px rgba(0, 0, 0, .5); }
+.fm.is-far .fm-label { height: 20px; padding: 0 6px 0 5px; font-size: 11px; gap: 4px; }
+.fm.is-far .fm-label::before { width: 6px; height: 6px; }
+@media (max-width: 900px) {
+  .hud-top { top: 64px; left: 8px; right: auto; align-items: flex-start; }
+  .hud-mode button { height: 34px; padding: 0 12px; font-size: 13px; }
+  .hud-zoom { right: 8px; bottom: 64px; }
+  .stage.has-drawer .hud-zoom { display: none; }
+  .stage.is-photo .hud-views { right: auto; }
+}

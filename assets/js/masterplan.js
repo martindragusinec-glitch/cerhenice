@@ -312,11 +312,10 @@ export function createMasterplan(host, { onSelect, onHover, startView = "persp" 
 
   // ------- stav, filtry, výběr -------
   const byId = Object.fromEntries(plots.map((o) => [o.p.id, o]));
-  const state = { hovered: null, listHover: null, selected: null, filter: { etapa: "all", minArea: 0, onlyFree: false }, status: {} };
+  const state = { hovered: null, listHover: null, selected: null, filter: { minArea: 0, onlyFree: false }, status: {} };
   const statusOf = (id) => state.status[id] || "volny";
   const matches = (p) => {
     const f = state.filter;
-    if (f.etapa !== "all" && String(p.etapa) !== f.etapa) return false;
     if (p.area < f.minArea) return false;
     if (f.onlyFree && statusOf(p.id) !== "volny") return false;
     return true;
