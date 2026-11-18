@@ -8,3 +8,4 @@ brand-smery.png
 uploads/
 .env.vercel.local
 .env*.local
+*.local.txt
