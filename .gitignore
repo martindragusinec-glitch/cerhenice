@@ -6,3 +6,5 @@ brand-smery.png
 .env
 .env.local
 uploads/
+.env.vercel.local
+.env*.local

@@ -1,3 +1,4 @@
 tools/
 brand-smery.png
 prezentace/
+.env*.local

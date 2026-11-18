@@ -460,7 +460,10 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
   if (v && !reduceM && !saveData) {
     const start = () => {
       v.src = innerWidth < 760 ? v.dataset.srcSm : v.dataset.src;
-      v.addEventListener("playing", () => { v.classList.add("is-playing"); $("#hero-media").classList.add("has-video"); }, { once: true });
+      v.addEventListener("playing", () => { v.classList.add("is-playing"); v.classList.remove("is-ending"); $("#hero-media").classList.add("has-video"); });
+      // smyčka bez skoku: poslední vteřinu se video prolne do úvodního snímku (= první snímek videa) a začne znovu
+      v.addEventListener("timeupdate", () => { if (v.duration && v.duration - v.currentTime < 1.05) v.classList.add("is-ending"); });
+      v.addEventListener("ended", () => { v.currentTime = 0; v.play().catch(() => {}); });
       v.play().catch(() => {});
       new IntersectionObserver(([e]) => (e.isIntersecting ? v.play().catch(() => {}) : v.pause())).observe(v);
     };
