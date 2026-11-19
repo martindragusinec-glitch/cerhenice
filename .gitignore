@@ -9,3 +9,4 @@ uploads/
 .env.vercel.local
 .env*.local
 *.local.txt
+prezentace/nahled-*
