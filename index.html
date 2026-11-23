@@ -16,7 +16,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700;1,75..100,400..700&family=Geist+Mono:wght@400..600&display=swap" rel="stylesheet">
-  <link rel="preload" as="image" type="image/webp" imagesrcset="assets/img/hero-dron-v12-sm.webp 900w, assets/img/hero-dron-v12.webp 1920w" imagesizes="100vw" fetchpriority="high">
+  <link rel="preload" as="image" type="image/webp" media="(max-width: 700px)" href="assets/img/hero-viz-v1-m.webp" fetchpriority="high">
+  <link rel="preload" as="image" type="image/webp" media="(min-width: 701px)" imagesrcset="assets/img/hero-viz-v1-md.webp 1600w, assets/img/hero-viz-v1.webp 2560w" imagesizes="100vw" fetchpriority="high">
   <link rel="stylesheet" href="assets/css/site.css">
   <script type="importmap">
     { "imports": {
@@ -113,17 +114,16 @@
 </div>
 
 <main>
-  <!-- HERO. Pozadí = místo pro přelet dronem. Zatím vizualizace s pomalým "drone drift". Video vložit do .hero-media (README). -->
+  <!-- HERO. Pozadí = vizualizace celé lokality po dostavbě (stejná jako ve výběru pozemků a v sekci „Z pole ulice“). Video z dronu: README → Hero. -->
   <section class="hero" aria-labelledby="hero-title" data-cms-section="Úvod (hero)">
     <div class="hero-media" id="hero-media">
       <div class="drift">
         <picture>
-          <source type="image/webp" srcset="assets/img/hero-dron-v12-sm.webp 900w, assets/img/hero-dron-v12.webp 1920w" sizes="100vw">
-          <img data-cms="hero.image" data-cms-type="image" data-cms-label="Hlavní obrázek (pod videem)" src="assets/img/hero-dron-v12.jpg" alt="Lokalita Za Kapličkou z dronu při západu slunce: pole na jižním okraji Cerhenic" fetchpriority="high">
+          <source type="image/webp" media="(max-width: 700px)" srcset="assets/img/hero-viz-v1-m.webp" width="1080" height="1467">
+          <source type="image/webp" srcset="assets/img/hero-viz-v1-md.webp 1600w, assets/img/hero-viz-v1.webp 2560w" sizes="100vw">
+          <img data-cms="hero.image" data-cms-type="image" data-cms-label="Hlavní obrázek" src="assets/img/hero-viz-v1.jpg" alt="Vizualizace lokality Za Kapličkou po dostavbě: 45 rodinných domů se zahradami na jižním okraji Cerhenic" fetchpriority="high" width="1920" height="1200">
         </picture>
       </div>
-      <!-- Záběr z dronu nad lokalitou k obci, světlo zlaté hodinky (README → Záběry z dronu). Dodané video, jen stabilizované. -->
-      <video class="hero-video" id="hero-video" muted playsinline preload="none" aria-hidden="true" data-src="assets/video/hero-dron-v12.mp4" data-src-sm="assets/video/hero-dron-v12.mp4"></video>
     </div>
     <div class="hero-frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
     <div class="hero-inner">
@@ -138,7 +138,7 @@
           </div>
         </div>
         <div class="hero-side rise" style="--i:4">
-          <p class="hero-caption" data-cms="hero.caption" data-cms-label="Popisek obrázku">Záběr z dronu nad lokalitou</p>
+          <p class="hero-caption" data-cms="hero.caption" data-cms-label="Popisek obrázku">Vizualizace lokality po dostavbě</p>
         </div>
       </div>
     </div>

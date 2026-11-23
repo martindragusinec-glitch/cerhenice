@@ -110,7 +110,13 @@ p { margin: 0; text-wrap: pretty; }
 .hero-media { position: absolute; inset: 0; z-index: -2; }
 .hero-media img, .hero-media video { width: 100%; height: 100%; object-fit: cover; }
 .hero-media .drift { width: 100%; height: 100%; transform-origin: 62% 45%; }
-/* úvodní snímek stojí: je to první snímek videa, takže video na něj navazuje bez skoku */
+/* vizualizace stojí (žádný pohyb obrazu). Na širokých displejích se ořezává nahoře, aby domy neležely pod textem */
+.hero-media img { object-position: 50% 78%; }
+/* mobil: obrázek jen v horní části a dole se ztrácí do pozadí, text tak stojí na klidné ploše */
+@media (max-width: 700px) {
+  .hero-media { bottom: auto; height: max(300px, calc(100svh - 300px)); -webkit-mask-image: linear-gradient(#000 60%, transparent 100%); mask-image: linear-gradient(#000 60%, transparent 100%); }
+  .hero-media img { object-position: 50% 42%; }
+}
 .hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background:
   linear-gradient(180deg, rgba(19, 32, 25, 0.5) 0%, rgba(19, 32, 25, 0) 20%),
   linear-gradient(0deg, rgba(19, 32, 25, 0.86) 0%, rgba(19, 32, 25, 0.42) 36%, rgba(19, 32, 25, 0) 64%),
@@ -380,7 +386,7 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
 .rule:nth-child(even) { padding-left: 24px; border-left: 1px solid var(--line); }
 .rule .num { font-size: clamp(46px, 4.6vw, 72px); }
 .rule p { margin-top: 12px; font-size: 15px; color: var(--ink-2); max-width: 30ch; }
-@media (max-width: 960px) { .rules-grid { grid-template-columns: 1fr; } }
+@media (max-width: 960px) { .rules-grid { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 520px) { .rules-list { grid-template-columns: 1fr; } .rule:nth-child(even) { padding-left: 0; border-left: 0; } }
 
 /* ---------- galerie ---------- */
@@ -576,7 +582,8 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
 .modal-box .inner { background: linear-gradient(0deg, rgba(19,32,25,.88), rgba(19,32,25,0) 55%); }
 .band { margin-bottom: clamp(80px, 10vw, 150px); }
 .flyover small { white-space: nowrap; }
-@media (max-width: 860px) { .hero-caption { display: none; } }
+/* popisek „vizualizace“ je vidět i na mobilu, pod tlačítky */
+@media (max-width: 860px) { .hero-grid { gap: 14px; } .hero-caption { font-size: 11px; } }
 
 /* ---------- slunce ve 3D ---------- */
 .hud-views .sun-btn[aria-pressed="true"] { background: var(--accent); color: var(--ink); }
@@ -734,6 +741,8 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
 }
 .plot-actions .btn-house { flex: 0 0 auto; }
 .rules-cta { margin-top: 32px; }
+/* úzké telefony (360 px): dlouhé tlačítko se musí vejít, jinak se celá stránka posouvá do strany */
+@media (max-width: 400px) { .rules-cta { max-width: 100%; padding: 0 14px; gap: 8px; font-size: 15px; } }
 .btn-house { width: 100%; }
 .nav a[aria-current="page"] { opacity: 1; background: rgba(127,127,127,.12); }
 .hp-opts [hidden] { display: none !important; }
